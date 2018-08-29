@@ -5,4 +5,7 @@ Vagrant.configure("2") do |config|
   end
   config.vm.provision :shell, path: "vagrant/bootstrap.sh"
   config.vm.network "forwarded_port", guest: 80, host: 8087
+  config.vm.network "forwarded_port", guest: 443, host: 8043
+  config.vm.synced_folder ".", "/vagrant", type: "rsync",
+     rsync__exclude: [".git/", "vagrant/", "Vagrantfile"]
 end

@@ -2,11 +2,6 @@
 
 apt-get update
 apt-get install -y apache2
-mkdir /home/vagrant/www/html -p
-if ! [ -L /var/www ]; then
-  rm -rf /var/www
-  ln -fs /home/vagrant/www /var/www
-fi
 
 debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password password 293874jksdfssdfjsdhf823'
 debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password_again password 293874jksdfssdfjsdhf823'
@@ -46,10 +41,11 @@ if ! php -m | grep xdebug ; then
 fi
 
 a2enmod rewrite
-service apache2 reload
+a2enmod ssl
 
-#folders
-mkdir /home/vagrant/www/html/japo/ -p
-mkdir /home/vagrant/www/html/japo/tmp/ -p
-mkdir /home/vagrant/www/html/japo/data/ -p
-mkdir /home/vagrant/www/html/japo/logs/ -p
+if ! [ -L /etc/apache2/sites-enabled/002-default-ssl.conf ]; then
+    ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\/react\/japo\/build\n               <Directory "\/vagrant\/react\/japo\/build">\n                  Require all granted\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+fi
+
+service apache2 reload
