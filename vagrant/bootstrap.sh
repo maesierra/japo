@@ -46,6 +46,13 @@ a2enmod ssl
 if ! [ -L /etc/apache2/sites-enabled/002-default-ssl.conf ]; then
     ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/002-default-ssl.conf
     sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\/react\/japo\/build\n               <Directory "\/vagrant\/react\/japo\/build">\n                  Require all granted\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'' 's/<\/VirtualHost>/        Alias \/api\/japo \/vagrant\/api\n               <Directory "\/vagrant\/api">\n                  Require all granted\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+fi
+
+if [ ! -d "/var/log/japo" ]; then
+  mkdir "/var/log/japo"
+  chown www-data "/var/log/japo"
+  chgrp www-data "/var/log/japo"
 fi
 
 service apache2 reload

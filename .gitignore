@@ -3,3 +3,6 @@
 .project
 .settings/
 .vagrant/
+vendor/
+src/maesierra/Japo/.env
+deploy-react
