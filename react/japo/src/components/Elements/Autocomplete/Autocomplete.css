@@ -1,0 +1,23 @@
+.autocomplete .list-group-item.active {
+    color: #fff;
+}
+
+.autocomplete .list-group-item {
+    line-height: 8px;
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.1);
+    border: 0 none;
+    border-radius: 2px;
+    box-shadow: none;
+    z-index: 99;
+}
+.autocomplete .list-group-item {
+    background: none repeat scroll 0 0 rgba(100, 100, 100, 0.3);
+}
+
+.autocomplete.list-group {
+    position: absolute;
+}
+
+.autocomplete .small{
+    font-size: 6pt;
+}

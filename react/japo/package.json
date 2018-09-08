@@ -6,8 +6,15 @@
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-scripts": "1.1.5",
+    "react-infinite-scroller": "^1.0.15",
+    "react-router-dom": "^4.2.2",
+    "react-scrollable-anchor": "^0.5.0",
+    "react-tooltip": "^3.3.0",
+    "wanakana": "^2.2.4",
+    "xml-to-json": "^0.1.1",
     "isomorphic-fetch": "^2.2.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "mustache": "^2.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

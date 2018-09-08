@@ -1,0 +1,25 @@
+
+
+.kanji-list .kanji-level, .kanji-list .kanji-n {
+    font-size: 8pt;
+}
+
+.kanji-list .kanji-kun-readings, .kanji-list .kanji-on-readings {
+    font-size: 8pt;
+    line-height: 10pt;
+}
+
+.kanji-list .kanji-meanings {
+    font-size: 7pt;
+    line-height: 10pt;
+}
+
+.kanji-row .kanji-char {
+    font-size: 36pt;
+    line-height: 38pt;
+}
+
+a.kanji-char {
+    cursor: pointer;
+    text-decoration: none;
+}

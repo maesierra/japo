@@ -1,0 +1,6 @@
+ :lang(ja){
+    font-family: "HiraKakuPro-W3", "Hiragino Kaku Gothic Pro W3", "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "メイリオ", Meiryo, "游ゴシック", YuGothic, "ＭＳ Ｐゴシック", "MS PGothic", "ＭＳ ゴシック", "MS Gothic", sans-serif;
+}
+ :lang(ja).serif {
+    font-family: "HiraMinPro-W3", "Hiragino Mincho Pro W3", "Hiragino Mincho Pro", "ヒラギノ明朝 Pro W3", "游明朝", YuMincho, "HG明朝E", "ＭＳ Ｐ明朝", "MS PMincho", "MS 明朝", "MS Mincho", serif
+}

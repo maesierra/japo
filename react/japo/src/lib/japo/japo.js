@@ -18,7 +18,10 @@ function makeRequest(path, params, options) {
     return new Promise((resolve, reject) => {
         fetch(url, options).then((response) => {
             resolve(response)
-        })
+        }).catch(function(error) {
+            console.log("Fetch error " + error);
+            reject(error);
+        });
     });
 }
 
@@ -31,14 +34,11 @@ Japo.isAuthorized = () => {
             {},
             {cache: 'no-cache'}
         ).then((response) => {
+            console.log(response.status);
             let authorized = response.status === 200;
-            /*
-            if (!authorized) {
-                document.location.href = '/api/japo/login.php';
-            }*/
             resolve(authorized);
         })
-        .catch(reject);
+        .catch((error) => resolve(false));
     });
 };
 
@@ -51,4 +51,30 @@ Japo.logout = () => {
 };
 
 
+Japo.kanjiCatalogs = () => {
+    return new Promise((resolve, reject) => {
+        /*
+        makeRequest('/japo/api/kanji_catalogs.php').then((response) => {
+            resolve(response.json());
+        })
+            .catch(reject);*/
+        resolve([{"id": "0", "name": "Basic Kanji Book I", "deprecated": false, "slug": "basic-kanji-book"}, {
+            "id": "2",
+            "name": "Ky\u014diku kanji",
+            "deprecated": false,
+            "slug": "kyoiku-kanji"
+        }, {"id": "1", "name": "JLPT", "deprecated": false, "slug": "jlpt"}, {
+            "id": "3",
+            "name": "Ky\u014diku kanji (higher levels)",
+            "deprecated": true,
+            "slug": null
+        }, {"id": "4", "name": "Minna no nihongo 2", "deprecated": false, "slug": "minna-no-nihongo-2"}, {
+            "id": "5",
+            "name": "Intermediate Kanji Book",
+            "deprecated": false,
+            "slug": "ikb"
+        }])
+    });
+
+};
 module.exports = Japo;

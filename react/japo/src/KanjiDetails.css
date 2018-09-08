@@ -1,0 +1,60 @@
+.autocomplete.catalogs .list-group-item, .autocomplete.helpword .list-group-item {
+    background: none repeat scroll 0 0 rgba(180, 180, 180, 0.7);
+}
+
+.kanji-details .kanji-meanings {
+    margin-top: 2em;
+}
+
+.kanji-details .row {
+    margin-bottom: 0.3em;
+}
+.kanji-details .reading-reading {
+    color:#444;
+    color:rgba(0,0,0,.7);
+    font-weight: bolder;
+
+}
+.kanji-details .kanji-glyph, .kanji-details .kanji-strokes {
+    height: 120px;
+}
+.kanji-strokes {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 2px;
+    border: 1px solid;
+    padding: 0.2em;
+    text-align: center;
+}
+
+.kanji-details label {
+    display: inline-block;
+    width: 100%;
+}
+
+.kanji-details .catalog {
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    padding: 0.3em;
+    font-size: 0.8em;
+}
+.kanji-details .word {
+    display: inline-block;
+    margin-right: 1em;
+}
+.kanji-details .kanji-words {
+    word-break: keep-all;
+    line-height: 2em;
+}
+.kanji-details a:hover {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.8);
+}
+
+
+.save-button {
+    text-align: right;
+    margin-top: 1em;
+}
+.save-button .btn {
+    margin-left: 0.5em;
+}

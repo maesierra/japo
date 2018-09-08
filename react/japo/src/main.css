@@ -1,0 +1,326 @@
+html {
+    background:#505D6E url(images/body.jpg) no-repeat center center fixed;
+    min-height:100%;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+
+body {
+    background:transparent;
+    min-height:100%;
+
+    -webkit-font-smoothing: antialiased;
+    -webkit-overflow-scrolling: touch;
+    line-height: 1.5em;
+    font-size:14px;
+    font-family: Helvetica, Arial, sans-serif;
+    color:#222;
+    color:rgba(0,0,0,.8);
+    font-weight: normal;
+}
+.modal-dialog {
+    margin-top: 100px;
+}
+.modal-content {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+.modal-footer {
+    border-top: none;
+}
+
+
+/********************************************************/
+/*             Sections - universal classes             */
+/********************************************************/
+.section {
+    z-index: 1;
+    min-height:420px;
+    width: 100%;
+    overflow:auto;
+    height:100%;
+    padding-bottom:50px;
+    display:none;
+    top:0;
+}
+@media (min-width: 768px) {
+    .navbar-brand {
+        font-size: 4em;
+    }
+}
+@media (max-width: 767px) {
+    section > .container > .row {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+.sub-nav {
+    margin-bottom: 20px;
+}
+.sub-nav .nav-tabs > li > a {
+    color: #000000;
+    font-family: "Aldrich",Helvetica,Arial,sans-serif;
+}
+.sub-nav .nav-tabs > li.active > a, .sub-nav .nav-tabs > li.active > a:hover, .sub-nav .nav-tabs > li.active > a:focus {
+    background: rgba(255,255,255,0.2);
+    border-color: #555 #555 transparent;
+    border-width: 2px;
+}
+.sub-nav .nav-tabs > li.active > a:hover {
+    background: rgba(255,255,255,0.8);
+}
+
+.sub-nav .nav-tabs {
+    border-bottom: 2px solid #555;
+}
+
+/* Show one of sections */
+.section.active {
+    display: block;
+}
+
+
+/********************************************************/
+/*                      Typography                      */
+/********************************************************/
+a { color:#000; text-decoration: none; }
+a:hover, a:active {
+    color:#555;
+    text-decoration: underline;
+}
+.lead {
+    font-weight:normal;
+    font-size:1.5em;
+    line-height:1.2em;
+}
+
+.subtitle {
+    font-family: 'Aldrich', Helvetica, Arial, sans-serif;
+    font-weight:normal;
+    font-size:2.5em;
+    letter-spacing: -2px;
+    margin-bottom:35px;
+    color:#FDF9F4;
+    line-height:1em;
+}
+.subtitle {
+    line-height:.9em;
+    font-size:5.5em;
+    margin-top:0;
+    margin-bottom:40px;
+}
+.tagline {
+    font-size:1.4em;
+    line-height:1.3em;
+    font-weight:normal;
+    margin-bottom:75px;
+}
+
+@media (max-width: 767px) {
+    .lead {
+        font-size:1.3em;
+    }
+}
+
+
+/********************************************************/
+/*                   UI - Buttons                       */
+/********************************************************/
+.btn, .input-group-addon {
+    color:#333;
+    text-shadow: none;
+    text-decoration: none;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    border:0 none;
+}
+.btn:hover {
+    color:#000;
+}
+.btn-lg {
+    padding:16px 30px;
+    font-size:inherit;
+}
+
+.btn-link {
+    color:rgba(255,255,255,.8);
+}
+.btn-link:hover, .btn-link:focus, .btn-link:active {
+    color:#fff
+}
+.btn-default, .input-group-addon {
+    background: rgba(255,255,255,.5);
+}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.input-group-addon:hover,
+.input-group-addon:focus,
+.input-group-addon:active,
+.input-group-addon.active
+{
+    background: rgba(255,255,255,.8);
+}
+
+
+
+/********************************************************/
+/*                 UI - Thumbnails                      */
+/********************************************************/
+.thumbnail {
+    background-color: rgba(255,255,255,.2);
+    border: 0 none;
+    padding:10px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+}
+.thumbnail .caption {
+    color: inherit;
+}
+
+.language-selector .img-thumbnail {
+    background-color: rgba(255,255,255,.3);
+}
+
+.language-selector .img-thumbnail:hover {
+    background-color: rgba(255,255,255,.6);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***********************************************************/
+/*                   Theme: text shadows                   */
+/***********************************************************/
+.text-shadows {
+    text-shadow:0 1px 2px rgba(0,0,0,.2);
+}
+.text-shadows .title,
+.text-shadows .subtitle,
+.text-shadows .tagline {
+    text-shadow:0 2px 3px rgba(0,0,0,.4);
+}
+.text-shadows .mainmenu .dropdown-menu a {
+    text-shadow:0 2px 1px rgba(0,0,0,.2);
+}
+.text-shadows .mainmenu .dropdown-menu a:hover {
+    text-shadow:none;
+}
+.text-shadows .main-navbar .navbar-brand {
+    text-shadow:0 1px 2px rgba(0,0,0,.2);
+}
+
+
+
+/***********************************************************/
+/*                   Inverted theme                        */
+/***********************************************************/
+.btn:hover {
+    color:#fff;
+}
+.btn-link {
+    color:rgba(0,0,0,.8);
+}
+.btn-link:hover, .btn-link:focus, .btn-link:active {
+    color:#000
+}
+
+.subtitle, .tagline {
+    color:#222222;
+}
+
+.btn-default,
+.input-group-addon
+{
+    background: rgba(0,0,0,.4);
+}
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.input-group-addon {
+    background: rgba(0,0,0,.6);
+    color:#fff;
+}
+.btn {
+    color:rgba(255,255,255,.8)
+}
+.btn.btn-primary {
+    background: rgba(0,0,0,.2);
+}
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+.btn.btn-primary.active {
+    background: rgba(0,0,0,.3);
+    color:#fff;
+}
+
+.thumbnail {
+    background-color: rgba(255,255,255,.8);
+}
+.thumbnail .caption {
+    color: inherit;
+}
+
+
+
+
+@media (min-width: 1580px) {
+    nav.mainmenu .dropdown {
+        left: -180px
+    }
+}
+@media (max-width: 800px) {
+    nav.mainmenu .dropdown {
+        left: 20px
+    }
+}
+
+
+.has-icon .form-control-icon {
+    right: 15px;
+}
+
+.form-control-icon {
+    display: block;
+    line-height: 1;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 34px;
+    z-index: 2;
+    margin-top: 12px;
+}

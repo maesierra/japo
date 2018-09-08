@@ -1,0 +1,17 @@
+.jdict-autocomplete .list-group-item {
+    font-size: 15pt;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 270px;
+    color: black;
+}
+
+.jdict-autocomplete .list-group-item .small {
+    font-size: 8pt;
+    font-weight: normal;
+}
+
+.jdict-autocomplete .list-group-item.active {
+    color: #fff;
+}
