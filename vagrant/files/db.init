@@ -1,0 +1,5 @@
+create database japo;
+use japo;
+CREATE USER 'japo'@'localhost' IDENTIFIED BY 'alongPa$$wordThat_mustBeChanged';
+GRANT ALL PRIVILEGES ON * . * TO 'japo'@'localhost';
+FLUSH PRIVILEGES;

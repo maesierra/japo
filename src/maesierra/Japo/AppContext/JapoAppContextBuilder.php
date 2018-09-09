@@ -13,6 +13,7 @@ use Aura\Di\Container;
 use Aura\Di\ContainerConfig;
 use Auth0\SDK\Auth0;
 use maesierra\Japo\Auth\Auth0AuthManager;
+use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\Router\Router;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -51,6 +52,53 @@ class JapoAppContextBuilder extends ContainerConfig {
     public function define(Container $di) {
         $config = JapoAppConfig::get();
         $di->set('params', $config);
+        $this->auth0Config($di, $config);
+        $this->auth0($di, $config);
+        $this->defaultLogger($di, $config);
+        $this->router($di, $config);
+        $this->authManager($di, $config);
+        $this->dbMigration($di, $config);
+    }
+
+    /**
+     * @param Container $di
+     * @param JapoAppConfig $config
+     */
+    private function dbMigration(Container $di, $config) {
+        $dbConfig = [
+            'adapter' => 'mysql',
+            'host' => $config->mysqlHost,
+            'name' => $config->databaseName,
+            'user' => $config->mysqlUser,
+            'pass' => $config->mysqlPassword,
+            'port' => $config->mysqlPort,
+            'charset' => 'utf8',
+        ];
+        $dbMigrationConfig = [
+            'paths' => [
+                'migrations' => $config->rootPath.'/db/migrations',
+                'seeds' => $config->rootPath.'/db/seeds'
+            ],
+            'environments' => [
+                'default_migration_table' => 'phinxlog',
+                'default_database' => 'development',
+                'production' => $dbConfig,
+                'development' => $dbConfig,
+            ],
+            'version_order' => 'creation'
+        ];
+        $this->createObject($di, 'dbMigration', DBMigration::class, [
+            'config' => $dbMigrationConfig,
+            'tempDir' => $config->tempDir
+        ]);
+    }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function auth0Config(Container $di, $config)
+    {
         $auth0Config = [
             'domain' => $config->auth0Domain,
             'client_id' => $config->auth0ClientId,
@@ -62,26 +110,56 @@ class JapoAppContextBuilder extends ContainerConfig {
             'persist_access_token' => true,
             'persist_refresh_token' => true
         ];
-        $di->set('auth0Config', $di->lazy(function () use($auth0Config, $config) {
-           if ($config->cliMode) {
-               $auth0Config['store'] = false;
-               $auth0Config['state_handler'] = false;
-           }
-           return $auth0Config;
+        $di->set('auth0Config', $di->lazy(function () use ($auth0Config, $config) {
+            if ($config->cliMode) {
+                $auth0Config['store'] = false;
+                $auth0Config['state_handler'] = false;
+            }
+            return $auth0Config;
         }));
+    }
+
+    /**
+     * @param Container $di
+     */
+    private function auth0(Container $di, $config)
+    {
         $this->createObject($di, 'auth0', Auth0::class, ['config' => $di->lazyGet('auth0Config')]);
-        $di->set('defaultLogger', $di->lazy(function () use($config) {
+    }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function defaultLogger(Container $di, $config)
+    {
+        $di->set('defaultLogger', $di->lazy(function () use ($config) {
             $log = new Logger('japo');
             $handler = new StreamHandler("{$config->logPath}/japo.log", constant('Monolog\Logger::' . $config->logLevel));
             $handler->pushProcessor(new UidProcessor(24));
             $log->pushHandler($handler);
             return $log;
         }));
+    }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function router(Container $di, $config)
+    {
         $this->createObject($di, 'router', Router::class, [
             'backendPath' => $config->serverPath,
             'frontendPath' => $config->homePath
         ]);
+    }
 
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function authManager(Container $di, $config)
+    {
         $this->createObject($di, 'authManager', Auth0AuthManager::class, [
             'auth0' => $di->lazyGet('auth0'),
             'router' => $di->lazyGet('router'),
@@ -90,9 +168,7 @@ class JapoAppContextBuilder extends ContainerConfig {
             'auth0ClientId' => $config->auth0ClientId,
             'auth0LogoutUri' => $config->auth0LogoutUri
         ]);
-
-
     }
-    
+
 
 }

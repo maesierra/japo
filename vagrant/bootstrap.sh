@@ -3,10 +3,18 @@
 apt-get update
 apt-get install -y apache2
 
-debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password password 293874jksdfssdfjsdhf823'
-debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password_again password 293874jksdfssdfjsdhf823'
-apt-get install -y curl mysql-server-5.6 mysql-client-5.6
+MYSQL_ROOT_PASSWORD=293874jksdfssdfjsdhf823
 
+#Mysql
+debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password password '$MYSQL_ROOT_PASSWORD
+debconf-set-selections <<< 'mysql-server-5.6 mysql-server/root_password_again password '$MYSQL_ROOT_PASSWORD
+apt-get install -y curl mysql-server-5.6 mysql-client-5.6
+db_created=$(mysql -uroot -p$MYSQL_ROOT_PASSWORD -N --raw --batch -e "select count(*) from schemata where schema_name = 'japo';" information_schema)
+echo "Checking database $db_created"
+if [ "$db_created" = "0" ] ; then
+    echo "Init db...."
+    mysql -uroot -p$MYSQL_ROOT_PASSWORD < /vagrant/vagrant/files/db.init
+fi
 apt-get install -y language-pack-en-base
 
 export LC_ALL=en_US.UTF-8 &&
@@ -17,6 +25,8 @@ apt-get update
 
 #PHP install
 apt-get install -y php5.6
+#PHP extensions
+apt-get install -y php5.6-xml php5.6-mysql php5.6-mbstring
 
 #Picky extensions that I have to compile
 apt-get install -y php5.6-dev pkg-config git

@@ -21,8 +21,9 @@ use Aura\Di\ContainerBuilder;
  * @property \Auth0\SDK\Auth0 $auth0
  * @property \Monolog\Logger $defaultLogger
  * @property \maesierra\Japo\Auth\Auth0AuthManager $authManager
+ *
+ * @property \maesierra\Japo\DB\DBMigration $dbMigration
  * @property \maesierra\Japo\Router\Router $router
-
  *
  */
 class JapoAppContext {

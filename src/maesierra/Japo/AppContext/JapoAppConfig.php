@@ -25,7 +25,17 @@ use Dotenv\Dotenv;
  * @property string $logPath
  * @property string $logLevel
  * @property $auth0ClientSecret
+ * @property string $rootPath
+ *
+ *
+ * @property string $mysqlPort
+ * @property string $mysqlHost
+ * @property string $mysqlUser
+ * @property string $mysqlPassword
+ * @property string $databaseName
+ * @property string $tempDir
  * @property string $homePath
+ *
  *
  */
 
@@ -57,6 +67,14 @@ class JapoAppConfig {
         $this->params[$param] = $value;
     }
 
+    private function getEnv($param, $default = null) {
+        $value = getenv($param);
+        if (!$value && $default) {
+            $value = $default;
+        }
+        return $value;
+    }
+
     public function getParam($param, $default = false) {
         if (!isset($this->params)) {
             $this->dotEnv = $this->dotEnv ?: new Dotenv($this->dotEnvPath);
@@ -66,13 +84,19 @@ class JapoAppConfig {
                 // Ignore if no dotenv
             }
             $params = [];
-            $params['auth0Domain'           ] = getenv('AUTH0_DOMAIN');
-            $params['auth0ClientId'         ] = getenv('AUTH0_CLIENT_ID');
-            $params['auth0ClientSecret'     ] = getenv('AUTH0_CLIENT_SECRET');
-            $params['serverPath'            ] = getenv('SERVER_PATH');
-            $params['logPath'               ] = getenv('LOG_FOLDER');
-            $params['logLevel'              ] = getenv('LOG_LEVEL');
-            $params['homePath'              ] = getenv('HOME_PATH');
+            $params['auth0Domain'           ] = $this->getEnv('AUTH0_DOMAIN');
+            $params['auth0ClientId'         ] = $this->getEnv('AUTH0_CLIENT_ID');
+            $params['auth0ClientSecret'     ] = $this->getEnv('AUTH0_CLIENT_SECRET');
+            $params['serverPath'            ] = $this->getEnv('SERVER_PATH');
+            $params['logPath'               ] = $this->getEnv('LOG_FOLDER');
+            $params['logLevel'              ] = $this->getEnv('LOG_LEVEL');
+            $params['homePath'              ] = $this->getEnv('HOME_PATH');
+            $params['tempDir'               ] = $this->getEnv('TEMP_DIR');
+            $params['mysqlHost'             ] = $this->getEnv('MYSQL_HOST', 'localhost');
+            $params['mysqlPort'             ] = $this->getEnv('MYSQL_PORT', '3306');
+            $params['mysqlUser'             ] = $this->getEnv('MYSQL_USER', 'japo');
+            $params['mysqlPassword'         ] = $this->getEnv('MYSQL_PASSWORD');
+            $params['databaseName'          ] = $this->getEnv('DATABASE_NAME', 'japo');
             if (substr($params['serverPath'], -1, 1) == '/') {
                 $params['serverPath'] = substr($params['serverPath'], 0, -1);
             }
@@ -83,7 +107,13 @@ class JapoAppConfig {
             $params['auth0RedirectUri'] = "{$params['hostUrl']}/auth.php";
             $params['auth0LogoutUri'] = "$protocol://$httpHost{$params['homePath']}";
             $params['cliMode'] = php_sapi_name() == "cli";
+            $rootPath = __DIR__ . '/../../../../';
+            $params['rootPath'] = realpath($rootPath);
+            if (!$params['tempDir']) {
+                $params['tempDir'] = realpath(sys_get_temp_dir());
+            }
             $this->params = $params;
+
         }
         return isset($this->params[$param]) ? $this->params[$param] : $default;
 

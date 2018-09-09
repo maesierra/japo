@@ -43,6 +43,14 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
         $this->assertFalse($this->appConfig->getParam('homeDir2'));
     }
 
+    public function testGetEnvParam_withDefault() {
+        $this->assertEquals('localhost', $this->appConfig->mysqlHost);
+        $this->assertEquals(3306, $this->appConfig->mysqlPort);
+        $this->assertEquals('japo', $this->appConfig->mysqlUser);
+        $this->assertEquals('japo', $this->appConfig->databaseName);
+    }
+
+
     public function testGetParam_DefaultValue() {
         $this->assertEquals("aa", $this->appConfig->getParam('homeDir2', "aa"));
     }
@@ -94,6 +102,16 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
 
     public function testCliMode() {
         $this->assertTrue($this->appConfig->cliMode);
+    }
+
+    public function testRootPath() {
+        $rootPath = realpath(__DIR__.'../../../../../');
+        $this->assertEquals($rootPath, $this->appConfig->rootPath);
+    }
+
+    public function testTempDir() {
+        $tempDir = realpath(sys_get_temp_dir());
+        $this->assertEquals($tempDir, $this->appConfig->tempDir);
     }
 
 

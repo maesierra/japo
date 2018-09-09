@@ -10,6 +10,7 @@ namespace maesierra\Japo\AppContext;
 
 use Auth0\SDK\Auth0;
 use maesierra\Japo\Auth\Auth0AuthManager;
+use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\Router\Router;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -106,6 +107,13 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->config->auth0ClientId, $authManager->auth0ClientId);
         $this->assertEquals($this->config->auth0LogoutUri, $authManager->auth0LogoutUri);
         $this->assertSame($authManager, $this->appContext->authManager);
+    }
+
+    public function testDBMigration() {
+        $dbMigration = $this->appContext->dbMigration;
+        $this->assertInstanceOf(DBMigration::class, $dbMigration);
+        $this->assertEquals($this->config->tempDir, $dbMigration->tempDir);
+        $this->assertSame($dbMigration, $this->appContext->dbMigration);
     }
     protected function tearDown() {
         JapoAppConfig::clearInstance();
