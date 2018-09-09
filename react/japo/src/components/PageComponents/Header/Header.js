@@ -83,8 +83,9 @@ class Header extends React.Component {
                 <div className="col-sm-1">
                     <NavMenu authorized={this.props.authorized}/>
                 </div>
-                <div className="col-sm-4 col-sm-offset-7">
-                    <a className="logo" href="/">japo</a>
+                <div className="col-sm-4 col-sm-offset-7 text-right">
+                    <a className="logo" href="">japo</a>
+                    <a className="logo" href=""><span lang="jp">ハポ</span></a>
                 </div>
             </nav>
         );
