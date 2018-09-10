@@ -9,8 +9,10 @@
 namespace maesierra\Japo\AppContext;
 
 use Auth0\SDK\Auth0;
+use Doctrine\ORM\EntityManager;
 use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\DB\DBMigration;
+use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Router\Router;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -115,6 +117,21 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->config->tempDir, $dbMigration->tempDir);
         $this->assertSame($dbMigration, $this->appContext->dbMigration);
     }
+
+    public function testEntityManager() {
+        $entityManager = $this->appContext->entityManager;
+        $this->assertInstanceOf(EntityManager::class, $entityManager);
+        $this->assertSame($entityManager, $this->appContext->entityManager);
+    }
+
+    public function testKanjiRepository() {
+        $kanjiRepository = $this->appContext->kanjiRepository;
+        $this->assertInstanceOf(KanjiRepository::class, $kanjiRepository);
+        $this->assertSame($this->appContext->entityManager, $kanjiRepository->entityManager);
+        $this->assertSame($this->appContext->defaultLogger, $kanjiRepository->logger);
+        $this->assertSame($kanjiRepository, $this->appContext->kanjiRepository);
+    }
+
     protected function tearDown() {
         JapoAppConfig::clearInstance();
         JapoAppContext::clearInstance();

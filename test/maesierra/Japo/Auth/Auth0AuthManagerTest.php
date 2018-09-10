@@ -108,6 +108,21 @@ t" => "2018-09-02T21:01:02.750Z"];
         $this->assertTrue($this->authManager->isAuthenticated());
     }
 
+    public function testIsAuthenticated_true_withCallback() {
+        $remoteAddr = "12.78.39.234";
+        $httpUserAgent = 'firefox';
+        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
+        $userInfo = ['user' => 'user'];
+        $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
+        $this->logger->expects($this->once())->method('warn', "User auth!!!");
+        $this->authManager->isAuthenticated(function () {
+            /** @var Logger $logger */
+            $logger = $this->logger;
+            $logger->warn('User auth!!!');
+        });
+    }
+
     public function testIsAuthenticated_false() {
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
@@ -117,6 +132,20 @@ t" => "2018-09-02T21:01:02.750Z"];
         $this->logger->expects($this->once())->method('info', "User Auth from host: $remoteAddr user agent:  $httpUserAgent => Unauthorized.");
         $this->router->expects($this->once())->method('unauthorized');
         $this->assertFalse($this->authManager->isAuthenticated());
+    }
+
+    public function testIsAuthenticated_false_withCallback() {
+        $remoteAddr = "12.78.39.234";
+        $httpUserAgent = 'firefox';
+        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
+        $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
+        $this->logger->expects($this->never())->method('warn', "User auth!!!");
+        $this->authManager->isAuthenticated(function () {
+            /** @var Logger $logger */
+            $logger = $this->logger;
+            $logger->warn('User auth!!!');
+        });
     }
 
     public function testLogout_userLoggedIn() {

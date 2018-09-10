@@ -12,8 +12,14 @@ namespace maesierra\Japo\AppContext;
 use Aura\Di\Container;
 use Aura\Di\ContainerConfig;
 use Auth0\SDK\Auth0;
+use Doctrine\Common\Cache\ApcCache;
+use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Setup;
 use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\DB\DBMigration;
+use maesierra\Japo\DB\KanjiRepository;
+use maesierra\Japo\Entity\KanjiCatalog;
 use maesierra\Japo\Router\Router;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -58,6 +64,8 @@ class JapoAppContextBuilder extends ContainerConfig {
         $this->router($di, $config);
         $this->authManager($di, $config);
         $this->dbMigration($di, $config);
+        $this->entityManager($di, $config);
+        $this->kanjiRepository($di, $config);
     }
 
     /**
@@ -170,5 +178,46 @@ class JapoAppContextBuilder extends ContainerConfig {
         ]);
     }
 
+    /**
+     * @param Container $di
+     * @param $config JapoAppConfig
+     */
+    private function entityManager(Container $di, $config) {
+        $di->set('entityManager', $di->lazy(function() use($config) {
+            $reflector = new \ReflectionClass(KanjiCatalog::class);
+            $doctrineConfig = Setup::createAnnotationMetadataConfiguration(
+                [dirname($reflector->getFileName())]
+            );
+            $cache = new ApcCache();
+            $doctrineConfig->setAutoGenerateProxyClasses(true);
+            $doctrineConfig->setQueryCacheImpl($cache);
+            $doctrineConfig->setResultCacheImpl($cache);
+            $entityManager = EntityManager::create([
+                "driver" => "pdo_mysql",
+                "dbname" => $config->databaseName,
+                "user" => $config->mysqlUser,
+                "password" => $config->mysqlPassword,
+                "host" => $config->mysqlHost,
+                "port" => $config->mysqlPort,
+                "charset" => 'utf8'
+            ],
+                $doctrineConfig
+            );
+            $entityManager->getConnection()->getConfiguration()->setSQLLogger(new DebugStack());
+            return $entityManager;
+        }));
+    }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function kanjiRepository(Container $di, $config)
+    {
+        $this->createObject($di, 'kanjiRepository', KanjiRepository::class, [
+            'entityManager' => $di->lazyGet('entityManager'),
+            'logger' => $di->lazyGet('defaultLogger')
+        ]);
+    }
 
 }

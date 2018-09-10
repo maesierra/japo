@@ -48,7 +48,10 @@ class Auth0AuthManager {
     public function login() {
         $userInfo = $this->auth0->getUser();
         if (!$userInfo) {
-            $this->logger->info("Login request from host: {$_SERVER['REMOTE_ADDR']} referer: {$_SERVER['HTTP_REFERER']} user agent: {$_SERVER['HTTP_USER_AGENT']}.");
+            $remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
+            $referrer =  isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'no referrer';
+            $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown';
+            $this->logger->info("Login request from host: $remoteAddr referrer: $referrer user agent: $userAgent.");
             $this->auth0->login();
         } else {
             $this->router->homeRedirect();
@@ -76,9 +79,10 @@ class Auth0AuthManager {
 
     /**
      * Checks if the user is authenticated, doing the unauthorized flow.
+     * @param $callback callable only will be called on successful authentication
      * @return bool true if there is an authenticated user in the session
      */
-    public function isAuthenticated() {
+    public function isAuthenticated($callback = null) {
         $logInfo = "User Auth from host: {$_SERVER['REMOTE_ADDR']} user agent: {$_SERVER['HTTP_USER_AGENT']}";
         $authenticated = $this->auth0->getUser() != null;
         if (!$authenticated) {
@@ -86,6 +90,9 @@ class Auth0AuthManager {
             $this->router->unauthorized();
         } else {
             $this->logger->info($logInfo." => Authorized");
+            if ($callback) {
+                $callback();
+            }
         }
         return $authenticated;
     }

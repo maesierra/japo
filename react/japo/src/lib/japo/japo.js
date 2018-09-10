@@ -53,27 +53,11 @@ Japo.logout = () => {
 
 Japo.kanjiCatalogs = () => {
     return new Promise((resolve, reject) => {
-        /*
-        makeRequest('/japo/api/kanji_catalogs.php').then((response) => {
+
+        makeRequest('/api/japo/kanji_catalogs.php').then((response) => {
             resolve(response.json());
         })
-            .catch(reject);*/
-        resolve([{"id": "0", "name": "Basic Kanji Book I", "deprecated": false, "slug": "basic-kanji-book"}, {
-            "id": "2",
-            "name": "Ky\u014diku kanji",
-            "deprecated": false,
-            "slug": "kyoiku-kanji"
-        }, {"id": "1", "name": "JLPT", "deprecated": false, "slug": "jlpt"}, {
-            "id": "3",
-            "name": "Ky\u014diku kanji (higher levels)",
-            "deprecated": true,
-            "slug": null
-        }, {"id": "4", "name": "Minna no nihongo 2", "deprecated": false, "slug": "minna-no-nihongo-2"}, {
-            "id": "5",
-            "name": "Intermediate Kanji Book",
-            "deprecated": false,
-            "slug": "ikb"
-        }])
+        .catch(reject);
     });
 
 };

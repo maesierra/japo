@@ -55,7 +55,7 @@ class KanjiDetails extends Component {
             this.loadKanji();
         }
         Japo.kanjiCatalogs().then(catalogs => {
-            this.setState(Object.assign({}, this.state, {kanjiCatalogs: catalogs.filter(c => !c.deprecated)}));
+            this.setState(Object.assign({}, this.state, {kanjiCatalogs: catalogs}));
         });
     }
 

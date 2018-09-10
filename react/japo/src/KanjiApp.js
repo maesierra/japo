@@ -92,7 +92,7 @@ class KanjiApp extends Component {
             if (authorized) {
                 Japo.kanjiCatalogs().then(catalogs => {
                     this.setState(Object.assign({}, this.state, {
-                        catalogs: catalogs.filter(c => !c.deprecated),
+                        catalogs: catalogs,
                         authorized: true
                     }));
                 });

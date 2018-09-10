@@ -50,13 +50,33 @@ if ! php -m | grep xdebug ; then
     cd ..
 fi
 
+if ! php -m | grep apcu ; then
+    wget https://pecl.php.net/get/apcu-4.0.11.tgz
+    gunzip -c apcu-4.0.11.tgz | tar xf -
+    cd apcu-4.0.11/
+    phpize
+    ./configure
+    make
+    sudo make install
+    echo 'extension="apcu.so"' > apcu.ini
+    echo 'apc.enabled=1' >> apcu.ini
+    echo 'apc.shm_size=32M' >> apcu.ini
+    echo 'apc.ttl=7200' >> apcu.ini
+    echo 'apc.enable_cli = 1' >> apcu.ini
+    sudo mv apcu.ini /etc/php/5.6/mods-available/apcu.ini
+    sudo ln -s /etc/php/5.6/mods-available/apcu.ini /etc/php/5.6/apache2/conf.d/20-apcu.ini
+    sudo ln -s /etc/php/5.6/mods-available/apcu.ini /etc/php/5.6/cli/conf.d/20-apcu.ini
+    cd ..
+fi
+
 a2enmod rewrite
 a2enmod ssl
 
-if ! [ -L /etc/apache2/sites-enabled/002-default-ssl.conf ]; then
-    ln -s /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/002-default-ssl.conf
-    sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\/react\/japo\/build\n               <Directory "\/vagrant\/react\/japo\/build">\n                  Require all granted\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
-    sed -i'' 's/<\/VirtualHost>/        Alias \/api\/japo \/vagrant\/api\n               <Directory "\/vagrant\/api">\n                  Require all granted\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+if [  ! -f /etc/apache2/sites-enabled/002-default-ssl.conf ]; then
+    echo "Setting up apache SSL config to /etc/apache2/sites-enabled/002-default-ssl.conf"
+    cp /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\/react\/japo\/build\n               <Directory "\/vagrant\/react\/japo\/build">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'' 's/<\/VirtualHost>/        Alias \/api\/japo \/vagrant\/api\n               <Directory "\/vagrant\/api">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
 fi
 
 if [ ! -d "/var/log/japo" ]; then

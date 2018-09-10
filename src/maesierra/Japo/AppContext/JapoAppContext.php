@@ -16,14 +16,23 @@ use Aura\Di\ContainerBuilder;
  * Simple DI to have everything under control
  * @package maesierra\PiControl\JapoAppContext
  *
- * @property  $hello
+ *
  * @property array $auth0Config
+ *
  * @property \Auth0\SDK\Auth0 $auth0
+ *
  * @property \Monolog\Logger $defaultLogger
+ *
  * @property \maesierra\Japo\Auth\Auth0AuthManager $authManager
  *
+ * @property \Doctrine\ORM\EntityManager $entityManager
+ *
  * @property \maesierra\Japo\DB\DBMigration $dbMigration
+ *
+ * @property \maesierra\Japo\DB\KanjiRepository $kanjiRepository
+
  * @property \maesierra\Japo\Router\Router $router
+ *
  *
  */
 class JapoAppContext {
