@@ -16,5 +16,10 @@ class KanjiCatalogsData extends AbstractMigration
                 ['name' => 'Intermediate Kanji Book', 'slug' => 'ikb'],
             ])
         ->save();
+        $this->getQueryBuilder()->update('kanji_catalogs')->set('id', 0)->where(['slug' => 'basic-kanji-book'])->execute();
+        $this->getQueryBuilder()->update('kanji_catalogs')->set('id', 1)->where(['slug' => 'jlpt'])->execute();
+        $this->getQueryBuilder()->update('kanji_catalogs')->set('id', 2)->where(['slug' => 'kyoiku-kanji'])->execute();
+        $this->getQueryBuilder()->update('kanji_catalogs')->set('id', 4)->where(['slug' =>  'minna-no-nihongo-2'])->execute();
+        $this->getQueryBuilder()->update('kanji_catalogs')->set('id', 5)->where(['slug' => 'ikb'])->execute();
     }
 }
