@@ -30,10 +30,6 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
     /** @var  \PHPUnit_Framework_MockObject_MockObject */
     private $logger;
 
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
-    private $router;
-
-
     public function setUp() {
         $this->domain = "auth0.domain.com";
         $this->clientId = "8329823947";
@@ -42,34 +38,21 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
         $auth0 = $this->createMock(Auth0::class);
         /** @var Logger $logger */
         $logger = $this->createMock(Logger::class);
-        /** @var Router $router */
-        $router = $this->createMock(Router::class);
-        $this->authManager = new Auth0AuthManager($auth0, $router, $this->domain, $this->clientId, $this->logoutUrl, $logger);
+        $this->authManager = new Auth0AuthManager($auth0, $this->domain, $this->clientId, $this->logoutUrl, $logger);
         $this->auth0 = $auth0;
         $this->logger = $logger;
-        $this->router = $router;
     }
 
     public function testLoginRedirect_userNotLoggedIn() {
         $this->auth0->expects($this->once())->method('login');
         $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
-        $remoteAddr = "12.78.39.234";
-        $httpReferer = 'https://myreferrer';
-        $httpUserAgent = 'firefox';
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_REFERER'] = $httpReferer;
-        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
-        $this->logger->expects($this->once())->method('info', "Login request from host: $remoteAddr referer: $httpReferer user agent:  $httpUserAgent.");
-        $this->router->expects($this->never())->method('homeRedirect');
-        $this->authManager->login();
+        $this->assertTrue($this->authManager->login());
     }
 
     public function testLoginRedirect_userLoggedIn() {
         $this->auth0->expects($this->never())->method('login');
         $this->auth0->expects($this->once())->method('getUser')->willReturn(['user' => 'user']);
-        $this->logger->expects($this->never())->method('info');
-        $this->router->expects($this->once())->method('homeRedirect');
-        $this->authManager->login();
+        $this->assertFalse($this->authManager->login());
     }
 
     public function testGetUser() {
@@ -91,78 +74,49 @@ t" => "2018-09-02T21:01:02.750Z"];
     public function testAuthCallback() {
         $userInfo = ['user' => 'user'];
         $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
-        $this->logger->expects($this->once())->method('info', "User ".json_encode($userInfo)." authenticated successfully.");
-        $this->router->expects($this->once())->method('homeRedirect');
+        $this->logger->expects($this->once())->method('info')->with("User ".json_encode($userInfo)." authenticated successfully.");
         $this->authManager->authCallback();
     }
 
+    /**
+     * @throws \Auth0\SDK\Exception\ApiException
+     * @throws \Auth0\SDK\Exception\CoreException
+     */
     public function testIsAuthenticated_true() {
-        $remoteAddr = "12.78.39.234";
-        $httpUserAgent = 'firefox';
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
         $userInfo = ['user' => 'user'];
         $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
-        $this->logger->expects($this->once())->method('info', "User Auth from host: $remoteAddr user agent:  $httpUserAgent => Authorized.");
-        $this->router->expects($this->never())->method('unauthorized');
         $this->assertTrue($this->authManager->isAuthenticated());
     }
 
-    public function testIsAuthenticated_true_withCallback() {
-        $remoteAddr = "12.78.39.234";
-        $httpUserAgent = 'firefox';
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
-        $userInfo = ['user' => 'user'];
-        $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
-        $this->logger->expects($this->once())->method('warn', "User auth!!!");
-        $this->authManager->isAuthenticated(function () {
-            /** @var Logger $logger */
-            $logger = $this->logger;
-            $logger->warn('User auth!!!');
-        });
-    }
-
+    /**
+     * @throws \Auth0\SDK\Exception\ApiException
+     * @throws \Auth0\SDK\Exception\CoreException
+     */
     public function testIsAuthenticated_false() {
-        $remoteAddr = "12.78.39.234";
-        $httpUserAgent = 'firefox';
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
         $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
-        $this->logger->expects($this->once())->method('info', "User Auth from host: $remoteAddr user agent:  $httpUserAgent => Unauthorized.");
-        $this->router->expects($this->once())->method('unauthorized');
         $this->assertFalse($this->authManager->isAuthenticated());
     }
 
-    public function testIsAuthenticated_false_withCallback() {
-        $remoteAddr = "12.78.39.234";
-        $httpUserAgent = 'firefox';
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_USER_AGENT'] = $httpUserAgent;
-        $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
-        $this->logger->expects($this->never())->method('warn', "User auth!!!");
-        $this->authManager->isAuthenticated(function () {
-            /** @var Logger $logger */
-            $logger = $this->logger;
-            $logger->warn('User auth!!!');
-        });
-    }
 
     public function testLogout_userLoggedIn() {
-        $userInfo = ['email' => 'mae@maesierra.net'];
+        $userInfo = ['name' => 'mae@maesierra.net'];
         $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
         $this->auth0->expects($this->once())->method('logout');
-        $this->logger->expects($this->once())->method('info', "User mae@maesierra.net logged out.");
-        $this->router->expects($this->once())->method('redirectTo')->with("http://$this->domain/v2/logout?client_id=$this->clientId&returnTo=$this->logoutUrl");
-        $this->authManager->logout();
+        $this->logger->expects($this->once())->method('info')->with("User mae@maesierra.net logged out.");
+        $this->assertEquals(
+            "http://$this->domain/v2/logout?client_id=$this->clientId&returnTo=$this->logoutUrl",
+            $this->authManager->logout()
+        );
     }
 
     public function testLogout_userNotLoggedIn() {
         $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
         $this->auth0->expects($this->never())->method('logout');
-        $this->router->expects($this->never())->method('redirectTo');
-        $this->router->expects($this->once())->method('homeRedirect');
-        $this->authManager->logout();
+        $this->logger->expects($this->never())->method('info');
+        $this->assertEquals(
+            '',
+            $this->authManager->logout()
+        );
     }
 
 }

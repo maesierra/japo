@@ -68,12 +68,12 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     public function testAuth0RedirectUri() {
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('https://localhost:443/api/japo/auth.php', $this->appConfig->auth0RedirectUri);
+        $this->assertEquals('https://localhost:443/api/japo/auth/auth', $this->appConfig->auth0RedirectUri);
     }
 
     public function testAuth0RedirectUri_noHttps() {
         $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('http://localhost:443/api/japo/auth.php', $this->appConfig->auth0RedirectUri);
+        $this->assertEquals('http://localhost:443/api/japo/auth/auth', $this->appConfig->auth0RedirectUri);
     }
 
     public function testAuth0LogoutUri() {
@@ -105,7 +105,8 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testRootPath() {
-        $rootPath = realpath(__DIR__.'../../../../../');
+        $path = __DIR__ . '/../../../../';
+        $rootPath = realpath($path);
         $this->assertEquals($rootPath, $this->appConfig->rootPath);
     }
 

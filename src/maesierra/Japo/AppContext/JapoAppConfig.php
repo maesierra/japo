@@ -104,7 +104,7 @@ class JapoAppConfig {
             $httpsEnabled = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
             $protocol = $httpsEnabled ? "https" : "http";
             $params['hostUrl'] = "$protocol://$httpHost{$params['serverPath']}";
-            $params['auth0RedirectUri'] = "{$params['hostUrl']}/auth.php";
+            $params['auth0RedirectUri'] = "{$params['hostUrl']}/auth/auth";
             $params['auth0LogoutUri'] = "$protocol://$httpHost{$params['homePath']}";
             $params['cliMode'] = php_sapi_name() == "cli";
             $rootPath = __DIR__ . '/../../../../';

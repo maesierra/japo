@@ -4,4 +4,4 @@
 require __DIR__ . '/../vendor/autoload.php';
 use \maesierra\Japo\AppContext\JapoAppContext;
 
-JapoAppContext::get()->dbMigration->run();
+JapoAppContext::context()->dbMigration->run();

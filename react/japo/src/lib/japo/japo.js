@@ -30,7 +30,7 @@ function makeRequest(path, params, options) {
 Japo.isAuthorized = () => {
     return new Promise((resolve, reject) => {
         makeRequest(
-            '/api/japo/index.php',
+            '/api/japo/',
             {},
             {cache: 'no-cache'}
         ).then((response) => {
@@ -43,18 +43,18 @@ Japo.isAuthorized = () => {
 };
 
 Japo.login = () => {
-    document.location.href = serverUrl + '/api/japo/login.php';
+    document.location.href = serverUrl + '/api/japo/auth/login';
 };
 
 Japo.logout = () => {
-    document.location.href = serverUrl + '/api/japo/logout.php';
+    document.location.href = serverUrl + '/api/japo/auth/logout';
 };
 
 
 Japo.kanjiCatalogs = () => {
     return new Promise((resolve, reject) => {
 
-        makeRequest('/api/japo/kanji_catalogs.php').then((response) => {
+        makeRequest('/api/japo/kanji/catalogs').then((response) => {
             resolve(response.json());
         })
         .catch(reject);

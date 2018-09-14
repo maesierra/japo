@@ -10,10 +10,11 @@ namespace maesierra\Japo\AppContext;
 
 use Auth0\SDK\Auth0;
 use Doctrine\ORM\EntityManager;
+use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\DB\KanjiRepository;
-use maesierra\Japo\Router\Router;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
@@ -32,7 +33,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_HOST']  = 'localhost:443';
         $this->config = JapoAppConfig::get(__DIR__);
-        $this->appContext = JapoAppContext::get();
+        $this->appContext = JapoAppContext::context();
 
     }
 
@@ -91,19 +92,12 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
 
     }
 
-    public function testRouter() {
-        $router = $this->appContext->router;
-        $this->assertInstanceOf(Router::class, $router);
-        $this->assertEquals($this->config->serverPath, $router->backendPath);
-        $this->assertEquals($this->config->homePath, $router->frontendPath);
-        $this->assertSame($router, $this->appContext->router);
-    }
 
     public function testAuthManager() {
+        /** @var Auth0AuthManager $authManager */
         $authManager = $this->appContext->authManager;
         $this->assertInstanceOf(Auth0AuthManager::class, $authManager);
         $this->assertSame($this->appContext->auth0, $authManager->auth0);
-        $this->assertSame($this->appContext->router, $authManager->router);
         $this->assertSame($this->appContext->defaultLogger, $authManager->logger);
         $this->assertEquals($this->config->auth0Domain, $authManager->auth0Domain);
         $this->assertEquals($this->config->auth0ClientId, $authManager->auth0ClientId);
@@ -130,6 +124,30 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($this->appContext->entityManager, $kanjiRepository->entityManager);
         $this->assertSame($this->appContext->defaultLogger, $kanjiRepository->logger);
         $this->assertSame($kanjiRepository, $this->appContext->kanjiRepository);
+    }
+
+    public function testAuthController() {
+        /** @var AuthController $authController */
+        $authController  = $this->appContext->get(AuthController::class);
+        $this->assertInstanceOf(AuthController::class, $authController);
+        $this->assertSame($this->appContext->defaultLogger, $authController->logger);
+        $this->assertSame($this->config, $authController->config);
+        $this->assertSame($this->appContext->authManager, $authController->authManager);
+        $this->assertSame($authController, $this->appContext->get(AuthController::class));
+    }
+
+    public function testKanjiController() {
+        /** @var KanjiController $kanjiController */
+        $kanjiController  = $this->appContext->get(KanjiController::class);
+        $this->assertInstanceOf(KanjiController::class, $kanjiController);
+        $this->assertSame($this->appContext->defaultLogger, $kanjiController->logger);
+        $this->assertSame($this->config, $kanjiController->config);
+        $this->assertSame($this->appContext->kanjiRepository, $kanjiController->kanjiRepository);
+        $this->assertSame($kanjiController, $this->appContext->get(KanjiController::class));
+    }
+
+    public function testConfig() {
+        $this->assertEquals('auth0Domain',$this->appContext->config->auth0Domain);
     }
 
     protected function tearDown() {

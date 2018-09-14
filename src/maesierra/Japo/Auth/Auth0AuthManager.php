@@ -10,10 +10,10 @@ namespace maesierra\Japo\Auth;
 
 
 use Auth0\SDK\Auth0;
-use maesierra\Japo\Router\Router;
 use Monolog\Logger;
 
-class Auth0AuthManager {
+class Auth0AuthManager implements AuthManager
+{
 
     /** @var  Auth0 */
     public $auth0;
@@ -21,25 +21,20 @@ class Auth0AuthManager {
     /** @var  Logger */
     public $logger;
 
-    /** @var  Router */
-    public $router;
-
     public $auth0Domain;
     public $auth0ClientId;
     public $auth0LogoutUri;
 
     /**
      * @param Auth0 $auth0
-     * @param Router $router
-     * @param Logger $logger
      * @param string $auth0Domain
      * @param string $auth0ClientId
      * @param string $auth0LogoutUri
+     * @param Logger $logger
      */
-    public function __construct($auth0, $router, $auth0Domain, $auth0ClientId, $auth0LogoutUri, $logger) {
+    public function __construct($auth0, $auth0Domain, $auth0ClientId, $auth0LogoutUri, $logger) {
         $this->auth0 = $auth0;
         $this->logger = $logger;
-        $this->router = $router;
         $this->auth0Domain = $auth0Domain;
         $this->auth0ClientId = $auth0ClientId;
         $this->auth0LogoutUri = $auth0LogoutUri;
@@ -48,20 +43,16 @@ class Auth0AuthManager {
     public function login() {
         $userInfo = $this->auth0->getUser();
         if (!$userInfo) {
-            $remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
-            $referrer =  isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : 'no referrer';
-            $userAgent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'unknown';
-            $this->logger->info("Login request from host: $remoteAddr referrer: $referrer user agent: $userAgent.");
             $this->auth0->login();
+            return true;
         } else {
-            $this->router->homeRedirect();
+            return false;
         }
     }
 
     public function authCallback() {
         $userInfo = $this->auth0->getUser();
         $this->logger->info("User ".json_encode($userInfo)." authenticated successfully.");
-        $this->router->homeRedirect();
     }
 
     /**
@@ -79,37 +70,27 @@ class Auth0AuthManager {
 
     /**
      * Checks if the user is authenticated, doing the unauthorized flow.
-     * @param $callback callable only will be called on successful authentication
      * @return bool true if there is an authenticated user in the session
+     * @throws \Auth0\SDK\Exception\ApiException
+     * @throws \Auth0\SDK\Exception\CoreException
      */
-    public function isAuthenticated($callback = null) {
-        $logInfo = "User Auth from host: {$_SERVER['REMOTE_ADDR']} user agent: {$_SERVER['HTTP_USER_AGENT']}";
-        $authenticated = $this->auth0->getUser() != null;
-        if (!$authenticated) {
-            $this->logger->info($logInfo." => Unauthorized");
-            $this->router->unauthorized();
-        } else {
-            $this->logger->info($logInfo." => Authorized");
-            if ($callback) {
-                $callback();
-            }
-        }
-        return $authenticated;
+    public function isAuthenticated() {
+        return $this->auth0->getUser() != null;
     }
 
     /**
      * Logs out the current user
+     * @return string logout url or false if the user is not logged in
      */
     public function logout() {
         $user = $this->getUser();
         if ($user) {
             $this->auth0->logout();
             $logoutUrl = sprintf('http://%s/v2/logout?client_id=%s&returnTo=%s', $this->auth0Domain, $this->auth0ClientId, $this->auth0LogoutUri);
-            $this->router->redirectTo($logoutUrl);
-            $this->logger->info("User {$user->email} logged out");
-        } else {
-            $this->router->homeRedirect();
+            $this->logger->info("User {$user->email} logged out.");
+            return $logoutUrl;
         }
+        return '';
     }
 
 

@@ -16,14 +16,16 @@ use Doctrine\Common\Cache\ApcCache;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
+use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Entity\KanjiCatalog;
-use maesierra\Japo\Router\Router;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
+use Slim\CallableResolver;
 
 class JapoAppContextBuilder extends ContainerConfig {
 
@@ -58,14 +60,17 @@ class JapoAppContextBuilder extends ContainerConfig {
     public function define(Container $di) {
         $config = JapoAppConfig::get();
         $di->set('params', $config);
+        $di->set('config', $config);
         $this->auth0Config($di, $config);
         $this->auth0($di, $config);
         $this->defaultLogger($di, $config);
-        $this->router($di, $config);
         $this->authManager($di, $config);
         $this->dbMigration($di, $config);
         $this->entityManager($di, $config);
         $this->kanjiRepository($di, $config);
+        $this->authController($di, $config);
+        $this->kanjiController($di, $config);
+        $this->slimCoreServices($di);
     }
 
     /**
@@ -154,23 +159,10 @@ class JapoAppContextBuilder extends ContainerConfig {
      * @param Container $di
      * @param $config
      */
-    private function router(Container $di, $config)
-    {
-        $this->createObject($di, 'router', Router::class, [
-            'backendPath' => $config->serverPath,
-            'frontendPath' => $config->homePath
-        ]);
-    }
-
-    /**
-     * @param Container $di
-     * @param $config
-     */
     private function authManager(Container $di, $config)
     {
         $this->createObject($di, 'authManager', Auth0AuthManager::class, [
             'auth0' => $di->lazyGet('auth0'),
-            'router' => $di->lazyGet('router'),
             'logger' => $di->lazyGet('defaultLogger'),
             'auth0Domain' => $config->auth0Domain,
             'auth0ClientId' => $config->auth0ClientId,
@@ -218,6 +210,50 @@ class JapoAppContextBuilder extends ContainerConfig {
             'entityManager' => $di->lazyGet('entityManager'),
             'logger' => $di->lazyGet('defaultLogger')
         ]);
+    }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function authController(Container $di, $config)
+    {
+        $this->createObject($di, AuthController::class, AuthController::class, [
+            'authManager' => $di->lazyGet('authManager'),
+            'logger' => $di->lazyGet('defaultLogger'),
+            'config' => $di->lazyGet('config')
+        ]);
+    }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function kanjiController(Container $di, $config)
+    {
+        $this->createObject($di, KanjiController::class, KanjiController::class, [
+            'kanjiRepository' => $di->lazyGet('kanjiRepository'),
+            'logger' => $di->lazyGet('defaultLogger'),
+            'config' => $di->lazyGet('config')
+        ]);
+    }
+    /**
+     * @param Container $di
+     * @throws \Aura\Di\Exception\ContainerLocked
+     * @throws \Aura\Di\Exception\ServiceNotObject
+     */
+    private function slimCoreServices(Container $di)
+    {
+        $slimContainer = new \Slim\Container();
+        $slimCoreServices = ['settings', 'environment', 'request', 'response', 'router', 'foundHandler', 'phpErrorHandler', 'errorHandler', 'notFoundHandler', 'notAllowedHandler'];
+        foreach ($slimCoreServices as $service) {
+            $di->set($service, $di->lazy(function () use ($slimContainer, $service) {
+                return $slimContainer->get($service);
+            }));
+        }
+        $di->set('callableResolver', $di->lazy(function () use ($di) {
+            return new CallableResolver($di);
+        }));
     }
 
 }

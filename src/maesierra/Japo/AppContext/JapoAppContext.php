@@ -10,6 +10,10 @@
 namespace maesierra\Japo\AppContext;
 use Aura\Di\Container;
 use Aura\Di\ContainerBuilder;
+use maesierra\Japo\Auth\AuthManager;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /**
  * Class JapoAppContext
@@ -23,19 +27,18 @@ use Aura\Di\ContainerBuilder;
  *
  * @property \Monolog\Logger $defaultLogger
  *
- * @property \maesierra\Japo\Auth\Auth0AuthManager $authManager
+ * @property AuthManager $authManager
  *
  * @property \Doctrine\ORM\EntityManager $entityManager
  *
  * @property \maesierra\Japo\DB\DBMigration $dbMigration
  *
  * @property \maesierra\Japo\DB\KanjiRepository $kanjiRepository
-
- * @property \maesierra\Japo\Router\Router $router
  *
+ * @property \maesierra\Japo\AppContext\JapoAppConfig $config
  *
  */
-class JapoAppContext {
+class JapoAppContext implements ContainerInterface {
 
 
 
@@ -63,7 +66,7 @@ class JapoAppContext {
     /**
      * @return JapoAppContext
      */
-    public static function get() {
+    public static function context() {
         if (!self::$instance) {
             self::$instance = new JapoAppContext();
         }
@@ -74,5 +77,22 @@ class JapoAppContext {
         self::$instance = null;
     }
 
+    public function has($id) {
+        return $this->di->has($id);
+    }
+
+    /**
+     * Finds an entry of the container by its identifier and returns it.
+     *
+     * @param string $id Identifier of the entry to look for.
+     *
+     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws ContainerExceptionInterface Error while retrieving the entry.
+     *
+     * @return mixed Entry.
+     */
+    public function get($id) {
+        return $this->di->get($id);
+    }
 }
 
