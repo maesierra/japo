@@ -19,6 +19,7 @@ use Doctrine\ORM\Tools\Setup;
 use maesierra\Japo\App\Controller\AuthController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
+use maesierra\Japo\Auth\NoLoginAuthManager;
 use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Entity\KanjiCatalog;
@@ -157,17 +158,23 @@ class JapoAppContextBuilder extends ContainerConfig {
 
     /**
      * @param Container $di
-     * @param $config
+     * @param $config JapoAppConfig
      */
     private function authManager(Container $di, $config)
     {
-        $this->createObject($di, 'authManager', Auth0AuthManager::class, [
-            'auth0' => $di->lazyGet('auth0'),
-            'logger' => $di->lazyGet('defaultLogger'),
-            'auth0Domain' => $config->auth0Domain,
-            'auth0ClientId' => $config->auth0ClientId,
-            'auth0LogoutUri' => $config->auth0LogoutUri
-        ]);
+        switch ($config->authManager) {
+            case NoLoginAuthManager::class:
+                $this->createObject($di, 'authManager', NoLoginAuthManager::class, []);
+                break;
+            case Auth0AuthManager::class:
+                $this->createObject($di, 'authManager', Auth0AuthManager::class, [
+                    'auth0' => $di->lazyGet('auth0'),
+                    'logger' => $di->lazyGet('defaultLogger'),
+                    'auth0Domain' => $config->auth0Domain,
+                    'auth0ClientId' => $config->auth0ClientId,
+                    'auth0LogoutUri' => $config->auth0LogoutUri
+                ]);
+        }
     }
 
     /**

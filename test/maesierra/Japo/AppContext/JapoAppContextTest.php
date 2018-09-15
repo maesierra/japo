@@ -13,6 +13,7 @@ use Doctrine\ORM\EntityManager;
 use maesierra\Japo\App\Controller\AuthController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
+use maesierra\Japo\Auth\NoLoginAuthManager;
 use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\DB\KanjiRepository;
 use Monolog\Handler\StreamHandler;
@@ -33,11 +34,12 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_HOST']  = 'localhost:443';
         $this->config = JapoAppConfig::get(__DIR__);
-        $this->appContext = JapoAppContext::context();
+
 
     }
 
     public function testAuth0Config_nonCli() {
+        $this->buildContext();
         $this->config->setParam('cliMode', false);
         $auth0Config = $this->appContext->auth0Config;
         $this->assertTrue(is_array($auth0Config));
@@ -57,6 +59,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testAuth0Config_cliMode() {
+        $this->buildContext();
         $auth0Config = $this->appContext->auth0Config;
         $this->assertTrue(is_array($auth0Config));
         $this->assertEquals($auth0Config, [
@@ -76,12 +79,14 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testAuth0() {
+        $this->buildContext();
         $auth0 = $this->appContext->auth0;
         $this->assertInstanceOf(Auth0::class, $auth0);
         $this->assertSame($auth0, $this->appContext->auth0);
     }
 
     public function testLogger() {
+        $this->buildContext();
         $defaultLogger = $this->appContext->defaultLogger;
         $this->assertInstanceOf(Logger::class, $defaultLogger);
         /** @var StreamHandler $handler */
@@ -94,6 +99,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
 
 
     public function testAuthManager() {
+        $this->buildContext();
         /** @var Auth0AuthManager $authManager */
         $authManager = $this->appContext->authManager;
         $this->assertInstanceOf(Auth0AuthManager::class, $authManager);
@@ -105,7 +111,17 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($authManager, $this->appContext->authManager);
     }
 
+    public function testAuthManager_changedFromDefault() {
+        $this->config->authManager = NoLoginAuthManager::class;
+        $this->buildContext();
+        /** @var NoLoginAuthManager $authManager */
+        $authManager = $this->appContext->authManager;
+        $this->assertInstanceOf(NoLoginAuthManager::class, $authManager);
+        $this->assertSame($authManager, $this->appContext->authManager);
+    }
+
     public function testDBMigration() {
+        $this->buildContext();
         $dbMigration = $this->appContext->dbMigration;
         $this->assertInstanceOf(DBMigration::class, $dbMigration);
         $this->assertEquals($this->config->tempDir, $dbMigration->tempDir);
@@ -113,12 +129,14 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testEntityManager() {
+        $this->buildContext();
         $entityManager = $this->appContext->entityManager;
         $this->assertInstanceOf(EntityManager::class, $entityManager);
         $this->assertSame($entityManager, $this->appContext->entityManager);
     }
 
     public function testKanjiRepository() {
+        $this->buildContext();
         $kanjiRepository = $this->appContext->kanjiRepository;
         $this->assertInstanceOf(KanjiRepository::class, $kanjiRepository);
         $this->assertSame($this->appContext->entityManager, $kanjiRepository->entityManager);
@@ -127,6 +145,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testAuthController() {
+        $this->buildContext();
         /** @var AuthController $authController */
         $authController  = $this->appContext->get(AuthController::class);
         $this->assertInstanceOf(AuthController::class, $authController);
@@ -137,6 +156,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testKanjiController() {
+        $this->buildContext();
         /** @var KanjiController $kanjiController */
         $kanjiController  = $this->appContext->get(KanjiController::class);
         $this->assertInstanceOf(KanjiController::class, $kanjiController);
@@ -147,12 +167,18 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testConfig() {
+        $this->buildContext();
         $this->assertEquals('auth0Domain',$this->appContext->config->auth0Domain);
     }
 
     protected function tearDown() {
         JapoAppConfig::clearInstance();
         JapoAppContext::clearInstance();
+    }
+
+    protected function buildContext()
+    {
+        $this->appContext = JapoAppContext::context();
     }
 
 }
