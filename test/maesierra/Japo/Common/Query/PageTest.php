@@ -9,6 +9,10 @@
 namespace maesierra\Japo\Common\Query;
 
 
+if (file_exists('../../../../../vendor/autoload.php')) include '../../../../../vendor/autoload.php';
+if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+
+
 class PageTest extends \PHPUnit_Framework_TestCase
 {
 
@@ -39,5 +43,18 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $page->getOffset());
         $page = new Page(1, 20, 120);
         $this->assertEquals(20, $page->getOffset());
+    }
+
+    public function testJsonEncode() {
+        $page = new Page(0, 24, 494);
+        $this->assertJsonStringEqualsJsonString(
+            json_encode($page),
+            json_encode([
+                "page" => "0",
+                "pageSize" => "24",
+                "nPages" => 21,
+                "hasMore" => true
+            ])
+        );
     }
 }

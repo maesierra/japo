@@ -15,6 +15,9 @@ use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+if (file_exists('../../../../../vendor/autoload.php')) include '../../../../../vendor/autoload.php';
+if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+
 class AuthControllerTest extends \PHPUnit_Framework_TestCase
 {
 

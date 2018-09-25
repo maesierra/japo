@@ -23,6 +23,9 @@ class KanjiQueryResults {
     /** @var int */
     public $total;
 
-    /** @var int[] */
-    public $levels;
+    /** @var  KanjiCatalog */
+    public $catalog;
+
+    /** @var  KanjiQuery */
+    public $query;
 }

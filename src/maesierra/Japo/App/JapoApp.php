@@ -32,7 +32,7 @@ class JapoApp extends App {
         $logger = $appContext->defaultLogger;
         $logInfo = "User Auth from host: {$_SERVER['REMOTE_ADDR']} user agent: {$_SERVER['HTTP_USER_AGENT']}";
         if ($appContext->authManager->isAuthenticated()) {
-            $logger->info($logInfo." => Unauthorized");
+            $logger->info($logInfo." => Authorized");
             return $next($request, $response);
         } else {
             $logger->info($logInfo." => Unauthorized");
@@ -56,6 +56,7 @@ class JapoApp extends App {
 
         $this->group('/kanji', function () {
             $this->get('/catalogs',  KanjiController::class.':catalogs');
+            $this->get('/query',  KanjiController::class.':query');
         })->add([$this, 'authMiddleware']);
     }
 }

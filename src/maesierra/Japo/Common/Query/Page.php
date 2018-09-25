@@ -9,7 +9,7 @@
 namespace maesierra\Japo\Common\Query;
 
 
-class Page
+class Page implements \JsonSerializable
 {
 
     private $page;
@@ -62,4 +62,12 @@ class Page
     }
 
 
+    public function jsonSerialize() {
+        return [
+            "page" => $this->page,
+            "pageSize" => $this->pageSize,
+            "nPages" => $this->getNPages(),
+            "hasMore" => $this->hasMore()
+        ];
+    }
 }

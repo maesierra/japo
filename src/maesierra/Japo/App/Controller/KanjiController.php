@@ -12,6 +12,7 @@ namespace maesierra\Japo\App\Controller;
 use maesierra\Japo\AppContext\JapoAppConfig;
 use maesierra\Japo\Auth\AuthManager;
 use maesierra\Japo\DB\KanjiRepository;
+use maesierra\Japo\Kanji\KanjiQuery;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -41,15 +42,25 @@ class KanjiController extends BaseController {
      */
     public function catalogs($request, $response, $args) {
         $response = $response->withHeader('Content-type', 'application/json');
-        $response->getBody()->write(json_encode(array_map(function($c) {
-                            /** @var \maesierra\Japo\Entity\KanjiCatalog $c */
-                            return [
-                                "id" => $c->getId(),
-                                "name" => $c->getName(),
-                                "slug" => $c->getSlug()
-                            ];
-                  }, $this->kanjiRepository->listCatalogs())));
+        $response->getBody()->write(json_encode($this->kanjiRepository->listCatalogs()));
+        return $response;
+    }
+
+    /**
+     * @param $request ServerRequestInterface
+     * @param $response ResponseInterface
+     * @param $args array
+     * @return ResponseInterface
+     */
+    public function query($request, $response, $args) {
+        $params = $request->getQueryParams();
+        if (!isset($params['sort'])) {
+            $params['sort'] = 'level';
+        }
+        $response = $response->withHeader('Content-type', 'application/json');
+        $response->getBody()->write(json_encode($this->kanjiRepository->query(new KanjiQuery($params))));
         return $response;
 
     }
+
 }
