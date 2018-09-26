@@ -112,7 +112,7 @@ class KanjiList extends Component {
                     default:
                     case 'catalog':
                         changed = this.state.catalog !== response.request.catalog ||
-                                  !response.request.level ? this.state.levels.length !== 0 : !_.isEqual(this.state.levels, response.request.level);
+                                  !response.request["level[]"] ? this.state.levels.length !== 0 : !_.isEqual(this.state.levels, response.request["level[]"]);
 
                 }
                 if (changed) {
@@ -125,7 +125,7 @@ class KanjiList extends Component {
                         meanings: k.meanings,
                         kun: k.kun,
                         on: k.on,
-                        catalog: mode === 'catalog' ? k.catalogs.filter(c => c.slug === this.state.catalog)[0] : {n: '', level:''}
+                        catalog: mode === 'catalog' ? k.catalogs.filter(c => c.catalogSlug === this.state.catalog)[0] : {n: '', level:''}
                     }})),
                     page: currentPage + 1,
                     hasMoreItems: response.hasMore,

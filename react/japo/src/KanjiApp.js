@@ -124,9 +124,9 @@ class KanjiApp extends Component {
             loadList: true
         });
         if (!catalog || catalog.trim() === '') {
-            this.props.history.push("/japo/kanji/");
+            this.props.history.push("/kanji/");
         } else {
-            this.props.history.push("/japo/kanji/catalog/" + catalog);
+            this.props.history.push("/kanji/catalog/" + catalog);
         }
 
     }
@@ -140,7 +140,7 @@ class KanjiApp extends Component {
         this.changeMode('catalog', {
             levels: levels
         });
-        this.props.history.push("/japo/kanji/catalog/" + this.state.catalog + '/' + _.join(levels, '/'));
+        this.props.history.push("/kanji/catalog/" + this.state.catalog + '/' + _.join(levels, '/'));
     }
 
     changeReading(event) {
@@ -151,7 +151,7 @@ class KanjiApp extends Component {
                 levels: [],
                 loadList: true,
             });
-            this.props.history.push("/japo/kanji/reading/" + reading);
+            this.props.history.push("/kanji/reading/" + reading);
         } else {
             this.changeMode('reading', {
                 reading: reading
@@ -167,7 +167,7 @@ class KanjiApp extends Component {
                 levels: [],
                 loadList: true,
             });
-            this.props.history.push("/japo/kanji/meaning/" + meaning.trim());
+            this.props.history.push("/kanji/meaning/" + meaning.trim());
         } else {
             this.changeMode('meaning', {
                 meaning: meaning
@@ -201,7 +201,7 @@ class KanjiApp extends Component {
 
     editKanji(e, kanji) {
         if (kanji) {
-            this.props.history.push("/japo/kanji/edit/" + kanji);
+            this.props.history.push("/kanji/edit/" + kanji);
         }
     }
 

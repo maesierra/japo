@@ -61,4 +61,41 @@ Japo.kanjiCatalogs = () => {
     });
 
 };
+
+Japo.kanjiQuery = (queryParams, page = null, pageSize = null) => {
+    let params = Object.assign(
+        {},
+        queryParams,
+        (page !== null && pageSize !== null) ? {'page': page, 'pageSize': pageSize} : {}
+    );
+    return new Promise((resolve, reject) => {
+        makeRequest('/api/japo/kanji/query', params).then((response) => {
+            return response.json();
+        }).then((results) => {
+            resolve({
+                catalog: params.catalog,
+                catalogLevels: results.catalog ? results.catalog.levels : [],
+                page: page,
+                pageSize: pageSize,
+                kanjis: results.kanjis.map((k, i) => {
+                    return {
+                        id: k.id,
+                        kanji: k.kanji,
+                        kun: k.readings.filter(r => r.type === 'K'),
+                        on: k.readings.filter(r => r.type === 'O'),
+                        catalogs: _.values(k.catalogs),
+                        meanings: k.meanings
+                    };
+                }),
+                total: results.total,
+                hasMore: results.page.hasMore,
+                request: params
+            });
+        })
+        .catch(reject);
+
+    });
+};
+
+
 module.exports = Japo;

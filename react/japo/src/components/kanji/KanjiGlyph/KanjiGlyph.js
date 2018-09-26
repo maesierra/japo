@@ -22,7 +22,7 @@ class KanjiGlyph extends React.Component {
             return <div className="no-kanji" />;
         } else {
             return <div className="kanji-glyph">
-                <a onMouseOver={() => this.hover(true)} onMouseOut={() => this.hover(false)} className={this.state.hover ? '' : 'serif'} href={"/japo/kanji/details/" + kanji} lang="ja">{kanji}</a>
+                <a onMouseOver={() => this.hover(true)} onMouseOut={() => this.hover(false)} className={this.state.hover ? '' : 'serif'} href={"/kanji/details/" + kanji} lang="ja">{kanji}</a>
             </div>
         }
     }

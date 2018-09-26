@@ -104,7 +104,7 @@ class KanjiDetails extends Component {
                     catalogs: k.catalogs,
                     loading: false
                 }));
-                let expectedPath = "/japo/kanji/" + (this.state.edit ? 'edit/' : 'details/') + k.kanji;
+                let expectedPath = "/kanji/" + (this.state.edit ? 'edit/' : 'details/') + k.kanji;
                 if (this.props.location.pathname !== expectedPath)　{
                     this.props.history.push(expectedPath);
                 }　
