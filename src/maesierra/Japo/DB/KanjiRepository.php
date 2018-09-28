@@ -20,6 +20,7 @@ use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiQueryResults;
 use maesierra\Japo\Kanji\KanjiReading;
 use maesierra\Japo\Lang\JapaneseLanguageHelper as Japanese;
+use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use Monolog\Logger;
 
 class KanjiRepository {
@@ -41,18 +42,28 @@ class KanjiRepository {
         $this->logger = $logger;
     }
 
+
+    /**
+     * @param KanjiCatalogEntity $catalogEntity
+     * @return KanjiCatalog
+     */
+    private function mapKanjiCatalog($catalogEntity) {
+        if (!$catalogEntity) {
+            return null;
+        }
+        $catalog = new KanjiCatalog();
+        $catalog->id = $catalogEntity->getId();
+        $catalog->name = $catalogEntity->getName();
+        $catalog->slug = $catalogEntity->getSlug();
+        return $catalog;
+    }
     /**
      * @return KanjiCatalog[]
      */
     public function listCatalogs() {
         return array_map(function($catalogEntity) {
-            /** @var \maesierra\Japo\Entity\KanjiCatalog $catalogEntity */
-            $catalog = new KanjiCatalog();
-            $catalog->id = $catalogEntity->getId();
-            $catalog->name = $catalogEntity->getName();
-            $catalog->slug = $catalogEntity->getSlug();
-            return $catalog;
-        }, $this->entityManager->getRepository(\maesierra\Japo\Entity\KanjiCatalog::class)->findAll());
+            return $this->mapKanjiCatalog($catalogEntity);
+        }, $this->entityManager->getRepository(KanjiCatalogEntity::class)->findAll());
     }
 
     /**
@@ -215,8 +226,18 @@ class KanjiRepository {
             $kanjis[] = $result;
         }
         $results->kanjis = $kanjis;
-        if ($results->catalog) {
-            $results->catalog->levels = $this->getCatalogLevels($kanjiQuery->catalogId);
+        if ($filterByCatalog) {
+            if (!$results->catalog) {
+                if ($kanjiQuery->catalog) {
+                    $results->catalog = $this->mapKanjiCatalog($this->entityManager->getRepository(KanjiCatalogEntity::class)->findOneBy(['slug' => $kanjiQuery->catalog]));
+                } else {
+                    $results->catalog = $this->mapKanjiCatalog($this->entityManager->getRepository(KanjiCatalogEntity::class)->find($kanjiQuery->catalogId));
+                }
+
+            }
+            if ($results->catalog) {
+                $results->catalog->levels = $this->getCatalogLevels($results->catalog->id);
+            }
         }
         return $results;
 

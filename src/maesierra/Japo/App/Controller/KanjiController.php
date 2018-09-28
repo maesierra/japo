@@ -58,6 +58,7 @@ class KanjiController extends BaseController {
             $params['sort'] = 'level';
         }
         $response = $response->withHeader('Content-type', 'application/json');
+        $this->logger->debug("Kanji Query: ".\GuzzleHttp\json_encode($params));
         $response->getBody()->write(json_encode($this->kanjiRepository->query(new KanjiQuery($params))));
         return $response;
 

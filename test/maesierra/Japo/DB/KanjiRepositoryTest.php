@@ -199,8 +199,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
                        "ORDER BY k.kanji desc";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalogId', 0], ['levels', [2]], ['hiragana', 'わたし'], ['katakana', 'ワタシ']);
+        $this->stubCatalogEntityById(0, 'catalog 0', 'catalog0');
+        $this->stubGetCatalogsLevelsQuery(0, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
+        $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
     public function testBasicKanjiQuery_catalogId_noResults() {
@@ -212,8 +215,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             "(cat.idCatalog=:catalogId)";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalogId', 1]);
+        $this->stubCatalogEntityById(1, 'catalog 0', 'catalog0');
+        $this->stubGetCatalogsLevelsQuery(1, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
+        $this->assertEquals($this->stubCatalog(1, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
     public function testBasicKanjiQuery_catalogSlug_noResults() {
@@ -226,8 +232,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             "(c.slug=:catalog)";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalog', 'jlpt']);
+        $this->stubCatalogEntityBySlug(0, 'catalog 0', 'jlpt');
+        $this->stubGetCatalogsLevelsQuery(0, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
+        $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'jlpt', [1, 3, 5]), $results->catalog);
     }
 
     public function testBasicKanjiQuery_catalogSlugPrecedesCatalogId_noResults() {
@@ -241,9 +250,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             "(c.slug=:catalog)";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalog', 'jlpt']);
+        $this->stubCatalogEntityBySlug(0, 'catalog 0', 'jlpt');
+        $this->stubGetCatalogsLevelsQuery(0, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
-    }
+        $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'jlpt', [1, 3, 5]), $results->catalog);    }
 
     public function testBasicKanjiQuery_catalogSlugAndLevelSingleValue_noResults() {
         $query = $this->stubQuery();
@@ -257,8 +268,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             "(cat.level in (:levels))";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalog', 'jlpt'], ['levels', [411]]);
+        $this->stubCatalogEntityBySlug(0, 'catalog 0', 'jlpt');
+        $this->stubGetCatalogsLevelsQuery(0, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
+        $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'jlpt', [1, 3, 5]), $results->catalog);
     }
 
     public function testBasicKanjiQuery_catalogIdAndLevelArray_noResults() {
@@ -272,8 +286,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             "(cat.level in (:levels))";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalogId', 1], ['levels', [411, 407]]);
+        $this->stubCatalogEntityById(0, 'catalog 0', 'catalog0');
+        $this->stubGetCatalogsLevelsQuery(0, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
+        $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
     public function testBasicKanjiQuery_levelNoCatalog_noResults()
@@ -441,8 +458,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             "ORDER BY cat.idCatalog,cat.level,cat.n";
         $this->verifyDDLExecuted($expectedConditions);
         $this->verifyParameters($query, ['catalogId', 0]);
+        $this->stubCatalogEntityById(0, 'catalog 0', 'catalog0');
+        $this->stubGetCatalogsLevelsQuery(0, [1, 3, 5]);
         $results = $this->kanjiRepository->query($kanjiQuery);
         $this->assertEquals($kanjiQuery, $results->query);
+        $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
 
@@ -796,6 +816,34 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $catalog->method('getName')->willReturn($catalogName);
         $catalog->method('getId')->willReturn($catalogId);
         $catalog->method('getSlug')->willReturn($slug);
+        return $catalog;
+    }
+
+    /**
+     * @param $catalogName
+     * @param $catalogId
+     * @param $slug
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function stubCatalogEntityById($catalogId, $catalogName, $slug) {
+        $repository = $this->createMock(EntityRepository::class);
+        $this->entityManager->method('getRepository')->with(KanjiCatalogEntity::class)->willReturn($repository);
+        $catalog = $this->stubCatalogEntity($catalogId, $catalogName, $slug);
+        $repository->method('find')->willReturn($catalog);
+        return $catalog;
+    }
+
+    /**
+     * @param $catalogName
+     * @param $catalogId
+     * @param $slug
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function stubCatalogEntityBySlug($catalogId, $catalogName, $slug) {
+        $repository = $this->createMock(EntityRepository::class);
+        $this->entityManager->method('getRepository')->with(KanjiCatalogEntity::class)->willReturn($repository);
+        $catalog = $this->stubCatalogEntity($catalogId, $catalogName, $slug);
+        $repository->method('findOneBy')->with(['slug' => $slug])->willReturn($catalog);
         return $catalog;
     }
 
