@@ -1,0 +1,45 @@
+#!/usr/bin/php
+<?php
+
+use \Symfony\Component\Console\Application;
+use \Symfony\Component\Console\Command\Command;
+use \Symfony\Component\Console\Input\InputArgument;
+use \Symfony\Component\Console\Input\InputOption;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \maesierra\Japo\DB\DBMigration;
+require __DIR__ . '/../vendor/autoload.php';
+
+
+class CreateMigrationCommand extends Command {
+
+    protected function configure() {
+        $this->setDescription('Converts a mysql dump into a phinx migration')
+              ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'mysql dump file. Must be a single table dump with no table creation.')
+              ->addOption('table', 't', InputOption::VALUE_REQUIRED, 'table name.')
+              ->addOption('lines', 'l', InputOption::VALUE_REQUIRED, 'number of lines to split the dump. default 2000', 2000);
+    }
+
+    public function execute(InputInterface $input, OutputInterface $output) {
+        $file = $input->getOption('file');
+        if (!$file) {
+            $output->writeln("File option required.");
+            return 2;
+        }
+        $table = $input->getOption('table');
+        if (!$table) {
+            $output->writeln("table option required.");
+            return 2;
+        }
+        $dBMigration = new DBMigration([], sys_get_temp_dir());
+        $dBMigration->createMigrationFromDumpFile($input->getOption('file'), $input->getOption('table'), getcwd(), $input->getOption('lines'));
+    }
+
+
+}
+
+$application = new Application();
+$command = new CreateMigrationCommand('create-migration');
+$application->add($command);
+$application->setDefaultCommand($command->getName(), true);
+$application->run();

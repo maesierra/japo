@@ -20,7 +20,9 @@
         "doctrine/common": "2.7.3",
         "doctrine/inflector": "1.1.0",
         "doctrine/dbal": "2.5.13",
-        "slim/slim": "3.10.0"
+        "slim/slim": "3.10.0",
+        "symfony/filesystem": "3.4.15",
+        "symfony/console": "3.4.15"
     },
     "autoload": {
         "psr-0": {
