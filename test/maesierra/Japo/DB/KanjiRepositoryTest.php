@@ -20,6 +20,7 @@ use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
 use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
 use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
+use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
 use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
@@ -27,6 +28,7 @@ use maesierra\Japo\Kanji\KanjiQuery;
 use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiReading;
 use maesierra\Japo\Kanji\KanjiReadingHelpWord;
+use maesierra\Japo\Kanji\KanjiStroke;
 use maesierra\Japo\Test\Utils\TestQuery;
 use Monolog\Logger;
 
@@ -665,6 +667,10 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             $this->kanjiMeaningEntity('sun'),
             $this->kanjiMeaningEntity('day')
         ]));
+        $kanji->method('getStrokes')->willReturn(new ArrayCollection([
+            $this->kanjiStrokeEntity(1, 'M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25', '18'),
+            $this->kanjiStrokeEntity(2, 'M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53', '15'),
+        ]));
         return $kanji;
     }
 
@@ -717,6 +723,10 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             $this->kanjiReading('K', 'kun reading', 356),
         ];
         $kanji->meanings = ['sun', 'day'];
+        $kanji->strokes = [
+            $this->kanjiStroke(1, 'M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25', '18'),
+            $this->kanjiStroke(2, 'M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53', '15')
+        ];
         return $kanji;
     }
 
@@ -765,6 +775,21 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
+     * @param $path
+     * @param $position
+     * @param $type
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function kanjiStrokeEntity($position, $path, $type)
+    {
+        $stroke = $this->createMock(KanjiStrokeEntity::class);
+        $stroke->method('getPosition')->willReturn($position);
+        $stroke->method('getPath')->willReturn($path);
+        $stroke->method('getType')->willReturn($type);
+        return $stroke;
+    }
+
+    /**
      * @return KanjiCatalogEntry
      */
     private function kanjiCatalogEntry($level, $n, $catalogName, $catalogId, $slug)
@@ -776,6 +801,21 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $entry->level = $level;
         $entry->n = $n;
         return $entry;
+    }
+
+    /**
+     * @param $path
+     * @param $position
+     * @param $type
+     * @return KanjiStroke
+     */
+    private function kanjiStroke($position, $path, $type)
+    {
+        $stroke = new KanjiStroke();
+        $stroke->position = $position;
+        $stroke->path = $path;
+        $stroke->type = $type;
+        return $stroke;
     }
 
     /**

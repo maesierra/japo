@@ -31,7 +31,7 @@ class Kanji {
     /** @var  array */
     public $words = [];
 
-    /** @var array  */
+    /** @var KanjiStroke */
     public $strokes = [];
 
 

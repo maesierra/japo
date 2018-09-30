@@ -16,6 +16,7 @@ use maesierra\Japo\Entity\Kanji as KanjiEntity;
 use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
 use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
 use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
+use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
 use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
@@ -24,6 +25,7 @@ use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiQueryResults;
 use maesierra\Japo\Kanji\KanjiReading;
 use maesierra\Japo\Kanji\KanjiReadingHelpWord;
+use maesierra\Japo\Kanji\KanjiStroke;
 use maesierra\Japo\Lang\JapaneseLanguageHelper as Japanese;
 use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use Monolog\Logger;
@@ -288,21 +290,22 @@ class KanjiRepository {
      * @return Kanji
      */
     public function findKanji($kanji) {
-        $entity = $this->entityManager->getRepository(KanjiEntity::class)->findOneBy(['kanji' => $kanji]);
-        if (!$entity) {
+        /** @var KanjiEntity $kanjiEntity */
+        $kanjiEntity = $this->entityManager->getRepository(KanjiEntity::class)->findOneBy(['kanji' => $kanji]);
+        if (!$kanjiEntity) {
             return null;
         }
         $result = new Kanji();
-        $result->id = $entity->getId();
-        $result->kanji = $entity->getKanji();
+        $result->id = $kanjiEntity->getId();
+        $result->kanji = $kanjiEntity->getKanji();
 
-        $result->catalogs = array_reduce($entity->getCatalogs()->toArray(), function(&$result, $catalogEntry)  {
+        $result->catalogs = array_reduce($kanjiEntity->getCatalogs()->toArray(), function(&$result, $catalogEntry)  {
             $entry = $this->mapKanjiCatalogEntry($catalogEntry);
             $result[$entry->catalogId] = $entry;
             return $result;
         }, []);
 
-        $readings = array_map(function ($kanjiReading) {return $this->mapKanjiReading($kanjiReading);}, $entity->getReadings()->toArray());
+        $readings = array_map(function ($kanjiReading) {return $this->mapKanjiReading($kanjiReading);}, $kanjiEntity->getReadings()->toArray());
 
         $result->kun = array_values(array_filter($readings, function($r) {
             /** @var KanjiReading $r */
@@ -317,7 +320,16 @@ class KanjiRepository {
         $result->meanings = array_map(function($kanjiMeaning) {
             /** @var KanjiMeaningEntity $kanjiMeaning */
             return $kanjiMeaning->getMeaning();
-        }, $entity->getMeanings()->toArray());
+        }, $kanjiEntity->getMeanings()->toArray());
+
+        $result->strokes = array_map(function($e) {
+            /** @var KanjiStrokeEntity $e */
+            $stroke = new KanjiStroke();
+            $stroke->path = $e->getPath();
+            $stroke->position = $e->getPosition();
+            $stroke->type = $e->getType();
+            return $stroke;
+        }, $kanjiEntity->getStrokes()->toArray());
         return $result;
 
     }

@@ -34,12 +34,20 @@ class Kanji
  	  * @OneToMany(targetEntity="KanjiMeaning", mappedBy="kanji", cascade={"persist"})
       * @OrderBy({"meaning" = "ASC"})
       */	
-	private $meanings;		
+	private $meanings;
+
+    /**
+     * @OneToMany(targetEntity="KanjiStroke", mappedBy="kanji")
+     * @OrderBy({"position" = "ASC"})
+     */
+    private $strokes;
+
 	
 	public function __construct() {
         $this->catalogs = new ArrayCollection();
         $this->readings = new ArrayCollection();
         $this->meanings = new ArrayCollection();
+        $this->strokes = new ArrayCollection();
     }
 
     public function __toString()
@@ -92,4 +100,12 @@ class Kanji
     public function getMeanings() {
         return $this->meanings;
     }
-}?>
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getStrokes() {
+        return $this->strokes;
+    }
+
+}
