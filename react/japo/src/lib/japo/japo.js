@@ -97,5 +97,28 @@ Japo.kanjiQuery = (queryParams, page = null, pageSize = null) => {
     });
 };
 
+Japo.jDict = (params) => {
+    return new Promise((resolve, reject) => {
+        makeRequest('/api/japo/jdict/query', params).then((response) => {
+            return response.json();
+        }).then((results) => {
+            resolve({
+                nPages: results.page.nPages,
+                page: results.page.page,
+                total: results.total,
+                entries: results.entries.map((e, i) => {
+                    return {
+                        id: e.id,
+                        reading: _.first(e.readings),
+                        kanji: _.first(e.kanji),
+                        gloss: e.gloss,
+                        metadata: e.meta
+                    };
+                }),
+            });
+        })
+        .catch(reject);
+    });
+};
 
 module.exports = Japo;

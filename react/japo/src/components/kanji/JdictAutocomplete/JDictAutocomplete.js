@@ -48,7 +48,7 @@ class JDictAutocomplete extends React.Component {
             //jdict query
             Japo.jDict({
                 reading: this.state.value,
-                page: 1,
+                page: 0,
                 pageSize: 25,
                 exact: true
             }).then((results) => {
@@ -72,7 +72,7 @@ class JDictAutocomplete extends React.Component {
                     break;
                 case 13: //enter
                     if (this.state.selected >= 0) {
-                        this.onValueSelected(this.state.options[this.state.selected].kanji, event);
+                        this.onValueSelected(this.state.options[this.state.selected].kanji.kanji, event);
                     }
                     break;
                 default:
@@ -134,8 +134,8 @@ class JDictAutocomplete extends React.Component {
                     if (i === this.state.selected) {
                         itemClass.push('active');
                     }
-                    return <a key={i} className={itemClass.join(' ')} onClick={(e) => this.onValueSelected(option.kanji, e)}>
-                        <span lang="ja">{option.kanji}</span> <span className="small">({option.gloss.join(',')})</span>
+                    return <a key={i} className={itemClass.join(' ')} onClick={(e) => this.onValueSelected(option.kanji.kanji, e)}>
+                        <span lang="ja">{option.kanji.kanji}</span> <span className="small">({option.gloss.join(',')})</span>
                     </a>;
                 })}
             </div>
