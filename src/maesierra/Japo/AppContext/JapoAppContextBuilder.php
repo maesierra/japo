@@ -17,10 +17,12 @@ use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\Auth\NoLoginAuthManager;
 use maesierra\Japo\DB\DBMigration;
+use maesierra\Japo\DB\JDictRepository;
 use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Entity\KanjiCatalog;
 use Monolog\Handler\StreamHandler;
@@ -69,8 +71,10 @@ class JapoAppContextBuilder extends ContainerConfig {
         $this->dbMigration($di, $config);
         $this->entityManager($di, $config);
         $this->kanjiRepository($di, $config);
+        $this->jdictRepository($di, $config);
         $this->authController($di, $config);
         $this->kanjiController($di, $config);
+        $this->jdictController($di, $config);
         $this->slimCoreServices($di);
     }
 
@@ -223,6 +227,19 @@ class JapoAppContextBuilder extends ContainerConfig {
      * @param Container $di
      * @param $config
      */
+    private function jdictRepository(Container $di, $config)
+    {
+        $this->createObject($di, 'jdictRepository', JDictRepository::class, [
+            'entityManager' => $di->lazyGet('entityManager'),
+            'logger' => $di->lazyGet('defaultLogger')
+        ]);
+    }
+
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
     private function authController(Container $di, $config)
     {
         $this->createObject($di, AuthController::class, AuthController::class, [
@@ -244,6 +261,20 @@ class JapoAppContextBuilder extends ContainerConfig {
             'config' => $di->lazyGet('config')
         ]);
     }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function jdictController(Container $di, $config)
+    {
+        $this->createObject($di, JDictController::class, JDictController::class, [
+            'jdictRepository' => $di->lazyGet('jdictRepository'),
+            'logger' => $di->lazyGet('defaultLogger'),
+            'config' => $di->lazyGet('config')
+        ]);
+    }
+
     /**
      * @param Container $di
      * @throws \Aura\Di\Exception\ContainerLocked

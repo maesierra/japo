@@ -10,6 +10,7 @@ namespace maesierra\Japo\App;
 
 
 use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\AppContext\JapoAppContext;
 use Slim\App;
@@ -58,5 +59,10 @@ class JapoApp extends App {
             $this->get('/catalogs',  KanjiController::class.':catalogs');
             $this->get('/query',  KanjiController::class.':query');
         })->add([$this, 'authMiddleware']);
+
+        $this->group('/jdict', function () {
+            $this->get('/query',  JDictController::class.':query');
+        })->add([$this, 'authMiddleware']);
+
     }
 }

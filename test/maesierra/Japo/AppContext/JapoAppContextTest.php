@@ -11,10 +11,12 @@ namespace maesierra\Japo\AppContext;
 use Auth0\SDK\Auth0;
 use Doctrine\ORM\EntityManager;
 use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\Auth\NoLoginAuthManager;
 use maesierra\Japo\DB\DBMigration;
+use maesierra\Japo\DB\JDictRepository;
 use maesierra\Japo\DB\KanjiRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -144,6 +146,16 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($kanjiRepository, $this->appContext->kanjiRepository);
     }
 
+    public function testJDictRepository() {
+        $this->buildContext();
+        $jdictRepository = $this->appContext->jdictRepository;
+        $this->assertInstanceOf(JDictRepository::class, $jdictRepository);
+        $this->assertSame($this->appContext->entityManager, $jdictRepository->entityManager);
+        $this->assertSame($this->appContext->defaultLogger, $jdictRepository->logger);
+        $this->assertSame($jdictRepository, $this->appContext->jdictRepository);
+    }
+
+
     public function testAuthController() {
         $this->buildContext();
         /** @var AuthController $authController */
@@ -165,6 +177,18 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($this->appContext->kanjiRepository, $kanjiController->kanjiRepository);
         $this->assertSame($kanjiController, $this->appContext->get(KanjiController::class));
     }
+
+    public function testJDictController() {
+        $this->buildContext();
+        /** @var JDictController $jdictController */
+        $jdictController  = $this->appContext->get(JDictController::class);
+        $this->assertInstanceOf(JDictController::class, $jdictController);
+        $this->assertSame($this->appContext->defaultLogger, $jdictController->logger);
+        $this->assertSame($this->config, $jdictController->config);
+        $this->assertSame($this->appContext->jdictRepository, $jdictController->jdictRepository);
+        $this->assertSame($jdictController, $this->appContext->get(JDictController::class));
+    }
+
 
     public function testConfig() {
         $this->buildContext();

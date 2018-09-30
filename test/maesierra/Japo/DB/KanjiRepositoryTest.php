@@ -10,48 +10,33 @@ namespace maesierra\Japo\DB;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use maesierra\Japo\Common\Query\Page;
 use maesierra\Japo\Common\Query\Sort;
 use maesierra\Japo\Entity\Kanji;
+use maesierra\Japo\Entity\Kanji as KanjiEntity;
+use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
+use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
+use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
+use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
 use maesierra\Japo\Kanji\KanjiQuery;
-use maesierra\Japo\Entity\Kanji as KanjiEntity;
-use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
-use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
-use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
-use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiReading;
+use maesierra\Japo\Test\Utils\TestQuery;
 use Monolog\Logger;
 
 if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
 if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-
-/**
- * Doctrine's Query is final so it cannot be mocked and AbstractQuery misses a couple  of methods
- */
-class TestQuery extends AbstractQuery {
-
-    public function getSQL() {
-
-    }
-
-    protected function _doExecute() {
-
-    }
-    public function setMaxResults($maxResults) {
-
-    }
-
-    public function setFirstResult($firstResult) {
-
-    }
+if (!class_exists(TestQuery::class)) {
+    file_exists('../Test/Utils/TestQuery.php') ? require_once '../Test/Utils/TestQuery.php' : require_once 'test/maesierra/Japo/Test/Utils/TestQuery.php';
 }
+
+
+
 class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
 
     /** @var  \PHPUnit_Framework_MockObject_MockObject */

@@ -35,6 +35,8 @@ use Psr\Container\NotFoundExceptionInterface;
  *
  * @property \maesierra\Japo\DB\KanjiRepository $kanjiRepository
  *
+ * @property \maesierra\Japo\DB\JDictRepository $jdictRepository
+ *
  * @property \maesierra\Japo\AppContext\JapoAppConfig $config
  *
  */

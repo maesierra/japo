@@ -10,7 +10,6 @@ namespace maesierra\Japo\App\Controller;
 
 
 use maesierra\Japo\AppContext\JapoAppConfig;
-use maesierra\Japo\Auth\AuthManager;
 use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Kanji\KanjiQuery;
 use Monolog\Logger;
@@ -58,7 +57,7 @@ class KanjiController extends BaseController {
             $params['sort'] = 'level';
         }
         $response = $response->withHeader('Content-type', 'application/json');
-        $this->logger->debug("Kanji Query: ".\GuzzleHttp\json_encode($params));
+        $this->logger->debug("Kanji Query: ".json_encode($params));
         $response->getBody()->write(json_encode($this->kanjiRepository->query(new KanjiQuery($params))));
         return $response;
 
