@@ -121,4 +121,23 @@ Japo.jDict = (params) => {
     });
 };
 
+Japo.kanji = (kanji) => {
+    return new Promise((resolve, reject) => {
+        makeRequest('/api/japo/kanji/' + kanji, {}).then((response) => {
+            return response.json();
+        }).then((kanji) => {
+            resolve(Object.assign({}, kanji, {catalogs: _.values(kanji.catalogs).map((c, i) => {
+                return {
+                    "name": c.catalogName,
+                    "id": c.catalogId,
+                    "level": c.level,
+                    "n": c.n,
+                    "slug": c.catalogSlug
+                }
+            })}));
+        })
+        .catch(reject);
+    });
+};
+
 module.exports = Japo;

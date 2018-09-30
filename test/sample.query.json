@@ -1,1095 +1,682 @@
 {
-  "words": [],
-  "kanjis": [{
-    "id": "1",
-    "kanji": "\u65e5",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "957",
-      "reading": "\u304b"
-    }, {
-      "kind": "Kun",
-      "help-word": "336",
-      "reading": "\u3072"
-    }, {
-      "kind": "Kun",
-      "help-word": "1089",
-      "reading": "\u3073"
-    }, {
-      "kind": "On",
-      "help-word": "89",
-      "reading": "\u30cb"
-    }, {
-      "kind": "On",
-      "help-word": "1084",
-      "reading": "\u30cb\u30c1"
-    }],
-    "meanings": ["D\u00eda", "Sol"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 1,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 1,
-        "level": 501
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 21,
-        "level": 102
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 15,
-        "level": 1
+  "kanji": "人",
+  "strokes": [
+    {
+      "path": "M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25",
+      "position": "1",
+      "type": "18"
+    },
+    {
+      "path": "M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53",
+      "position": "2",
+      "type": "15"
+    }
+  ],
+  "meanings": [
+    "Persona"
+  ],
+  "kun": [
+    {
+      "reading": "ひと",
+      "type": "kun",
+      "helpWord": {
+        "id": "2296",
+        "kana": "ひと",
+        "kanji": "人",
+        "meanings": [
+          "Persona"
+        ]
       }
     }
-  }, {
-    "id": "2",
-    "kanji": "\u6708",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2192",
-      "reading": "\u3064\u304d"
-    }, {
-      "kind": "On",
-      "help-word": "996",
-      "reading": "\u30ac\u30c4"
-    }, {
-      "kind": "On",
-      "help-word": "341",
-      "reading": "\u30b2\u30c4"
-    }],
-    "meanings": ["Luna", "Mes"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 2,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 17,
-        "level": 502
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 20,
-        "level": 101
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 37,
-        "level": 2
+  ],
+  "on": [
+    {
+      "reading": "ジン",
+      "type": "on",
+      "helpWord": {
+        "id": "89",
+        "kana": "にほんじん",
+        "kanji": "日本人",
+        "meanings": [
+          "Japonés (gentilicio)"
+        ]
+      }
+    },
+    {
+      "reading": "ニン",
+      "type": "on",
+      "helpWord": {
+        "id": "1845",
+        "kana": "びょうにん",
+        "kanji": "病人",
+        "meanings": [
+          "Enfermo"
+        ]
       }
     }
-  }, {
-    "id": "3",
-    "kanji": "\u6728",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "342",
-      "reading": "\u304d"
-    }, {
-      "kind": "Kun",
-      "help-word": "2239",
-      "reading": "\u3053"
-    }, {
-      "kind": "On",
-      "help-word": "1047",
-      "reading": "\u30dc\u30af"
-    }, {
-      "kind": "On",
-      "help-word": "343",
-      "reading": "\u30e2\u30af"
-    }],
-    "meanings": ["\u00c1rbol", "Madera"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 3,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 62,
-        "level": 507
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 24,
-        "level": 102
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 40,
-        "level": 2
-      }
+  ],
+  "words": [
+    {
+      "id": "93",
+      "kana": "アメリカじん",
+      "kanji": "アメリカ人",
+      "meanings": [
+        "Estadounidense",
+        "Norteamericano",
+        "Americano"
+      ]
+    },
+    {
+      "id": "106",
+      "kana": "イタリアじん",
+      "kanji": "イタリア人",
+      "meanings": [
+        "Italiano (gentilicio)"
+      ]
+    },
+    {
+      "id": "98",
+      "kana": "オーストリアじん",
+      "kanji": "オーストリア人",
+      "meanings": [
+        "Australiano (gentilicio)"
+      ]
+    },
+    {
+      "id": "91",
+      "kana": "スペインじん",
+      "kanji": "スペイン人",
+      "meanings": [
+        "Español (gentilicio)"
+      ]
+    },
+    {
+      "id": "112",
+      "kana": "ドイツじん",
+      "kanji": "ドイツ人",
+      "meanings": [
+        "Alemán (gentilicio)"
+      ]
+    },
+    {
+      "id": "101",
+      "kana": "メキシコじん",
+      "kanji": "メキシコ人",
+      "meanings": [
+        "Mejicano (gentilicio)"
+      ]
+    },
+    {
+      "id": "302",
+      "kana": "ひとり",
+      "kanji": "一人",
+      "meanings": [
+        "Solo",
+        "Una persona"
+      ]
+    },
+    {
+      "id": "5322",
+      "kana": "ひとりひとり",
+      "kanji": "一人一人",
+      "meanings": [
+        "De uno en uno"
+      ]
+    },
+    {
+      "id": "4881",
+      "kana": "いちにんまえ",
+      "kanji": "一人前",
+      "meanings": [
+        "Convertirse en adulto",
+        "Ser decente",
+        "Respetable",
+        "Senior"
+      ]
+    },
+    {
+      "id": "4816",
+      "kana": "ひとりぐらし",
+      "kanji": "一人暮らし",
+      "meanings": [
+        "Gente que vive sola"
+      ]
+    },
+    {
+      "id": "109",
+      "kana": "ちゅうごくじん",
+      "kanji": "中国人",
+      "meanings": [
+        "Chino (gentilicio)"
+      ]
+    },
+    {
+      "id": "3554",
+      "kana": "しゅじん",
+      "kanji": "主人",
+      "meanings": [
+        "Mi marido",
+        "Jefe",
+        "Amo"
+      ]
+    },
+    {
+      "id": "1781",
+      "kana": "しゅじんこう",
+      "kanji": "主人公",
+      "meanings": [
+        "Héroe",
+        "Protagonista"
+      ]
+    },
+    {
+      "id": "956",
+      "kana": "ふたり",
+      "kanji": "二人",
+      "meanings": [
+        "2 personas"
+      ]
+    },
+    {
+      "id": "3836",
+      "kana": "ふたりべや",
+      "kanji": "二人部屋",
+      "meanings": [
+        "Habitación doble"
+      ]
+    },
+    {
+      "id": "2296",
+      "kana": "ひと",
+      "kanji": "人",
+      "meanings": [
+        "Persona"
+      ]
+    },
+    {
+      "id": "3015",
+      "kana": "ひとびと",
+      "kanji": "人々",
+      "meanings": [
+        "Gente"
+      ]
+    },
+    {
+      "id": "1378",
+      "kana": "ひとにきく",
+      "kanji": "人に聞く",
+      "meanings": [
+        "Preguntar a alguien"
+      ]
+    },
+    {
+      "id": "349",
+      "kana": "じんこう",
+      "kanji": "人口",
+      "meanings": [
+        "Población"
+      ]
+    },
+    {
+      "id": "5140",
+      "kana": "じんこう",
+      "kanji": "人工",
+      "meanings": [
+        "Artificial",
+        "Hecho por el hombre"
+      ]
+    },
+    {
+      "id": "2290",
+      "kana": "にんぎょう",
+      "kanji": "人形",
+      "meanings": [
+        "Marioneta",
+        "Figura"
+      ]
+    },
+    {
+      "id": "3901",
+      "kana": "にんじょう",
+      "kanji": "人情",
+      "meanings": [
+        "Humanidad",
+        "Compasión"
+      ]
+    },
+    {
+      "id": "5943",
+      "kana": "じんざい",
+      "kanji": "人材",
+      "meanings": [
+        "Persona talentosa"
+      ]
+    },
+    {
+      "id": "2062",
+      "kana": "にんき",
+      "kanji": "人気",
+      "meanings": [
+        "Popularidad"
+      ]
+    },
+    {
+      "id": "2338",
+      "kana": "にんきもの",
+      "kanji": "人気者",
+      "meanings": [
+        "Persona popular"
+      ]
+    },
+    {
+      "id": "5222",
+      "kana": "じんせい",
+      "kanji": "人生",
+      "meanings": [
+        "Vida (humana, como periodo de tiempo)"
+      ]
+    },
+    {
+      "id": "1170",
+      "kana": "ひとめ",
+      "kanji": "人目",
+      "meanings": [
+        "En público"
+      ]
+    },
+    {
+      "id": "1175",
+      "kana": "にんげん",
+      "kanji": "人間",
+      "meanings": [
+        "Ser humano",
+        "Humano"
+      ]
+    },
+    {
+      "id": "2535",
+      "kana": "たにん",
+      "kanji": "他人",
+      "meanings": [
+        "Otra persona",
+        "Forastero"
+      ]
+    },
+    {
+      "id": "334",
+      "kana": "かいしゃのひと",
+      "kanji": "会社の人",
+      "meanings": [
+        "Compañero de trabajo"
+      ]
+    },
+    {
+      "id": "1799",
+      "kana": "しようにん",
+      "kanji": "使用人",
+      "meanings": [
+        "Siervo"
+      ]
+    },
+    {
+      "id": "4880",
+      "kana": "ほしょうにん",
+      "kanji": "保証人",
+      "meanings": [
+        "Aval (persona)",
+        "Garantor"
+      ]
+    },
+    {
+      "id": "3834",
+      "kana": "こじん",
+      "kanji": "個人",
+      "meanings": [
+        "Individuo",
+        "Persona"
+      ]
+    },
+    {
+      "id": "3857",
+      "kana": "こじんのしょうてん",
+      "kanji": "個人の商店",
+      "meanings": [
+        "Pequeño comercio"
+      ]
+    },
+    {
+      "id": "5260",
+      "kana": "こじんよう",
+      "kanji": "個人用",
+      "meanings": [
+        "De uso personal"
+      ]
+    },
+    {
+      "id": "4243",
+      "kana": "こじんてき",
+      "kanji": "個人的",
+      "meanings": [
+        "Individualista"
+      ]
+    },
+    {
+      "id": "1516",
+      "kana": "ゆうじん",
+      "kanji": "友人",
+      "meanings": [
+        "Amigo",
+        "Compañero"
+      ]
+    },
+    {
+      "id": "1176",
+      "kana": "めいじん",
+      "kanji": "名人",
+      "meanings": [
+        "Maestro",
+        "Experto"
+      ]
+    },
+    {
+      "id": "1177",
+      "kana": "しょうにん",
+      "kanji": "商人",
+      "meanings": [
+        "Comerciante"
+      ]
+    },
+    {
+      "id": "241",
+      "kana": "がいこくじん",
+      "kanji": "外国人",
+      "meanings": [
+        "Extranjero"
+      ]
+    },
+    {
+      "id": "1174",
+      "kana": "おとな",
+      "kanji": "大人",
+      "meanings": [
+        "Adulto"
+      ]
+    },
+    {
+      "id": "1179",
+      "kana": "ふじん",
+      "kanji": "夫人",
+      "meanings": [
+        "Esposa",
+        "Señora de"
+      ]
+    },
+    {
+      "id": "353",
+      "kana": "おんなのひと",
+      "kanji": "女の人",
+      "meanings": [
+        "Mujer"
+      ]
+    },
+    {
+      "id": "3817",
+      "kana": "ふじん",
+      "kanji": "婦人",
+      "meanings": [
+        "Señora",
+        "Dama"
+      ]
+    },
+    {
+      "id": "4218",
+      "kana": "たいじん",
+      "kanji": "対人",
+      "meanings": [
+        "Personal"
+      ]
+    },
+    {
+      "id": "1178",
+      "kana": "しょうにん",
+      "kanji": "小人",
+      "meanings": [
+        "Niño (genérico)"
+      ]
+    },
+    {
+      "id": "5002",
+      "kana": "きょじん",
+      "kanji": "巨人",
+      "meanings": [
+        "Gigante"
+      ]
+    },
+    {
+      "id": "5896",
+      "kana": "やくにん",
+      "kanji": "役人",
+      "meanings": [
+        "Oficial del gobierno"
+      ]
+    },
+    {
+      "id": "484",
+      "kana": "こいびと",
+      "kanji": "恋人",
+      "meanings": [
+        "Novio",
+        "Novia",
+        "Amante"
+      ]
+    },
+    {
+      "id": "1932",
+      "kana": "あくにん",
+      "kanji": "悪人",
+      "meanings": [
+        "Villano"
+      ]
+    },
+    {
+      "id": "4007",
+      "kana": "せいじん",
+      "kanji": "成人",
+      "meanings": [
+        "Adulto"
+      ]
+    },
+    {
+      "id": "3873",
+      "kana": "そうじにん",
+      "kanji": "掃除人",
+      "meanings": [
+        "Limpiador",
+        "Celador"
+      ]
+    },
+    {
+      "id": "3756",
+      "kana": "こじん",
+      "kanji": "故人",
+      "meanings": [
+        "Difunto",
+        "Difuntos"
+      ]
+    },
+    {
+      "id": "89",
+      "kana": "にほんじん",
+      "kanji": "日本人",
+      "meanings": [
+        "Japonés (gentilicio)"
+      ]
+    },
+    {
+      "id": "6034",
+      "kana": "きゅうじん",
+      "kanji": "求人",
+      "meanings": [
+        "Oferta de Trabajo"
+      ]
+    },
+    {
+      "id": "3791",
+      "kana": "きゅうじんこうこく",
+      "kanji": "求人広告",
+      "meanings": [
+        "Ofertas de trabajo (anuncios)"
+      ]
+    },
+    {
+      "id": "3220",
+      "kana": "はんにん",
+      "kanji": "犯人",
+      "meanings": [
+        "Delicuente",
+        "Criminal"
+      ]
+    },
+    {
+      "id": "354",
+      "kana": "おとこのひと",
+      "kanji": "男の人",
+      "meanings": [
+        "Hombre"
+      ]
+    },
+    {
+      "id": "1845",
+      "kana": "びょうにん",
+      "kanji": "病人",
+      "meanings": [
+        "Enfermo"
+      ]
+    },
+    {
+      "id": "5712",
+      "kana": "とうじょうじんぶつ",
+      "kanji": "登場人物",
+      "meanings": [
+        "Dramatis  personae",
+        "Personaje"
+      ]
+    },
+    {
+      "id": "5746",
+      "kana": "ちじん",
+      "kanji": "知人",
+      "meanings": [
+        "Conocido"
+      ]
+    },
+    {
+      "id": "5886",
+      "kana": "しろうと",
+      "kanji": "素人",
+      "meanings": [
+        "Aficionado",
+        "Amateur"
+      ]
+    },
+    {
+      "id": "2724",
+      "kana": "びじん",
+      "kanji": "美人",
+      "meanings": [
+        "Mujer hermosa"
+      ]
+    },
+    {
+      "id": "4076",
+      "kana": "ろうじん",
+      "kanji": "老人",
+      "meanings": [
+        "Viejo (persona)",
+        "Anciano (persona)"
+      ]
+    },
+    {
+      "id": "4652",
+      "kana": "しょくにん",
+      "kanji": "職人",
+      "meanings": [
+        "Mecánico",
+        "Artesano"
+      ]
+    },
+    {
+      "id": "5933",
+      "kana": "げいのうじん",
+      "kanji": "芸能人",
+      "meanings": [
+        "Actor",
+        "Famoso",
+        "Intérprete"
+      ]
+    },
+    {
+      "id": "2266",
+      "kana": "しじん",
+      "kanji": "詩人",
+      "meanings": [
+        "Poeta"
+      ]
+    },
+    {
+      "id": "232",
+      "kana": "ぐんじん",
+      "kanji": "軍人",
+      "meanings": [
+        "Soldado",
+        "Personal militar"
+      ]
+    },
+    {
+      "id": "1428",
+      "kana": "きんじょのひと",
+      "kanji": "近所の人",
+      "meanings": [
+        "Vecino"
+      ]
+    },
+    {
+      "id": "103",
+      "kana": "かんこくじん",
+      "kanji": "韓国人",
+      "meanings": [
+        "Coreano (gentilicio)"
+      ]
     }
-  }, {
-    "id": "4",
-    "kanji": "\u5c71",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "148",
-      "reading": "\u3084\u307e"
-    }, {
-      "kind": "On",
-      "help-word": "249",
-      "reading": "\u30b5\u30f3"
-    }],
-    "meanings": ["Monta\u00f1a"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 4,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 43,
-        "level": 505
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 26,
-        "level": 102
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 67,
-        "level": 7
-      }
-    }
-  }, {
-    "id": "5",
-    "kanji": "\u5ddd",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "158",
-      "reading": "\u304b\u308f"
-    }],
-    "meanings": ["R\u00edo"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 5,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 52,
-        "level": 506
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 27,
-        "level": 102
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 114,
-        "level": 13
-      }
-    }
-  }, {
-    "id": "6",
-    "kanji": "\u7530",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2242",
-      "reading": "\u305f"
-    }, {
-      "kind": "Kun",
-      "help-word": "2318",
-      "reading": "\u30fc\u3060"
-    }, {
-      "kind": "On",
-      "help-word": "2243",
-      "reading": "\u30c7\u30f3"
-    }],
-    "meanings": ["Campo de arroz"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 6,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 220,
-        "level": 414
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 30,
-        "level": 102
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 203,
-        "level": 25
-      }
-    }
-  }, {
-    "id": "7",
-    "kanji": "\u4eba",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2296",
-      "reading": "\u3072\u3068"
-    }, {
-      "kind": "On",
-      "help-word": "89",
-      "reading": "\u30b8\u30f3"
-    }, {
-      "kind": "On",
-      "help-word": "1845",
-      "reading": "\u30cb\u30f3"
-    }],
-    "meanings": ["Persona"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 7,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 4,
-        "level": 501
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 37,
-        "level": 103
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 11,
-        "level": 1
-      }
-    }
-  }, {
-    "id": "8",
-    "kanji": "\u53e3",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "130",
-      "reading": "\u304f\u3061"
-    }, {
-      "kind": "Kun",
-      "help-word": "347",
-      "reading": "\u30fc\u3050\u3061"
-    }, {
-      "kind": "On",
-      "help-word": "349",
-      "reading": "\u30b3\u30a6"
-    }],
-    "meanings": ["Boca"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 8,
-        "level": 1
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 44,
-        "level": 104
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 125,
-        "level": 15
-      }
-    }
-  }, {
-    "id": "9",
-    "kanji": "\u8eca",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "167",
-      "reading": "\u304f\u308b\u307e"
-    }, {
-      "kind": "On",
-      "help-word": "312",
-      "reading": "\u30b7\u30e3"
-    }],
-    "meanings": ["Coche"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 9,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 65,
-        "level": 507
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 75,
-        "level": 107
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 26,
-        "level": 1
-      }
-    }
-  }, {
-    "id": "10",
-    "kanji": "\u9580",
-    "readings": [{
-      "kind": "On",
-      "help-word": "351",
-      "reading": "\u30e2\u30f3"
-    }],
-    "meanings": ["Puerta (exterior)"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 10,
-        "level": 1
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 251,
-        "level": 417
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 167,
-        "level": 208
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 82,
-        "level": 9
-      }
-    }
-  }, {
-    "id": "11",
-    "kanji": "\u706b",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "123",
-      "reading": "\u3072"
-    }, {
-      "kind": "Kun",
-      "help-word": "649",
-      "reading": "\u30fc\u3073"
-    }, {
-      "kind": "On",
-      "help-word": "1010",
-      "reading": "\u30ab"
-    }],
-    "meanings": ["Fuego"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 11,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 73,
-        "level": 508
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 68,
-        "level": 106
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 38,
-        "level": 2
-      }
-    }
-  }, {
-    "id": "12",
-    "kanji": "\u6c34",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "250",
-      "reading": "\u307f\u305a"
-    }, {
-      "kind": "On",
-      "help-word": "1009",
-      "reading": "\u30b9\u30a4"
-    }],
-    "meanings": ["Agua"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 12,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 54,
-        "level": 506
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 67,
-        "level": 106
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 39,
-        "level": 2
-      }
-    }
-  }, {
-    "id": "13",
-    "kanji": "\u91d1",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2315",
-      "reading": "\u304b\u306a"
-    }, {
-      "kind": "Kun",
-      "help-word": "137",
-      "reading": "\u304b\u306d"
-    }, {
-      "kind": "On",
-      "help-word": "1013",
-      "reading": "\u30ad\u30f3"
-    }, {
-      "kind": "On",
-      "help-word": "1055",
-      "reading": "\u30b3\u30f3"
-    }],
-    "meanings": ["Dinero", "Oro"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 13,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 28,
-        "level": 503
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 76,
-        "level": 107
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 41,
-        "level": 2
-      }
-    }
-  }, {
-    "id": "14",
-    "kanji": "\u571f",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2240",
-      "reading": "\u3064\u3061"
-    }, {
-      "kind": "On",
-      "help-word": "1012",
-      "reading": "\u30c9"
-    }],
-    "meanings": ["La Tierra", "Suelo", "Tierra"],
-    "catalogs": [{
+  ],
+  "catalogs": [
+    {
       "name": "Basic Kanji Book I",
-      "slug": "basic-kanji-book",
-      "catalogId": "0",
-      "n": 14,
-      "level": 2
-    }, {
+      "id": "0",
+      "level": "1",
+      "n": "7",
+      "slug": "basic-kanji-book"
+    },
+    {
       "name": "JLPT",
-      "slug": "jlpt",
-      "catalogId": "1",
-      "n": 61,
-      "level": 507
-    }, {
-      "name": "Ky\u014diku kanji",
-      "slug": "kyoiku-kanji",
-      "catalogId": "2",
-      "n": 28,
-      "level": 102
-    }]
-  }, {
-    "id": "15",
-    "kanji": "\u5b50",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "284",
-      "reading": "\u3053"
-    }, {
-      "kind": "On",
-      "help-word": "468",
-      "reading": "\u30b7"
-    }, {
-      "kind": "On",
-      "help-word": "20",
-      "reading": "\u30b9"
-    }],
-    "meanings": ["Ni\u00f1o"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 15,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 34,
-        "level": 504
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 41,
-        "level": 104
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 143,
-        "level": 17
-      }
+      "id": "1",
+      "level": "501",
+      "n": "4",
+      "slug": "jlpt"
+    },
+    {
+      "name": "Kyōiku kanji",
+      "id": "2",
+      "level": "103",
+      "n": "37",
+      "slug": "kyoiku-kanji"
+    },
+    {
+      "name": "Minna no nihongo 2",
+      "id": "4",
+      "level": "1",
+      "n": "11",
+      "slug": "minna-no-nihongo-2"
     }
-  }, {
-    "id": "16",
-    "kanji": "\u5973",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "353",
-      "reading": "\u304a\u3093\u306a"
-    }, {
-      "kind": "On",
-      "help-word": "697",
-      "reading": "\u30b8\u30e7"
-    }],
-    "meanings": ["Hembra", "Mujer"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 16,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 45,
-        "level": 505
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 39,
-        "level": 103
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 76,
-        "level": 9
-      }
-    }
-  }, {
-    "id": "17",
-    "kanji": "\u5b66",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "830",
-      "reading": "\u307e\u306a\u30fc\u3076"
-    }, {
-      "kind": "On",
-      "help-word": "95",
-      "reading": "\u30ac\u30af"
-    }],
-    "meanings": ["Estudiar"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 17,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 31,
-        "level": 504
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 61,
-        "level": 106
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 18,
-        "level": 1
-      }
-    }
-  }, {
-    "id": "18",
-    "kanji": "\u751f",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "832",
-      "reading": "\u3044\u30fc\u304d\u308b"
-    }, {
-      "kind": "Kun",
-      "help-word": "834",
-      "reading": "\u3046\u30fc\u307e\u308c\u308b"
-    }, {
-      "kind": "On",
-      "help-word": "110",
-      "reading": "\u30bb\u30a4"
-    }],
-    "meanings": ["Nacer", "Vivir"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 18,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 21,
-        "level": 503
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 32,
-        "level": 103
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 22,
-        "level": 1
-      }
-    }
-  }, {
-    "id": "19",
-    "kanji": "\u5148",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2205",
-      "reading": "\u3055\u304d"
-    }, {
-      "kind": "On",
-      "help-word": "110",
-      "reading": "\u30bb\u30f3"
-    }],
-    "meanings": ["Previo"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 19,
-        "level": 2
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 50,
-        "level": 505
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 56,
-        "level": 105
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 21,
-        "level": 1
-      }
-    }
-  }, {
-    "id": "20",
-    "kanji": "\u79c1",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": null,
-      "reading": "\u308f\u305f\u304f\u3057"
-    }, {
-      "kind": "Kun",
-      "help-word": null,
-      "reading": "\u308f\u305f\u3057"
-    }, {
-      "kind": "On",
-      "help-word": null,
-      "reading": "\u30b7"
-    }],
-    "meanings": ["Privado", "Yo"],
-    "catalogs": [{
-      "name": "Basic Kanji Book I",
-      "slug": "basic-kanji-book",
-      "catalogId": "0",
-      "n": 20,
-      "level": 2
-    }, {
-      "name": "JLPT",
-      "slug": "jlpt",
-      "catalogId": "1",
-      "n": 153,
-      "level": 408
-    }, {
-      "name": "Ky\u014diku kanji",
-      "slug": "kyoiku-kanji",
-      "catalogId": "2",
-      "n": 939,
-      "level": 612
-    }]
-  }, {
-    "id": "21",
-    "kanji": "\u4e00",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "983",
-      "reading": "\u3072\u3068\u30fc\u3064"
-    }, {
-      "kind": "On",
-      "help-word": "996",
-      "reading": "\u30a4\u30c1"
-    }, {
-      "kind": "On",
-      "help-word": "954",
-      "reading": "\u30a4\u30c4"
-    }],
-    "meanings": ["\u00danico", "Uno"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 21,
-        "level": 3
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 2,
-        "level": 501
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 1,
-        "level": 100
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 1,
-        "level": 0
-      }
-    }
-  }, {
-    "id": "22",
-    "kanji": "\u4e8c",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "990",
-      "reading": "\u3075\u305f\u30fc\u3064"
-    }, {
-      "kind": "Kun",
-      "help-word": "957",
-      "reading": "\u3075\u3064\u30fc\u304b"
-    }, {
-      "kind": "On",
-      "help-word": "955",
-      "reading": "\u30cb"
-    }],
-    "meanings": ["Dos"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 22,
-        "level": 3
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 8,
-        "level": 501
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 2,
-        "level": 100
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 2,
-        "level": 0
-      }
-    }
-  }, {
-    "id": "23",
-    "kanji": "\u4e09",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "986",
-      "reading": "\u307f\u3063-\u3064"
-    }, {
-      "kind": "On",
-      "help-word": "959",
-      "reading": "\u30b5\u30f3"
-    }],
-    "meanings": ["Tres"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 23,
-        "level": 3
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 13,
-        "level": 502
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 3,
-        "level": 100
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 3,
-        "level": 0
-      }
-    }
-  }, {
-    "id": "24",
-    "kanji": "\u56db",
-    "readings": [{
-      "kind": "Kun",
-      "help-word": "2213",
-      "reading": "\u3088"
-    }, {
-      "kind": "Kun",
-      "help-word": "963",
-      "reading": "\u3088\u3063-\u3064"
-    }, {
-      "kind": "On",
-      "help-word": "962",
-      "reading": "\u30b7"
-    }],
-    "meanings": ["Cuatro"],
-    "catalogs": {
-      "0": {
-        "name": "Basic Kanji Book I",
-        "slug": "basic-kanji-book",
-        "catalogId": "0",
-        "n": 24,
-        "level": 3
-      },
-      "1": {
-        "name": "JLPT",
-        "slug": "jlpt",
-        "catalogId": "1",
-        "n": 26,
-        "level": 503
-      },
-      "2": {
-        "name": "Ky\u014diku kanji",
-        "slug": "kyoiku-kanji",
-        "catalogId": "2",
-        "n": 4,
-        "level": 100
-      },
-      "4": {
-        "name": "Minna no nihongo 2",
-        "slug": "minna-no-nihongo-2",
-        "catalogId": "4",
-        "n": 4,
-        "level": 0
-      }
-    }
-  }],
-  "total": "494",
-  "levels": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
-  "request": {
-    "kanji": null,
-    "catalogId": null,
-    "catalog": "basic-kanji-book",
-    "level": null,
-    "reading": null,
-    "kunOnly": null,
-    "onOnly": null,
-    "meaning": null,
-    "sort": null,
-    "order": null,
-    "format": "json",
-    "page": "0",
-    "pageSize": "24"
-  },
-  "page": {
-    "page": "0",
-    "pageSize": "24",
-    "nPages": 21,
-    "hasMore": true,
-    "nItems": 24
-  }
+  ]
 }
