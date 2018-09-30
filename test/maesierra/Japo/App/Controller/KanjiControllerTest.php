@@ -11,6 +11,7 @@ namespace maesierra\Japo\App\Controller;
 
 use maesierra\Japo\Common\Query\Sort;
 use maesierra\Japo\DB\KanjiRepository;
+use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
 use maesierra\Japo\Kanji\KanjiQuery;
@@ -138,6 +139,33 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
         $this->controller->query($request, $response, []);
     }
 
+
+    public function testKanji() {
+        $results = $this->kanji(7328, 'kanji', 5, 550);
+        $this->kanjiRepository->expects($this->once())->method('findKanji')->willReturn($results)->with('kanji');
+        $this->response->expects($this->once())->method('withHeader')->with('Content-type', 'application/json')->willReturnSelf();
+        $this->body->expects($this->once())->method('write')->with(json_encode($results));
+
+        /** @var ServerRequestInterface $request */
+        $request = $this->request;
+        /** @var ResponseInterface $response */
+        $response = $this->response;
+        $this->controller->kanji($request, $response, ['kanji' => 'kanji']);
+    }
+
+    public function testKanji_notFound() {
+        $this->kanjiRepository->expects($this->once())->method('findKanji')->willReturn(null)->with('kanji');
+        $this->response->expects($this->once())->method('withHeader')->with('Content-type', 'application/json')->willReturnSelf();
+        $this->response->expects($this->once())->method('withStatus')->with(404)->willReturnSelf();
+        $this->body->expects($this->once())->method('write')->with("Kanji not found");
+
+        /** @var ServerRequestInterface $request */
+        $request = $this->request;
+        /** @var ResponseInterface $response */
+        $response = $this->response;
+        $this->controller->kanji($request, $response, ['kanji' => 'kanji']);
+    }
+
     /**
      * @return KanjiCatalog
      */
@@ -172,6 +200,33 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
         ];
         $kanjiQueryResult->meanings = ['sun', 'day'];
         return $kanjiQueryResult;
+    }
+
+    /**
+     * @param $id
+     * @param $kanjiStr
+     * @param $level1
+     * @param $level2
+     * @return Kanji
+     */
+    private function kanji($id, $kanjiStr, $level1, $level2)
+    {
+        $kanji = new Kanji();
+        $kanji->id = $id;
+        $kanji->kanji = $kanjiStr;
+        $kanji->catalogs = [
+            33 => $this->kanjiCatalogEntry($level1, 1, 'catalog1', 33, 'catalog_1'),
+            4 => $this->kanjiCatalogEntry($level2,10,  'catalog2', 4, 'catalog_2')
+        ];
+        $kanji->on = [
+            $this->kanjiReading('O', 'on reading1', null),
+            $this->kanjiReading('O', 'on reading2', 35)
+        ];
+        $kanji->kun = [
+            $this->kanjiReading('K', 'kun reading', 356)
+        ];
+        $kanji->meanings = ['sun', 'day'];
+        return $kanji;
     }
 
 

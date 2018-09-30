@@ -11,8 +11,8 @@ namespace maesierra\Japo\Kanji;
 
 class KanjiReading {
 
-    const TYPE_KUN = 'Kun';
-    const TYPE_ON = 'On';
+    const TYPE_KUN = 'K';
+    const TYPE_ON = 'O';
 
     public $reading;
     public $type;

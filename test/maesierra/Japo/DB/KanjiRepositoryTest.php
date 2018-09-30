@@ -15,17 +15,18 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use maesierra\Japo\Common\Query\Page;
 use maesierra\Japo\Common\Query\Sort;
-use maesierra\Japo\Entity\Kanji;
 use maesierra\Japo\Entity\Kanji as KanjiEntity;
 use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
 use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
 use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
+use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
 use maesierra\Japo\Kanji\KanjiQuery;
 use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiReading;
+use maesierra\Japo\Kanji\KanjiReadingHelpWord;
 use maesierra\Japo\Test\Utils\TestQuery;
 use Monolog\Logger;
 
@@ -57,8 +58,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->kanjiRepository = new KanjiRepository($entityManager, $logger);
     }
 
-    public function testBasicKanjiQuery_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_noResults() {
+        $this->stubKanjiQuery();
         $expectedDDL = "";
         $this->verifyDDLExecuted($expectedDDL);
         $results = $this->kanjiRepository->query(new KanjiQuery());
@@ -68,9 +69,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(new KanjiQuery(), $results->query);
     }
 
-    public function testBasicKanjiQuery_singleResult() {
-        $kanji = $this->stubbedKanjiEntity(7328, 'kanji', 5, 550);
-        $this->stubQuery([$kanji]);
+    public function testKanjiQuery_singleResult() {
+        $kanji = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
+        $this->stubKanjiQuery([$kanji]);
         $expectedDDL = "";
         $this->verifyDDLExecuted($expectedDDL);
         $results = $this->kanjiRepository->query(new KanjiQuery());
@@ -81,11 +82,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($results->page);
     }
 
-    public function testBasicKanjiQuery_singleResult_withCatalogId() {
-        $kanji = $this->stubbedKanjiEntity(7328, 'kanji', 5, 550);
+    public function testKanjiQuery_singleResult_withCatalogId() {
+        $kanji = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
         $catalog = $this->selectCatalogByLevel($kanji, 5);
         $catalogId = $catalog->getId();
-        $query = $this->stubQuery([$kanji]);
+        $query = $this->stubKanjiQuery([$kanji]);
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalogId = $catalogId;
         $expectedConditions = "JOIN k.catalogs cat ".
@@ -103,11 +104,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertNull($results->page);
     }
 
-    public function testBasicKanjiQuery_singleResult_withCatalogSlug() {
-        $kanji = $this->stubbedKanjiEntity(7328, 'kanji', 5, 550);
+    public function testKanjiQuery_singleResult_withCatalogSlug() {
+        $kanji = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
         $catalog = $this->selectCatalogByLevel($kanji, 5);
         $catalogId = $catalog->getId();
-        $query = $this->stubQuery([$kanji]);
+        $query = $this->stubKanjiQuery([$kanji]);
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalog = $catalog->getSlug();
         $expectedConditions = "JOIN k.catalogs cat ".
@@ -127,8 +128,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_paginated_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_paginated_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->page = 2;
         $kanjiQuery->pageSize = 10;
@@ -143,11 +144,11 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_paginated_multipleResults() {
-        $kanji1 = $this->stubbedKanjiEntity(7328, 'kanji', 5, 550);
-        $kanji2 = $this->stubbedKanjiEntity(7329, 'kanj2', 6, 551);
-        $kanji3 = $this->stubbedKanjiEntity(7330, 'kanj3', 6, 552);
-        $query = $this->stubQuery([$kanji1, $kanji2, $kanji3], 30);
+    public function testKanjiQuery_paginated_multipleResults() {
+        $kanji1 = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
+        $kanji2 = $this->mockKanjiEntity(7329, 'kanj2', 6, 551);
+        $kanji3 = $this->mockKanjiEntity(7330, 'kanj3', 6, 552);
+        $query = $this->stubKanjiQuery([$kanji1, $kanji2, $kanji3], 30);
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->page = 2;
         $kanjiQuery->pageSize = 3;
@@ -168,8 +169,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
 
 
 
-    public function testBasicKanjiQuery_multipleConditions_sort_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_multipleConditions_sort_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalogId = 0;
         $kanjiQuery->level = 2;
@@ -191,8 +192,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
-    public function testBasicKanjiQuery_catalogId_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_catalogId_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalogId = 1;
         $expectedConditions = "JOIN k.catalogs cat ".
@@ -207,8 +208,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->stubCatalog(1, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
-    public function testBasicKanjiQuery_catalogSlug_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_catalogSlug_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalog = 'jlpt';
         $expectedConditions = "JOIN k.catalogs cat ".
@@ -224,8 +225,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'jlpt', [1, 3, 5]), $results->catalog);
     }
 
-    public function testBasicKanjiQuery_catalogSlugPrecedesCatalogId_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_catalogSlugPrecedesCatalogId_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalog = 'jlpt';
         $kanjiQuery->catalogId = 4;
@@ -241,8 +242,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
         $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'jlpt', [1, 3, 5]), $results->catalog);    }
 
-    public function testBasicKanjiQuery_catalogSlugAndLevelSingleValue_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_catalogSlugAndLevelSingleValue_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalog = 'jlpt';
         $kanjiQuery->level = 411;
@@ -260,8 +261,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'jlpt', [1, 3, 5]), $results->catalog);
     }
 
-    public function testBasicKanjiQuery_catalogIdAndLevelArray_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_catalogIdAndLevelArray_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->catalogId = 1;
         $kanjiQuery->level = [411, '407', ''];
@@ -278,9 +279,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->stubCatalog(0, 'catalog 0', 'catalog0', [1, 3, 5]), $results->catalog);
     }
 
-    public function testBasicKanjiQuery_levelNoCatalog_noResults()
+    public function testKanjiQuery_levelNoCatalog_noResults()
     {
-        $this->stubQuery();
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->level = [411, 407];
         $expectedConditions = "";
@@ -289,8 +290,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_reading_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_reading_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->reading = 'わたし';
         $expectedConditions = "JOIN k.readings reading ".
@@ -302,8 +303,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_readingKunOnly_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_readingKunOnly_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->reading = 'わたし';
         $kanjiQuery->kunOnly = true;
@@ -316,8 +317,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_readingoOnOnly_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_readingoOnOnly_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->reading = 'わたし';
         $kanjiQuery->onOnly = true;
@@ -330,8 +331,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_readingKunOnlyPrecedesOnOnly_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_readingKunOnlyPrecedesOnOnly_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->reading = 'わたし';
         $kanjiQuery->kunOnly = true;
@@ -345,9 +346,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_kunOnlyNoReading_noResults()
+    public function testKanjiQuery_kunOnlyNoReading_noResults()
     {
-        $this->stubQuery();
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->kunOnly = true;
         $expectedConditions = "";
@@ -356,9 +357,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_OnOnlyNoReading_noResults()
+    public function testKanjiQuery_OnOnlyNoReading_noResults()
     {
-        $this->stubQuery();
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->onOnly = true;
         $expectedConditions = "";
@@ -367,8 +368,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_meaning_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_meaning_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->meaning = 'Sol';
         $expectedConditions = "JOIN k.meanings gloss ".
@@ -380,8 +381,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_sortById_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortById_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("id");
         $expectedConditions = "ORDER BY k.id";
@@ -390,8 +391,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_sortByIdDesc_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByIdDesc_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("id", Sort::SORT_DESC);
         $expectedConditions = "ORDER BY k.id desc";
@@ -401,8 +402,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    public function testBasicKanjiQuery_sortByKanji_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByKanji_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("kanji");
         $expectedConditions = "ORDER BY k.kanji";
@@ -411,8 +412,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_sortByKanjiDesc_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByKanjiDesc_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("kanji", Sort::SORT_DESC);
         $expectedConditions = "ORDER BY k.kanji desc";
@@ -421,8 +422,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_sortByLevel_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByLevel_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("level");
         $expectedConditions = "JOIN k.catalogs cat " .
@@ -432,8 +433,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_catalogIdAndSortByLevel_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_catalogIdAndSortByLevel_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("level");
         $kanjiQuery->catalogId = 0;
@@ -452,8 +453,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
 
 
 
-    public function testBasicKanjiQuery_sortByLevelDesc_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByLevelDesc_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("level", Sort::SORT_DESC);
         $expectedConditions = "JOIN k.catalogs cat " .
@@ -465,8 +466,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
 
 
 
-    public function testBasicKanjiQuery_sortByOn_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByOn_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("on");
         $expectedConditions = "JOIN k.readings reading ".
@@ -476,8 +477,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_readingAndSortByOn_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_readingAndSortByOn_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("on");
         $kanjiQuery->reading = 'わたし';
@@ -492,8 +493,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    public function testBasicKanjiQuery_sortByOnDesc_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByOnDesc_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("on", Sort::SORT_DESC);
         $expectedConditions = "JOIN k.readings reading ".
@@ -503,8 +504,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_sortByKun_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByKun_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("kun");
         $expectedConditions = "JOIN k.readings reading ".
@@ -514,8 +515,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_readingAndSortByKun_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_readingAndSortByKun_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("kun");
         $kanjiQuery->reading = 'わたし';
@@ -530,8 +531,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    public function testBasicKanjiQuery_sortByKunDesc_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByKunDesc_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("kun", Sort::SORT_DESC);
         $expectedConditions = "JOIN k.readings reading ".
@@ -541,8 +542,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_sortByMeaning_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByMeaning_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("meaning");
         $expectedConditions = "JOIN k.meanings gloss ".
@@ -552,8 +553,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($kanjiQuery, $results->query);
     }
 
-    public function testBasicKanjiQuery_meaningAndSortByMeaning_noResults() {
-        $query = $this->stubQuery();
+    public function testKanjiQuery_meaningAndSortByMeaning_noResults() {
+        $query = $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("meaning");
         $kanjiQuery->meaning = 'Sol';
@@ -568,8 +569,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    public function testBasicKanjiQuery_sortByMeaningDesc_noResults() {
-        $this->stubQuery();
+    public function testKanjiQuery_sortByMeaningDesc_noResults() {
+        $this->stubKanjiQuery();
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->sort = new Sort("meaning", Sort::SORT_DESC);
         $expectedConditions = "JOIN k.meanings gloss ".
@@ -593,10 +594,28 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         ], $this->kanjiRepository->listCatalogs());
     }
 
+
+
+    public function testKanji() {
+        $this->stubFindKanjiByKanji('kanji', $this->mockKanjiEntity(7328, 'kanji', 5, 550));
+        $kanji = $this->kanjiRepository->findKanji('kanji');
+
+        $this->assertEquals(
+            $this->expectedKanji(7328, 'kanji', 5, 550),
+            $kanji
+        );
+    }
+
+    public function testKanji_notFound() {
+        $this->stubFindKanjiByKanji('kanji', null);
+        $kanji = $this->kanjiRepository->findKanji('kanji');
+        $this->assertNull($kanji);
+    }
+
     /**
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function stubQuery($results = [], $total = null)
+    private function stubKanjiQuery($results = [], $total = null)
     {
         $total = $total ?: count($results);
         $query = $this->createMock(TestQuery::class);
@@ -628,7 +647,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $level2
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function stubbedKanjiEntity($id, $kanjiStr, $level1, $level2)
+    private function mockKanjiEntity($id, $kanjiStr, $level1, $level2)
     {
         $kanji = $this->createMock(KanjiEntity::class);
         $kanji->method('getId')->willReturn($id);
@@ -672,6 +691,33 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         ];
         $kanjiQueryResult->meanings = ['sun', 'day'];
         return $kanjiQueryResult;
+    }
+
+    /**
+     * @param $id
+     * @param $kanjiStr
+     * @param $level1
+     * @param $level2
+     * @return Kanji
+     */
+    private function expectedKanji($id, $kanjiStr, $level1, $level2)
+    {
+        $kanji = new Kanji();
+        $kanji->id = $id;
+        $kanji->kanji = $kanjiStr;
+        $kanji->catalogs = [
+            33 => $this->kanjiCatalogEntry($level1, 1, 'catalog1', 33, 'catalog_1'),
+            4 => $this->kanjiCatalogEntry($level2,10,  'catalog2', 4, 'catalog_2')
+        ];
+        $kanji->on = [
+            $this->kanjiReading('O', 'on reading1', null),
+            $this->kanjiReading('O', 'on reading2', 35)
+        ];
+        $kanji->kun = [
+            $this->kanjiReading('K', 'kun reading', 356),
+        ];
+        $kanji->meanings = ['sun', 'day'];
+        return $kanji;
     }
 
     /**
@@ -742,7 +788,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     {
         $reading = new KanjiReading();
         $reading->type = $type;
-        $reading->helpWord = $helpWordId;
+        $helpWord = new KanjiReadingHelpWord();
+        $helpWord->id = $helpWordId;
+        $reading->helpWord = $helpWord;
         $reading->reading = $r;
         return $reading;
     }
@@ -859,6 +907,16 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             /** @var KanjiCatalogEntryEntity $c */
             return $c->getLevel() == $level;
         })[0]->getCatalog();
+    }
+
+    /**
+     * @param $kanji string
+     * @param $kanjiEntity
+     */
+    private function stubFindKanjiByKanji($kanji, $kanjiEntity) {
+        $repository = $this->createMock(EntityRepository::class);
+        $this->entityManager->method('getRepository')->with(KanjiEntity::class)->willReturn($repository);
+        $repository->method('findOneBy')->with(['kanji' => $kanji])->willReturn($kanjiEntity);
     }
 
 }

@@ -60,6 +60,24 @@ class KanjiController extends BaseController {
         $this->logger->debug("Kanji Query: ".json_encode($params));
         $response->getBody()->write(json_encode($this->kanjiRepository->query(new KanjiQuery($params))));
         return $response;
+    }
+
+    /**
+     * @param $request ServerRequestInterface
+     * @param $response ResponseInterface
+     * @param $args array
+     * @return ResponseInterface
+     */
+    public function kanji($request, $response, $args) {
+        $response = $response->withHeader('Content-type', 'application/json');
+        $kanji = $this->kanjiRepository->findKanji($args['kanji']);
+        if (!$kanji) {
+            $response = $response->withStatus(404);
+            $response->getBody()->write('Kanji not found');
+        } else {
+            $response->getBody()->write(json_encode($kanji));
+        }
+        return $response;
 
     }
 
