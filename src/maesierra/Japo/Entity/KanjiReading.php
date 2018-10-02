@@ -9,6 +9,7 @@
 
 namespace maesierra\Japo\Entity;
 
+use \maesierra\Japo\Entity\Word\Word;
 
 /**
  * @Entity @Table(name="kanji_readings")
@@ -34,6 +35,15 @@ class KanjiReading
      * @var Kanji
      */
     private $kanji;
+
+    /**
+     * @var Word
+     * @ManyToOne(targetEntity="maesierra\Japo\Entity\Word\Word", inversedBy="KanjiReading"))
+     * @JoinColumn(name="help_word", referencedColumnName="id")
+     */
+
+    private $helpWord;
+
 
     public function __construct()
     {
@@ -127,6 +137,20 @@ class KanjiReading
      */
     public function setId($id) {
         $this->id = $id;
+    }
+
+    /**
+     * @return Word
+     */
+    public function getHelpWord() {
+        return $this->helpWord;
+    }
+
+    /**
+     * @param Word $helpWord
+     */
+    public function setHelpWord($helpWord) {
+        $this->helpWord = $helpWord;
     }
 
 }

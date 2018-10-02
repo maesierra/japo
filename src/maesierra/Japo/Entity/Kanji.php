@@ -42,12 +42,23 @@ class Kanji
      */
     private $strokes;
 
+    /**
+     * @var \maesierra\Japo\Entity\Word\Word[]
+     * @ManyToMany(targetEntity="maesierra\Japo\Entity\Word\Word")
+     * @JoinTable(name="word_furigana",
+     *      joinColumns={@JoinColumn(name="id_kanji", referencedColumnName="id")},
+     *      inverseJoinColumns={@JoinColumn(name="word_id", referencedColumnName="id")}
+     * )
+     */
+    private $words;
+
 	
 	public function __construct() {
         $this->catalogs = new ArrayCollection();
         $this->readings = new ArrayCollection();
         $this->meanings = new ArrayCollection();
         $this->strokes = new ArrayCollection();
+        $this->words = new ArrayCollection();
     }
 
     public function __toString()
@@ -106,6 +117,13 @@ class Kanji
      */
     public function getStrokes() {
         return $this->strokes;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getWords() {
+        return $this->words;
     }
 
 }

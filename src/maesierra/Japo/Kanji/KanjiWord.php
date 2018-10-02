@@ -9,7 +9,7 @@
 namespace maesierra\Japo\Kanji;
 
 
-class KanjiReadingHelpWord {
+class KanjiWord {
 
     /** @var  int */
     public $id;

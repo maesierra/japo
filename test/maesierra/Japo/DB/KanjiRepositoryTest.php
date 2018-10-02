@@ -21,14 +21,16 @@ use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
 use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
 use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
 use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
+use maesierra\Japo\Entity\Word\Word as WordEntity;
+use maesierra\Japo\Entity\Word\WordMeaning as WordMeaningEntity;
 use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
 use maesierra\Japo\Kanji\KanjiQuery;
 use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiReading;
-use maesierra\Japo\Kanji\KanjiReadingHelpWord;
 use maesierra\Japo\Kanji\KanjiStroke;
+use maesierra\Japo\Kanji\KanjiWord;
 use maesierra\Japo\Test\Utils\TestQuery;
 use Monolog\Logger;
 
@@ -671,6 +673,10 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             $this->kanjiStrokeEntity(1, 'M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25', '18'),
             $this->kanjiStrokeEntity(2, 'M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53', '15'),
         ]));
+        $kanji->method('getWords')->willReturn(new ArrayCollection([
+            $this->wordEntity(1,'kana1', 'kanji1', 'sun', 'light'),
+            $this->wordEntity(2,'kana2', 'kanji2', 'day'),
+        ]));
         return $kanji;
     }
 
@@ -727,6 +733,10 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
             $this->kanjiStroke(1, 'M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25', '18'),
             $this->kanjiStroke(2, 'M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53', '15')
         ];
+        $kanji->words = [
+            $this->kanjiWord(1,'kana1', 'kanji1', 'sun', 'light'),
+            $this->kanjiWord(2,'kana2', 'kanji2', 'day'),
+        ];
         return $kanji;
     }
 
@@ -760,6 +770,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $reading->method('getKind')->willReturn($kind);
         $reading->method('getHelpWordId')->willReturn($helpWordId);
         $reading->method('getReading')->willReturn($r);
+        if ($helpWordId) {
+            $reading->method('getHelpWord')->willReturn($this->wordEntity($helpWordId, "kana$helpWordId", "kanji$helpWordId", "meaning.1$helpWordId", "meaning.2$helpWordId"));
+        }
         return $reading;
     }
 
@@ -772,6 +785,27 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $kanjiMeaning = $this->createMock(KanjiMeaningEntity::class);
         $kanjiMeaning->method('getMeaning')->willReturn($meaning);
         return $kanjiMeaning;
+    }
+
+    /**
+     * @param $id int
+     * @param $kana string
+     * @param $kanji string
+     * @param $meanings string
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function wordEntity($id, $kana, $kanji, ...$meanings)
+    {
+        $word = $this->createMock(WordEntity::class);
+        $word->method('getIdWord')->willReturn($id);
+        $word->method('getKana')->willReturn($kana);
+        $word->method('getKanji')->willReturn($kanji);
+        $word->method('getMeanings')->willReturn(new ArrayCollection(array_map(function($m) {
+            $entity = $this->createMock(WordMeaningEntity::class);
+            $entity->method('getMeaning')->willReturn($m);
+            return $entity;
+        }, $meanings)));
+        return $word;
     }
 
     /**
@@ -828,12 +862,35 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     {
         $reading = new KanjiReading();
         $reading->type = $type;
-        $helpWord = new KanjiReadingHelpWord();
-        $helpWord->id = $helpWordId;
-        $reading->helpWord = $helpWord;
+        if ($helpWordId) {
+            $helpWord = new KanjiWord();
+            $helpWord->id = $helpWordId;
+            $helpWord->kanji = "kanji$helpWordId";
+            $helpWord->kana = "kana$helpWordId";
+            $helpWord->meanings = ["meaning.1$helpWordId", "meaning.2$helpWordId"];
+            $reading->helpWord = $helpWord;
+        }
         $reading->reading = $r;
         return $reading;
     }
+
+    /**
+     * @param $id int
+     * @param $kana string
+     * @param $kanji string
+     * @param $meanings string
+     * @return KanjiWord
+     */
+    private function kanjiWord($id, $kana, $kanji, ...$meanings)
+    {
+        $word = new KanjiWord();
+        $word->id = $id;
+        $word->kana = $kana;
+        $word->kanji = $kanji;
+        $word->meanings = $meanings;
+        return $word;
+    }
+
 
     /**
      * @param $query \PHPUnit_Framework_MockObject_MockObject
@@ -958,5 +1015,4 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->entityManager->method('getRepository')->with(KanjiEntity::class)->willReturn($repository);
         $repository->method('findOneBy')->with(['kanji' => $kanji])->willReturn($kanjiEntity);
     }
-
 }

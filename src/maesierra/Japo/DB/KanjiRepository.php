@@ -13,10 +13,13 @@ use Doctrine\ORM\EntityManager;
 use maesierra\Japo\Common\Query\Page;
 use maesierra\Japo\Common\Query\Sort;
 use maesierra\Japo\Entity\Kanji as KanjiEntity;
+use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
-use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
 use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
+use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
 use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
+use maesierra\Japo\Entity\Word\Word as WordEntity;
+use maesierra\Japo\Entity\Word\WordMeaning as WordMeaningEntity;
 use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
@@ -24,10 +27,9 @@ use maesierra\Japo\Kanji\KanjiQuery;
 use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiQueryResults;
 use maesierra\Japo\Kanji\KanjiReading;
-use maesierra\Japo\Kanji\KanjiReadingHelpWord;
 use maesierra\Japo\Kanji\KanjiStroke;
+use maesierra\Japo\Kanji\KanjiWord;
 use maesierra\Japo\Lang\JapaneseLanguageHelper as Japanese;
-use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
 use Monolog\Logger;
 
 class KanjiRepository {
@@ -89,12 +91,31 @@ class KanjiRepository {
     private function mapKanjiReading($entity) {
         $reading = new KanjiReading();
         $reading->type = $entity->getKind();
-        $helpWord = new KanjiReadingHelpWord();
-        $helpWord->id = $entity->getHelpWordId();
-        $reading->helpWord = $helpWord;
+        $reading->helpWord = $this->mapWord($entity->getHelpWord());
         $reading->reading = $entity->getReading();
         return $reading;
     }
+
+    /**
+     * @param $entity WordEntity
+     * @return KanjiWord
+     */
+    private function mapWord($entity){
+        if ($entity == null) {
+            return null;
+        }
+        /** @var WordEntity $entity */
+        $word = new KanjiWord();
+        $word->id = $entity->getIdWord();
+        $word->kana = $entity->getKana();
+        $word->kanji = $entity->getKanji();
+        $word->meanings = array_map(function ($m) {
+            /** @var WordMeaningEntity $m */
+            return $m->getMeaning();
+        }, $entity->getMeanings()->toArray());
+        return $word;
+    }
+
     /**
      * @return KanjiCatalog[]
      */
@@ -244,7 +265,6 @@ class KanjiRepository {
             }, []);
             $result->readings = array_map(function($kanjiReading) {
                 return $this->mapKanjiReading($kanjiReading);
-
             }, $kanji->getReadings()->toArray());
             $result->meanings = array_map(function($kanjiMeaning) {
                 /** @var KanjiMeaningEntity $kanjiMeaning */
@@ -330,6 +350,10 @@ class KanjiRepository {
             $stroke->type = $e->getType();
             return $stroke;
         }, $kanjiEntity->getStrokes()->toArray());
+
+        $result->words = array_map(function($w) {
+            return $this->mapWord($w);
+        }, $kanjiEntity->getWords()->toArray());
         return $result;
 
     }
