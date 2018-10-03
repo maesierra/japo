@@ -11,7 +11,6 @@
     "react-scrollable-anchor": "^0.5.0",
     "react-tooltip": "^3.3.0",
     "wanakana": "^2.2.4",
-    "xml-to-json": "^0.1.1",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^4.17.4",
     "mustache": "^2.3.0"

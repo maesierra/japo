@@ -17,7 +17,7 @@ const _ = require('lodash');
 const Reading = (props) => {
     const reading = props.reading;
     let helpWord = '';
-    if (reading.helpWord !== undefined) {
+    if (reading.helpWord !== undefined && reading.helpWord !== null) {
         helpWord = <span className="helpword" lang="ja">
         「<span className="helpword-kanji">{reading.helpWord.kanji}</span>: <span className="helpword-kana">{reading.helpWord.kana}</span>」
         </span>;
@@ -142,25 +142,28 @@ class KanjiDetails extends Component {
     }
 
     readingChanged(event, type, pos) {
-        let reading = event.target.value;
-        if (type === 'kun') {
+        let reading = event.target.value, property;
+        if (type === 'K') {
             reading = wanakana.toHiragana(reading);
+            property = 'kun';
         } else {
             reading = wanakana.toKatakana(reading);
+            property = 'on';
         }
-        let readings = this.state[type].slice();
+        let readings = this.state[property].slice();
         readings[pos] = Object.assign({}, readings[pos], {reading: reading, type: type});
         let newProps = {};
-        newProps[type] = readings.filter(r => r.reading !== '');
+        newProps[property] = readings.filter(r => r.reading !== '');
         this.setState(Object.assign({}, this.state, newProps));
 
     }
 
     helpWordChange(word, type, pos) {
-        let readings = this.state[type].slice();
+        let property = type === 'K' ? 'kun' : 'on';
+        let readings = this.state[property].slice();
         readings[pos] = Object.assign({}, readings[pos], {helpWord: word, type: type});
         let newProps = {};
-        newProps[type] = readings;
+        newProps[property] = readings;
         this.setState(Object.assign({}, this.state, newProps));
     }
 
@@ -315,9 +318,9 @@ class KanjiDetails extends Component {
         if (this.state.kanji) {
             let url = '';
             if (mode) {
-                url = "/japo/kanji/edit/" + this.state.kanji;
+                url = "/kanji/edit/" + this.state.kanji;
             } else {
-                url  ="/japo/kanji/details/" + this.state.kanji;
+                url  ="/kanji/details/" + this.state.kanji;
             }
             if (this.props.location.pathname !== url) {
                 this.props.history.push(url);

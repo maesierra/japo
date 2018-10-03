@@ -5,7 +5,7 @@ const Japo = require('../../../lib/japo/japo');
 
 const MenuItem = (props) => {
     let hasHref = props.href !== undefined;
-    let href = hasHref ? props.href : '#' + props.label;
+    let href = hasHref ? process.env.PUBLIC_URL + props.href : '#' + props.label;
     let onClick = function (e) {
         if (!hasHref && props.onClick !== undefined) {
             e.preventDefault();
@@ -27,11 +27,11 @@ class NavMenu extends React.Component {
 
     items(props) {
         return props.authorized ? {
-            start: {link: "/inicio.php", label: "Home"},
-            profile: {link: "/profile", label: "Profile"},
-            logout: {onClick: (e) => Japo.logout(), label: "Logout"}
+            start: {link: "/", label: "Inicio"},
+            /*profile: {link: "/profile", label: "Profile"},*/
+            logout: {onClick: (e) => Japo.logout(), label: "Salir"}
         } : {
-            login: {onClick: (e) => Japo.login(), label: "Sign In"}
+            login: {onClick: (e) => Japo.login(), label: "Acceder"}
         };
     }
 
@@ -67,10 +67,6 @@ class NavMenu extends React.Component {
 }
 
 class Header extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
 
     componentWillMount() {
         document.getElementsByTagName('html')[0].className = this.props.pageClass;

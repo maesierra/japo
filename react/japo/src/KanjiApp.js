@@ -324,11 +324,11 @@ class KanjiApp extends Component {
         ) : (
             <div className="container">
                 <Header pageClass="japo" authorized={this.state.authorized}/>
-                <PageTitle pageTitle="Japo - Your japanese learning companion" sub="your japanese learning companion">welcome to japo</PageTitle>
+                <PageTitle pageTitle="Japo - Tu ayudante para aprender japonés" sub="tu ayudante para aprender japonés">Bienvenido a Japo</PageTitle>
                 <SubNav empty/>
                 <div className="row">
                     <div className="col-sm-12">
-                        <button className="btn btn-primary " onClick={(e) => Japo.login()}>Sign In</button>
+                        <button className="btn btn-primary " onClick={(e) => Japo.login()}>Acceder</button>
                     </div>
                 </div>
             </div>
