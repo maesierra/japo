@@ -9,6 +9,8 @@
 namespace maesierra\Japo\DB;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManager;
 use maesierra\Japo\Common\Query\Page;
 use maesierra\Japo\Common\Query\Sort;
@@ -19,6 +21,7 @@ use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
 use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
 use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
 use maesierra\Japo\Entity\Word\Word as WordEntity;
+use maesierra\Japo\Entity\Word\Word;
 use maesierra\Japo\Entity\Word\WordMeaning as WordMeaningEntity;
 use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiCatalog;
@@ -122,7 +125,7 @@ class KanjiRepository {
     public function listCatalogs() {
         return array_map(function($catalogEntity) {
             return $this->mapKanjiCatalog($catalogEntity);
-        }, $this->entityManager->getRepository(KanjiCatalogEntity::class)->findAll());
+        }, $this->kanjiCatalogRepository()->findAll());
     }
 
     /**
@@ -276,9 +279,9 @@ class KanjiRepository {
         if ($filterByCatalog) {
             if (!$results->catalog) {
                 if ($kanjiQuery->catalog) {
-                    $results->catalog = $this->mapKanjiCatalog($this->entityManager->getRepository(KanjiCatalogEntity::class)->findOneBy(['slug' => $kanjiQuery->catalog]));
+                    $results->catalog = $this->mapKanjiCatalog($this->kanjiCatalogRepository()->findOneBy(['slug' => $kanjiQuery->catalog]));
                 } else {
-                    $results->catalog = $this->mapKanjiCatalog($this->entityManager->getRepository(KanjiCatalogEntity::class)->find($kanjiQuery->catalogId));
+                    $results->catalog = $this->mapKanjiCatalog($this->kanjiCatalogRepository()->find($kanjiQuery->catalogId));
                 }
 
             }
@@ -311,7 +314,7 @@ class KanjiRepository {
      */
     public function findKanji($kanji) {
         /** @var KanjiEntity $kanjiEntity */
-        $kanjiEntity = $this->entityManager->getRepository(KanjiEntity::class)->findOneBy(['kanji' => $kanji]);
+        $kanjiEntity = $this->kanjiRepository()->findOneBy(['kanji' => $kanji]);
         if (!$kanjiEntity) {
             return null;
         }
@@ -358,5 +361,106 @@ class KanjiRepository {
 
     }
 
+    /**
+     * Saves a kanji
+     * @param $kanji Kanji
+     * @return Kanji
+     */
+    public function saveKanji($kanji) {
+        $this->logger->debug("Saving kanji: ".$kanji->kanji);
+        $kanjiRepository = $this->kanjiRepository();
+        $wordRepository = $this->entityManager->getRepository(Word::class);
+        $catalogRepository = $this->kanjiCatalogRepository();
+        /** @var KanjiEntity $kanjiEntity */
+        $kanjiEntity = $kanjiRepository->findOneBy(['kanji' => $kanji->kanji]);
+        if (!$kanjiEntity) {
+            $kanjiEntity = new KanjiEntity();
+            $kanjiEntity->setKanji($kanji->kanji);
+        } else {
+            $this->entityManager->createQueryBuilder()
+                ->delete(KanjiMeaningEntity::class, 'm')
+                ->where('m.idKanji = ?1')
+                ->setParameter(1, $kanjiEntity->getId())
+                ->getQuery()
+                ->execute();
+            $this->entityManager->createQueryBuilder()
+                ->delete(KanjiReadingEntity::class, 'r')
+                ->where('r.idKanji = ?1')
+                ->setParameter(1, $kanjiEntity->getId())
+                ->getQuery()
+                ->execute();
+            $this->entityManager->createQueryBuilder()
+                ->delete(KanjiCatalogEntryEntity::class, 'c')
+                ->where('c.idKanji = ?1')
+                ->setParameter(1, $kanjiEntity->getId())
+                ->getQuery()
+                ->execute();
+        }
+        $kanjiMeanings = $kanjiEntity->getMeanings();
+        $kanjiMeanings->clear();
+        /** @var ArrayCollection $readings */
+        $readings = $kanjiEntity->getReadings();
+        $readings->clear();
+        $kanjiCatalogs = $kanjiEntity->getCatalogs();
+        $kanjiCatalogs->clear();
+
+        foreach (['K' => $kanji->kun, 'O' => $kanji->on] as $type => $typeReadings) {
+            /** @var KanjiReading $r */
+            foreach ($typeReadings as $r) {
+                $reading = new KanjiReadingEntity();
+                $reading->setKanji($kanjiEntity);
+                $reading->setKind($type);
+                $reading->setReading($r->reading);
+                if ($r->helpWord) {
+                    /** @var Word $helpWord */
+                    $helpWord = $wordRepository->find($r->helpWord->id);
+                    if ($helpWord) {
+                        $reading->setHelpWordId($r->helpWord->id);
+                        $reading->setHelpWord($helpWord);
+                    }
+                }
+                $readings->add($reading);
+            }
+        }
+        foreach ($kanji->meanings as $m) {
+            $kanjiMeaning = new KanjiMeaningEntity();
+            $kanjiMeaning->setKanji($kanjiEntity);
+            $kanjiMeaning->setMeaning($m);
+            $kanjiMeanings->add($kanjiMeaning);
+        }
+        foreach ($kanji->catalogs as $c) {
+            /** @var KanjiCatalogEntity $catalog */
+            $catalog = $catalogRepository->find($c->catalogId);
+            if (!$catalog) {
+                continue;
+            }
+            $catalogEntry = new KanjiCatalogEntryEntity();
+            $catalogEntry->setKanji($kanjiEntity);
+            $catalogEntry->setCatalog($catalog);
+            $catalogEntry->setLevel($c->level);
+            $catalogEntry->setN($c->n);
+            $kanjiCatalogs->add($catalogEntry);
+        }
+        $this->logger->debug("Saving kanji ".Debug::dump($kanjiEntity, 3, true, false));
+        $this->entityManager->persist($kanjiEntity);
+        $this->entityManager->flush();
+        return $kanji;
+
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    private function kanjiCatalogRepository() {
+        return $this->entityManager->getRepository(KanjiCatalogEntity::class);
+    }
+
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    private function kanjiRepository()
+    {
+        return $this->entityManager->getRepository(KanjiEntity::class);
+    }
 
 }

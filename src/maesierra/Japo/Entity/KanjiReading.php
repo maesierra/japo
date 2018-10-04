@@ -17,12 +17,12 @@ use \maesierra\Japo\Entity\Word\Word;
 
 class KanjiReading
 {
-    /** @Id @Column(type="bigint", name="id") */
+    /** @GeneratedValue @Id @Column(type="bigint", name="id") */
     private $id;
 
-    /** @Id @Column(type="bigint", name="id_kanji") */
+    /** @Column(type="bigint", name="id_kanji") */
     private $idKanji;
-    /** @Id @Column(type="string", name="reading") */
+    /** @Column(type="string", name="reading") */
     private $reading;
     /** @Column(type="string", name="reading_type")*/
     private $kind;

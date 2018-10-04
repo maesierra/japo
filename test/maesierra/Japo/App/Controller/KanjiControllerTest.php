@@ -18,6 +18,7 @@ use maesierra\Japo\Kanji\KanjiQuery;
 use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiQueryResults;
 use maesierra\Japo\Kanji\KanjiReading;
+use maesierra\Japo\Kanji\KanjiWord;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -166,6 +167,34 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
         $this->controller->kanji($request, $response, ['kanji' => 'kanji']);
     }
 
+    public function testSaveKanji() {
+        $kanji = $this->kanji(7328, 'kanji', 5, 550);
+        $this->request->method('getParsedBody')->willReturn(json_decode(json_encode($kanji)));
+        $this->kanjiRepository->expects($this->once())->method('saveKanji')->willReturn($kanji)->with($kanji);
+        $this->response->expects($this->once())->method('withHeader')->with('Content-type', 'application/json')->willReturnSelf();
+        $this->body->expects($this->once())->method('write')->with(json_encode($kanji));
+
+        /** @var ServerRequestInterface $request */
+        $request = $this->request;
+        /** @var ResponseInterface $response */
+        $response = $this->response;
+        $this->controller->saveKanji($request, $response, []);
+    }
+
+    public function testSaveKanji_400Error() {
+        $this->request->method('getParsedBody')->willReturn(null);
+        $this->kanjiRepository->expects($this->never())->method('saveKanji');
+        $this->response->expects($this->never())->method('withHeader');
+        $this->response->expects($this->once())->method('withStatus')->with(400)->willReturnSelf();
+        $this->body->expects($this->once())->method('write')->with("Unable to parse kanji");
+
+        /** @var ServerRequestInterface $request */
+        $request = $this->request;
+        /** @var ResponseInterface $response */
+        $response = $this->response;
+        $this->controller->saveKanji($request, $response, []);
+    }
+
     /**
      * @return KanjiCatalog
      */
@@ -254,7 +283,7 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
     {
         $reading = new KanjiReading();
         $reading->type = $type;
-        $reading->helpWord = $helpWordId;
+        $reading->helpWord = $helpWordId ? new KanjiWord(['id' => $helpWordId]) : null;
         $reading->reading = $r;
         return $reading;
     }

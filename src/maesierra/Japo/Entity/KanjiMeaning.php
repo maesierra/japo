@@ -16,7 +16,7 @@ namespace maesierra\Japo\Entity;
 
 class KanjiMeaning {
 
-    /** @Id @Column(type="bigint", name="id") */
+    /** @GeneratedValue @Id @Column(type="bigint", name="id") */
     private $id;
 
     /**

@@ -19,4 +19,12 @@ class KanjiWord {
     public $kanji;
     /** @var  string[] */
     public $meanings;
+
+    public function __construct($array = []) {
+        foreach ($array as $prop => $value) {
+            if (property_exists($this, $prop)) {
+                $this->{$prop} = $value;
+            }
+        }
+    }
 }

@@ -47,7 +47,7 @@ class WordMeaning {
     }
 
     public function __toString() {
-        return $this->meaning;
+        return $this->meaning ?: '';
     }
 
 

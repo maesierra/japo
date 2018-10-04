@@ -121,6 +121,14 @@ class Word implements \JsonSerializable {
     }
 
     /**
+     * @param string $kana
+     */
+    public function setKana($kana)
+    {
+        $this->kana = $kana;
+    }
+
+    /**
      * @return int
      */
     public function getLevel() {

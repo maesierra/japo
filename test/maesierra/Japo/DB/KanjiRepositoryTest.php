@@ -10,6 +10,7 @@ namespace maesierra\Japo\DB;
 
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -74,7 +75,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testKanjiQuery_singleResult() {
-        $kanji = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
+        $kanji = $this->kanjiEntity(7328, 'kanji', 5, 550);
         $this->stubKanjiQuery([$kanji]);
         $expectedDDL = "";
         $this->verifyDDLExecuted($expectedDDL);
@@ -87,7 +88,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testKanjiQuery_singleResult_withCatalogId() {
-        $kanji = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
+        $kanji = $this->kanjiEntity(7328, 'kanji', 5, 550);
         $catalog = $this->selectCatalogByLevel($kanji, 5);
         $catalogId = $catalog->getId();
         $query = $this->stubKanjiQuery([$kanji]);
@@ -109,7 +110,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testKanjiQuery_singleResult_withCatalogSlug() {
-        $kanji = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
+        $kanji = $this->kanjiEntity(7328, 'kanji', 5, 550);
         $catalog = $this->selectCatalogByLevel($kanji, 5);
         $catalogId = $catalog->getId();
         $query = $this->stubKanjiQuery([$kanji]);
@@ -149,9 +150,9 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testKanjiQuery_paginated_multipleResults() {
-        $kanji1 = $this->mockKanjiEntity(7328, 'kanji', 5, 550);
-        $kanji2 = $this->mockKanjiEntity(7329, 'kanj2', 6, 551);
-        $kanji3 = $this->mockKanjiEntity(7330, 'kanj3', 6, 552);
+        $kanji1 = $this->kanjiEntity(7328, 'kanji', 5, 550);
+        $kanji2 = $this->kanjiEntity(7329, 'kanj2', 6, 551);
+        $kanji3 = $this->kanjiEntity(7330, 'kanj3', 6, 552);
         $query = $this->stubKanjiQuery([$kanji1, $kanji2, $kanji3], 30);
         $kanjiQuery = new KanjiQuery();
         $kanjiQuery->page = 2;
@@ -601,7 +602,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
 
 
     public function testKanji() {
-        $this->stubFindKanjiByKanji('kanji', $this->mockKanjiEntity(7328, 'kanji', 5, 550));
+        $this->stubFindKanjiByKanji('kanji', $this->kanjiEntity(7328, 'kanji', 5, 550));
         $kanji = $this->kanjiRepository->findKanji('kanji');
 
         $this->assertEquals(
@@ -614,6 +615,141 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $this->stubFindKanjiByKanji('kanji', null);
         $kanji = $this->kanjiRepository->findKanji('kanji');
         $this->assertNull($kanji);
+    }
+
+    public function testSaveKanji_new() {
+
+        $kanji = $this->expectedKanji(null, 'kanji', 6, 650);
+        $kanji->on[] = $this->kanjiReading('O', 'on reading3', 36);
+        $kanji->kun = [$this->kanjiReading('K', 'new kun reading', null)];
+        $kanji->meanings = ['Moon', 'Month'];
+        $kanji->strokes[] = $this->kanjiStroke(3, 'aaa', 'a');
+        $kanji->words[] = $this->kanjiWord(3,'kana3', 'kanji3', 'moon');
+
+        $kanjiRepository = $this->createMock(EntityRepository::class);
+        $wordRepository = $this->createMock(EntityRepository::class);
+        $catalogRepository = $this->createMock(EntityRepository::class);
+        $this->entityManager->method('getRepository')->willReturnMap([
+            [KanjiEntity::class, $kanjiRepository],
+            [WordEntity::class, $wordRepository],
+            [KanjiCatalogEntity::class, $catalogRepository]
+        ]);
+
+        $kanjiRepository->method('findOneBy')->with(['kanji' => $kanji->kanji])->willReturn(null);
+
+        $expectedKanjiEntity = $this->kanjiEntity(null, 'kanji', 6, 650);
+        foreach ($expectedKanjiEntity->getCatalogs() as $catalog) {
+            /** @var KanjiCatalogEntryEntity $catalog */
+            $catalog->setKanji($expectedKanjiEntity);
+        }
+        $wordRepository->method('find')->willReturnCallback(function($id) {
+           return $this->createHelpWordEntity($id);
+        });
+        $catalogRepository->method('find')->willReturnMap([
+            [33, null, null, $this->catalogEntity( 33, 'catalog1', 'catalog_1')],
+            [4, null, null, $this->catalogEntity(4,  'catalog2', 'catalog_2')]
+        ]);
+
+        /** @var ArrayCollection $readings */
+        $readings = $expectedKanjiEntity->getReadings();
+        $readings->clear();
+        $readings->add($this->kanjiReadingEntity('K', 'new kun reading', null));
+        $readings->add($this->kanjiReadingEntity('O', 'on reading1', null));
+        $readings->add($this->kanjiReadingEntity('O', 'on reading2', 35));
+        $readings->add($this->kanjiReadingEntity('O', 'on reading3', 36));
+        foreach ($expectedKanjiEntity->getReadings() as $reading) {
+            /** @var KanjiReadingEntity $reading */
+            $reading->setKanji($expectedKanjiEntity);
+        }
+
+        $meanings = $expectedKanjiEntity->getMeanings();
+        $meanings->clear();
+        $meanings->add($this->kanjiMeaningEntity('Moon'));
+        $meanings->add($this->kanjiMeaningEntity('Month'));
+        foreach ($meanings as $meaning) {
+            /** @var KanjiMeaningEntity $meaning */
+            $meaning->setKanji($expectedKanjiEntity);
+        }
+        $expectedKanjiEntity->getStrokes()->clear();
+        $expectedKanjiEntity->getWords()->clear();
+
+        $this->entityManager->expects($this->once())->method('persist')->with($expectedKanjiEntity);
+        $this->entityManager->expects($this->once())->method('flush');
+
+        $actualKanji = $this->kanjiRepository->saveKanji($kanji);
+        $this->assertEquals($kanji, $actualKanji);
+    }
+
+
+    public function testSaveKanji_update() {
+
+        $kanjiId = 786;
+        $kanji = $this->expectedKanji($kanjiId, 'kanji', 6, 650);
+        $kanji->on[] = $this->kanjiReading('O', 'on reading3', 36);
+        $kanji->kun = [$this->kanjiReading('K', 'new kun reading', null)];
+        $kanji->meanings = ['Moon', 'Month'];
+        $kanji->strokes[] = $this->kanjiStroke(3, 'aaa', 'a');
+        $kanji->words[] = $this->kanjiWord(3,'kana3', 'kanji3', 'moon');
+
+        $kanjiRepository = $this->createMock(EntityRepository::class);
+        $wordRepository = $this->createMock(EntityRepository::class);
+        $catalogRepository = $this->createMock(EntityRepository::class);
+        $this->entityManager->method('getRepository')->willReturnMap([
+            [KanjiEntity::class, $kanjiRepository],
+            [WordEntity::class, $wordRepository],
+            [KanjiCatalogEntity::class, $catalogRepository]
+        ]);
+
+        $kanjiRepository->method('findOneBy')->with(['kanji' => $kanji->kanji])->willReturn($this->kanjiEntity($kanjiId, 'kanji', 6, 650));
+
+        $expectedKanjiEntity = $this->kanjiEntity($kanjiId, 'kanji', 6, 650);
+        foreach ($expectedKanjiEntity->getCatalogs() as $catalog) {
+            /** @var KanjiCatalogEntryEntity $catalog */
+            $catalog->setKanji($expectedKanjiEntity);
+        }
+        $wordRepository->method('find')->willReturnCallback(function($id) {
+            return $this->createHelpWordEntity($id);
+        });
+        $catalogRepository->method('find')->willReturnMap([
+            [33, null, null, $this->catalogEntity( 33, 'catalog1', 'catalog_1')],
+            [4, null, null, $this->catalogEntity(4,  'catalog2', 'catalog_2')]
+        ]);
+
+        /** @var ArrayCollection $readings */
+        $readings = $expectedKanjiEntity->getReadings();
+        $readings->clear();
+        $readings->add($this->kanjiReadingEntity('K', 'new kun reading', null));
+        $readings->add($this->kanjiReadingEntity('O', 'on reading1', null));
+        $readings->add($this->kanjiReadingEntity('O', 'on reading2', 35));
+        $readings->add($this->kanjiReadingEntity('O', 'on reading3', 36));
+        foreach ($expectedKanjiEntity->getReadings() as $reading) {
+            /** @var KanjiReadingEntity $reading */
+            $reading->setKanji($expectedKanjiEntity);
+        }
+
+        $meanings = $expectedKanjiEntity->getMeanings();
+        $meanings->clear();
+        $meanings->add($this->kanjiMeaningEntity('Moon'));
+        $meanings->add($this->kanjiMeaningEntity('Month'));
+        foreach ($meanings as $meaning) {
+            /** @var KanjiMeaningEntity $meaning */
+            $meaning->setKanji($expectedKanjiEntity);
+        }
+
+        $queryBuilder1 = $this->createMock(QueryBuilder::class);
+        $queryBuilder2 = $this->createMock(QueryBuilder::class);
+        $queryBuilder3 = $this->createMock(QueryBuilder::class);
+        $this->entityManager->method('createQueryBuilder')->willReturnOnConsecutiveCalls($queryBuilder1, $queryBuilder2, $queryBuilder3);
+        $this->verifyDeleteQuery($queryBuilder1, KanjiMeaningEntity::class, 'm', 'm.idKanji = ?1', $kanjiId);
+        $this->verifyDeleteQuery($queryBuilder2, KanjiReadingEntity::class, 'r', 'r.idKanji = ?1', $kanjiId);
+        $this->verifyDeleteQuery($queryBuilder3, KanjiCatalogEntryEntity::class, 'c', 'c.idKanji = ?1', $kanjiId);
+
+
+        $this->entityManager->expects($this->once())->method('persist')->with($expectedKanjiEntity);
+        $this->entityManager->expects($this->once())->method('flush');
+
+        $actualKanji = $this->kanjiRepository->saveKanji($kanji);
+        $this->assertEquals($kanji, $actualKanji);
     }
 
     /**
@@ -649,34 +785,29 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $kanjiStr
      * @param $level1
      * @param $level2
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return KanjiEntity
      */
-    private function mockKanjiEntity($id, $kanjiStr, $level1, $level2)
+    private function kanjiEntity($id, $kanjiStr, $level1, $level2)
     {
-        $kanji = $this->createMock(KanjiEntity::class);
-        $kanji->method('getId')->willReturn($id);
-        $kanji->method('getKanji')->willReturn($kanjiStr);
-        $kanji->method('getCatalogs')->willReturn(new ArrayCollection([
-            $this->catalogEntryEntity($level1, 1, 'catalog1', 33, 'catalog_1'),
-            $this->catalogEntryEntity($level2, 10, 'catalog2', 4, 'catalog_2')
-        ]));
-        $kanji->method('getReadings')->willReturn(new ArrayCollection([
-            $this->kanjiReadingEntity('K', 'kun reading', 356),
-            $this->kanjiReadingEntity('O', 'on reading1', null),
-            $this->kanjiReadingEntity('O', 'on reading2', 35)
-        ]));
-        $kanji->method('getMeanings')->willReturn(new ArrayCollection([
-            $this->kanjiMeaningEntity('sun'),
-            $this->kanjiMeaningEntity('day')
-        ]));
-        $kanji->method('getStrokes')->willReturn(new ArrayCollection([
-            $this->kanjiStrokeEntity(1, 'M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25', '18'),
-            $this->kanjiStrokeEntity(2, 'M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53', '15'),
-        ]));
-        $kanji->method('getWords')->willReturn(new ArrayCollection([
-            $this->wordEntity(1,'kana1', 'kanji1', 'sun', 'light'),
-            $this->wordEntity(2,'kana2', 'kanji2', 'day'),
-        ]));
+        $kanji = new KanjiEntity();
+        $kanji->setId($id);
+        $kanji->setKanji($kanjiStr);
+        $kanji->getCatalogs()->add($this->catalogEntryEntity($level1, 1, 'catalog1', 33, 'catalog_1'));
+        $kanji->getCatalogs()->add($this->catalogEntryEntity($level2, 10, 'catalog2', 4, 'catalog_2'));
+
+        $kanji->getReadings()->add($this->kanjiReadingEntity('K', 'kun reading', 356));
+        $kanji->getReadings()->add($this->kanjiReadingEntity('O', 'on reading1', null));
+        $kanji->getReadings()->add($this->kanjiReadingEntity('O', 'on reading2', 35));
+
+
+        $kanji->getMeanings()->add($this->kanjiMeaningEntity('sun'));
+        $kanji->getMeanings()->add($this->kanjiMeaningEntity('day'));
+
+        $kanji->getStrokes()->add($this->kanjiStrokeEntity(1, 'M54.5,20c0.37,2.12,0.23,4.03-0.22,6.27C51.68,39.48,38.25,72.25,16.5,87.25', '18'));
+        $kanji->getStrokes()->add($this->kanjiStrokeEntity(2, 'M46,54.25c6.12,6,25.51,22.24,35.52,29.72c3.66,2.73,6.94,4.64,11.48,5.53', '15'));
+
+        $kanji->getWords()->add($this->wordEntity(1,'kana1', 'kanji1', 'sun', 'light'));
+        $kanji->getWords()->add($this->wordEntity(2,'kana2', 'kanji2', 'day'));
         return $kanji;
     }
 
@@ -746,15 +877,15 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $catalogName
      * @param $catalogId
      * @param $slug
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return KanjiCatalogEntryEntity
      */
     private function catalogEntryEntity($level, $n, $catalogName, $catalogId, $slug)
     {
-        $catalogEntry = $this->createMock(KanjiCatalogEntryEntity::class);
-        $catalogEntry->method('getLevel')->willReturn($level);
-        $catalogEntry->method('getN')->willReturn($n);
-        $catalog = $this->stubCatalogEntity($catalogId, $catalogName, $slug);
-        $catalogEntry->method('getCatalog')->willReturn($catalog);
+        $catalogEntry = new KanjiCatalogEntryEntity();
+        $catalogEntry->setLevel($level);
+        $catalogEntry->setN($n);
+        $catalog = $this->catalogEntity($catalogId, $catalogName, $slug);
+        $catalogEntry->setCatalog($catalog);
         return $catalogEntry;
     }
 
@@ -762,28 +893,28 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $kind
      * @param $r
      * @param $helpWordId
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return KanjiReadingEntity
      */
     private function kanjiReadingEntity($kind, $r, $helpWordId)
     {
-        $reading = $this->createMock(KanjiReadingEntity::class);
-        $reading->method('getKind')->willReturn($kind);
-        $reading->method('getHelpWordId')->willReturn($helpWordId);
-        $reading->method('getReading')->willReturn($r);
+        $reading = new KanjiReadingEntity();
+        $reading->setKind($kind);
+        $reading->setHelpWordId($helpWordId);
+        $reading->setReading($r);
         if ($helpWordId) {
-            $reading->method('getHelpWord')->willReturn($this->wordEntity($helpWordId, "kana$helpWordId", "kanji$helpWordId", "meaning.1$helpWordId", "meaning.2$helpWordId"));
+            $reading->setHelpWord($this->createHelpWordEntity($helpWordId));
         }
         return $reading;
     }
 
     /**
      * @param $meaning
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return KanjiMeaningEntity
      */
     private function kanjiMeaningEntity($meaning)
     {
-        $kanjiMeaning = $this->createMock(KanjiMeaningEntity::class);
-        $kanjiMeaning->method('getMeaning')->willReturn($meaning);
+        $kanjiMeaning = new KanjiMeaningEntity();
+        $kanjiMeaning->setMeaning($meaning);
         return $kanjiMeaning;
     }
 
@@ -792,19 +923,19 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $kana string
      * @param $kanji string
      * @param $meanings string
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return WordEntity
      */
     private function wordEntity($id, $kana, $kanji, ...$meanings)
     {
-        $word = $this->createMock(WordEntity::class);
-        $word->method('getIdWord')->willReturn($id);
-        $word->method('getKana')->willReturn($kana);
-        $word->method('getKanji')->willReturn($kanji);
-        $word->method('getMeanings')->willReturn(new ArrayCollection(array_map(function($m) {
-            $entity = $this->createMock(WordMeaningEntity::class);
-            $entity->method('getMeaning')->willReturn($m);
-            return $entity;
-        }, $meanings)));
+        $word = new WordEntity();
+        $word->setIdWord($id);
+        $word->setKana($kana);
+        $word->setKanji($kanji);
+        foreach ($meanings as $m) {
+            $wm = new WordMeaningEntity();
+            $wm->setMeaning($m);
+            $word->getMeanings()->add($wm);
+        }
         return $word;
     }
 
@@ -812,14 +943,14 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $path
      * @param $position
      * @param $type
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return KanjiStrokeEntity
      */
     private function kanjiStrokeEntity($position, $path, $type)
     {
-        $stroke = $this->createMock(KanjiStrokeEntity::class);
-        $stroke->method('getPosition')->willReturn($position);
-        $stroke->method('getPath')->willReturn($path);
-        $stroke->method('getType')->willReturn($type);
+        $stroke = new KanjiStrokeEntity();
+        $stroke->setPosition($position);
+        $stroke->setPath($path);
+        $stroke->setType($type);
         return $stroke;
     }
 
@@ -930,7 +1061,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $repository = $this->createMock(EntityRepository::class);
         $this->entityManager->method('getRepository')->with(KanjiCatalogEntity::class)->willReturn($repository);
         $repository->method('findAll')->willReturn(array_map(function($c) {
-            return $this->stubCatalogEntity($c[0], $c[1], $c[2]);
+            return $this->catalogEntity($c[0], $c[1], $c[2]);
         }, $catalog));
     }
 
@@ -938,14 +1069,14 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $catalogName
      * @param $catalogId
      * @param $slug
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return KanjiCatalogEntity
      */
-    private function stubCatalogEntity($catalogId, $catalogName, $slug)
+    private function catalogEntity($catalogId, $catalogName, $slug)
     {
-        $catalog = $this->createMock(KanjiCatalogEntity::class);
-        $catalog->method('getName')->willReturn($catalogName);
-        $catalog->method('getId')->willReturn($catalogId);
-        $catalog->method('getSlug')->willReturn($slug);
+        $catalog = new KanjiCatalogEntity();
+        $catalog->setName($catalogName);
+        $catalog->setId($catalogId);
+        $catalog->setSlug($slug);
         return $catalog;
     }
 
@@ -958,7 +1089,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     private function stubCatalogEntityById($catalogId, $catalogName, $slug) {
         $repository = $this->createMock(EntityRepository::class);
         $this->entityManager->method('getRepository')->with(KanjiCatalogEntity::class)->willReturn($repository);
-        $catalog = $this->stubCatalogEntity($catalogId, $catalogName, $slug);
+        $catalog = $this->catalogEntity($catalogId, $catalogName, $slug);
         $repository->method('find')->willReturn($catalog);
         return $catalog;
     }
@@ -972,7 +1103,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     private function stubCatalogEntityBySlug($catalogId, $catalogName, $slug) {
         $repository = $this->createMock(EntityRepository::class);
         $this->entityManager->method('getRepository')->with(KanjiCatalogEntity::class)->willReturn($repository);
-        $catalog = $this->stubCatalogEntity($catalogId, $catalogName, $slug);
+        $catalog = $this->catalogEntity($catalogId, $catalogName, $slug);
         $repository->method('findOneBy')->with(['slug' => $slug])->willReturn($catalog);
         return $catalog;
     }
@@ -1014,5 +1145,31 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
         $repository = $this->createMock(EntityRepository::class);
         $this->entityManager->method('getRepository')->with(KanjiEntity::class)->willReturn($repository);
         $repository->method('findOneBy')->with(['kanji' => $kanji])->willReturn($kanjiEntity);
+    }
+
+    /**
+     * @param $builder \PHPUnit_Framework_MockObject_MockObject
+     * @param $entity
+     * @param $alias
+     * @param $condition
+     * @param $kanjiId
+     */
+    private function verifyDeleteQuery($builder, $entity, $alias, $condition, $kanjiId)
+    {
+        $builder->expects($this->once())->method('delete')->with($entity, $alias)->willReturnSelf();
+        $builder->expects($this->once())->method('where')->with($condition)->willReturnSelf();
+        $builder->expects($this->once())->method('setParameter')->with(1, $kanjiId)->willReturnSelf();
+        $query = $this->createMock(AbstractQuery::class);
+        $builder->expects($this->once())->method('getQuery')->willReturn($query);
+        $query->expects($this->once())->method('execute');
+    }
+
+    /**
+     * @param $helpWordId
+     * @return WordEntity
+     */
+    private function createHelpWordEntity($helpWordId)
+    {
+        return $this->wordEntity($helpWordId, "kana$helpWordId", "kanji$helpWordId", "meaning.1$helpWordId", "meaning.2$helpWordId");
     }
 }

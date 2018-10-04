@@ -16,5 +16,20 @@ class KanjiReading {
 
     public $reading;
     public $type;
+    /** @var  KanjiWord */
     public $helpWord;
+
+    public function __construct($array = []) {
+        foreach ($array as $prop => $value) {
+            switch ($prop) {
+                case 'helpWord':
+                    $this->helpWord = $value ? new KanjiWord($value) : null;
+                    break;
+                default:
+                    if (property_exists($this, $prop)) {
+                        $this->{$prop} = $value;
+                    }
+            }
+        }
+    }
 }

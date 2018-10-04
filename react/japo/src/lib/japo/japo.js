@@ -27,6 +27,20 @@ function makeRequest(path, params, options) {
 
 
 
+let createKanjiFromJson = function (kanji) {
+    return Object.assign({}, kanji, {
+        catalogs: _.values(kanji.catalogs).map((c, i) => {
+            return {
+                "name": c.catalogName,
+                "id": c.catalogId,
+                "level": c.level,
+                "n": c.n,
+                "slug": c.catalogSlug
+            }
+        })
+    });
+};
+
 Japo.isAuthorized = () => {
     return new Promise((resolve, reject) => {
         makeRequest(
@@ -34,7 +48,6 @@ Japo.isAuthorized = () => {
             {},
             {cache: 'no-cache'}
         ).then((response) => {
-            console.log(response.status);
             let authorized = response.status === 200;
             resolve(authorized);
         })
@@ -49,7 +62,6 @@ Japo.login = () => {
 Japo.logout = () => {
     document.location.href = serverUrl + '/api/japo/auth/logout';
 };
-
 
 Japo.kanjiCatalogs = () => {
     return new Promise((resolve, reject) => {
@@ -125,19 +137,57 @@ Japo.kanji = (kanji) => {
     return new Promise((resolve, reject) => {
         makeRequest('/api/japo/kanji/' + kanji, {}).then((response) => {
             return response.json();
-        }).then((kanji) => {
-            resolve(Object.assign({}, kanji, {catalogs: _.values(kanji.catalogs).map((c, i) => {
-                return {
-                    "name": c.catalogName,
-                    "id": c.catalogId,
-                    "level": c.level,
-                    "n": c.n,
-                    "slug": c.catalogSlug
-                }
-            })}));
+        }).then((json) => {
+            resolve(createKanjiFromJson(json));
         })
         .catch(reject);
     });
+};
+
+
+Japo.saveKanji = (kanji) => {
+    kanji = Object.assign({}, kanji, {
+        catalogs: _.keyBy(kanji.catalogs.map((c, i) => {
+            return {
+                "catalogName": c.name,
+                "catalogId": c.id,
+                "level": c.level,
+                "n": c.n,
+                "catalogSlug": c.slug
+            }
+        }), (c) => c.catalogId),
+        kun: kanji.kun.map((r, i) => {
+            return {
+                "reading": r.reading,
+                "type": 'K',
+                "helpWord": r.helpWord === undefined ? null : {
+                    "id": r.helpWord
+                }
+            }
+        }),
+        on: kanji.on.map((r, i) => {
+            return {
+                "reading": r.reading,
+                "type": 'O',
+                "helpWord": r.helpWord === undefined ? null : {
+                    "id": r.helpWord
+                }
+            }
+        })
+    });
+    return new Promise((resolve, reject) => {
+        makeRequest('/api/japo/kanji/' + kanji.kanji, {}, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(kanji)
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
+            resolve(createKanjiFromJson(json));
+        })
+        .catch(reject);
+    });
+
 };
 
 module.exports = Japo;

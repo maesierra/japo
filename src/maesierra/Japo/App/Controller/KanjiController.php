@@ -11,6 +11,7 @@ namespace maesierra\Japo\App\Controller;
 
 use maesierra\Japo\AppContext\JapoAppConfig;
 use maesierra\Japo\DB\KanjiRepository;
+use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiQuery;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
@@ -76,6 +77,26 @@ class KanjiController extends BaseController {
             $response->getBody()->write('Kanji not found');
         } else {
             $response->getBody()->write(json_encode($kanji));
+        }
+        return $response;
+    }
+
+    /**
+     * @param $request ServerRequestInterface
+     * @param $response ResponseInterface
+     * @param $args array
+     * @return ResponseInterface
+     */
+    public function saveKanji($request, $response, $args) {
+        $kanji = $request->getParsedBody();
+        $kanji = $kanji ? new Kanji($kanji) : null;
+        if (!$kanji) {
+            $response = $response->withStatus(400);
+            $response->getBody()->write('Unable to parse kanji');
+        } else {
+            $this->logger->debug("Saving kanji {$kanji->kanji}: ".json_encode($kanji));
+            $response = $response->withHeader('Content-type', 'application/json');
+            $response->getBody()->write(json_encode($this->kanjiRepository->saveKanji($kanji)));
         }
         return $response;
 

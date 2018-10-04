@@ -59,6 +59,7 @@ class JapoApp extends App {
             $this->get('/catalogs',  KanjiController::class.':catalogs');
             $this->get('/query',  KanjiController::class.':query');
             $this->get('/{kanji}',  KanjiController::class.':kanji');
+            $this->post('/{kanji}',  KanjiController::class.':saveKanji');
         })->add([$this, 'authMiddleware']);
 
         $this->group('/jdict', function () {

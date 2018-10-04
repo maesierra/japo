@@ -22,7 +22,7 @@ class Kanji {
     /** @var KanjiReading[] */
     public $on = [];
 
-    /** @var KanjiCatalogEntry */
+    /** @var KanjiCatalogEntry[] */
     public $catalogs = [];
 
     /** @var string[] */
@@ -34,5 +34,27 @@ class Kanji {
     /** @var KanjiStroke */
     public $strokes = [];
 
-
+    public function __construct($array = []) {
+        foreach ($array as $prop => $value) {
+            switch ($prop) {
+                case 'kun':
+                case 'on':
+                    $this->{$prop} = array_map(function($r) {
+                        return new KanjiReading($r);
+                    }, $value);
+                    break;
+                case 'catalogs':
+                    $this->catalogs = array_reduce((array)$value, function(&$result, $e)  {
+                        $entry = new KanjiCatalogEntry($e);
+                        $result[$entry->catalogId] = $entry;
+                        return $result;
+                    }, []);
+                    break;
+                default:
+                    if (property_exists($this, $prop)) {
+                        $this->{$prop} = $value;
+                    }
+            }
+        }
+    }
 }
