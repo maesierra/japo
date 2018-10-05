@@ -86,3 +86,8 @@ if [ ! -d "/var/log/japo" ]; then
 fi
 
 service apache2 reload
+
+cd /vagrant
+/usr/bin/php composer.phar self-update
+/usr/bin/php composer.phar install
+bin/run-db-migration
