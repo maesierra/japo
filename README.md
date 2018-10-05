@@ -45,8 +45,9 @@ Next steps will be:
 ###Building
   <Need a install script>
   
-* run bin/create-db --no-lang (use --lang es to install the Spanish database)
-* run php composer.phar --self-update    
+`* run php composer.phar --self-update    
 * run php composer.phar install
+* run npm install  
+* run bin/create-db --no-lang (use --lang es to install the Spanish database)
 *  
 
