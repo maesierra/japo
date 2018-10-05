@@ -10,6 +10,7 @@ namespace maesierra\Japo\AppContext;
 
 use Dotenv\Dotenv;
 use maesierra\Japo\Auth\Auth0AuthManager;
+use maesierra\Japo\Auth\NoLoginAuthManager;
 
 
 /**
@@ -99,7 +100,7 @@ class JapoAppConfig {
             $params['mysqlUser'             ] = $this->getEnv('MYSQL_USER', 'japo');
             $params['mysqlPassword'         ] = $this->getEnv('MYSQL_PASSWORD');
             $params['databaseName'          ] = $this->getEnv('DATABASE_NAME', 'japo');
-            $params['authManager'           ] = $this->getEnv('AUTH_MANAGER', Auth0AuthManager::class);
+            $params['authManager'           ] = $this->getEnv('AUTH_MANAGER', NoLoginAuthManager::class);
             if (substr($params['serverPath'], -1, 1) == '/') {
                 $params['serverPath'] = substr($params['serverPath'], 0, -1);
             }

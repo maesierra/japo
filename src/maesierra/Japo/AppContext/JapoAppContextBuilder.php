@@ -147,7 +147,7 @@ class JapoAppContextBuilder extends ContainerConfig {
 
     /**
      * @param Container $di
-     * @param $config
+     * @param $config JapoAppConfig
      */
     private function defaultLogger(Container $di, $config)
     {

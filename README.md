@@ -14,7 +14,7 @@ The main features are:
 - Kanji tool to show kanji information (strokes, readings, related words) supporting different kanji catalogs.
 - Kanji test generation.
 
-Japo is baesd on the tools developed by [maesierra](https://github.com/maesierra) while she was learning Japanese.
+Japo is based on the tools developed by [maesierra](https://github.com/maesierra) while she was learning Japanese.
 
 The current beta contains only the Kanji Catalog plus an Spanish Database.
 Next steps will be:
@@ -30,23 +30,34 @@ Next steps will be:
 ##Requirements
 
 - PHP >= 5.6
+- PHP Extensions: mb_string, pdo, pdo_mysql, apcu
 - MySQL>=  5.6
 - npm (only for building)
 - Webserver supporting php (tested only in Apache but nginx should work too)
 - An Auth0 account to handle users (optional)
 
 ##Installation
-###Inital Config
-* Unzip or clone source files to a non public folder on the server
+###Initial Config
 * Create a mysql database
 * Create a copy of src/maesierra/Japo/.env.example as src/maesierra/Japo/.env
   and set up the configuration
-  <Need an example config>
+    
+  Alternatively, set up those environment properties can be set up in the server's environment instead of using the .env file. 
 ###Building
-  <Need a install script>
+  <Need a install script for 
+    composer 
+    react
+    put everything in a single folder
+   >
+  <run bin/create-db --no-lang (use --lang es to install the Spanish database)>
+
+###Server set up
+####Apache
+####Nginx
+
+###Auth0
+
+###Vagrant
   
-* run bin/create-db --no-lang (use --lang es to install the Spanish database)
-* run php composer.phar --self-update    
-* run php composer.phar install
-*  
+  
 

@@ -100,7 +100,16 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    public function testAuthManager() {
+    public function testAuthManager_default() {
+        $this->buildContext();
+        /** @var NoLoginAuthManager $authManager */
+        $authManager = $this->appContext->authManager;
+        $this->assertInstanceOf(NoLoginAuthManager::class, $authManager);
+        $this->assertSame($authManager, $this->appContext->authManager);
+    }
+
+    public function testAuthManager_auth0() {
+        $this->config->authManager = Auth0AuthManager::class;
         $this->buildContext();
         /** @var Auth0AuthManager $authManager */
         $authManager = $this->appContext->authManager;
@@ -110,15 +119,6 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->config->auth0Domain, $authManager->auth0Domain);
         $this->assertEquals($this->config->auth0ClientId, $authManager->auth0ClientId);
         $this->assertEquals($this->config->auth0LogoutUri, $authManager->auth0LogoutUri);
-        $this->assertSame($authManager, $this->appContext->authManager);
-    }
-
-    public function testAuthManager_changedFromDefault() {
-        $this->config->authManager = NoLoginAuthManager::class;
-        $this->buildContext();
-        /** @var NoLoginAuthManager $authManager */
-        $authManager = $this->appContext->authManager;
-        $this->assertInstanceOf(NoLoginAuthManager::class, $authManager);
         $this->assertSame($authManager, $this->appContext->authManager);
     }
 

@@ -10,6 +10,7 @@ namespace maesierra\Japo\AppContext;
 
 use Dotenv\Dotenv;
 use maesierra\Japo\Auth\Auth0AuthManager;
+use maesierra\Japo\Auth\NoLoginAuthManager;
 
 if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
 if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
@@ -49,7 +50,6 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(3306, $this->appConfig->mysqlPort);
         $this->assertEquals('japo', $this->appConfig->mysqlUser);
         $this->assertEquals('japo', $this->appConfig->databaseName);
-        $this->assertEquals(Auth0AuthManager::class, $this->appConfig->authManager);
     }
 
 
