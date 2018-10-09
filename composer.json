@@ -35,5 +35,10 @@
         "doctrine/instantiator": "1.0.5",
         "phpdocumentor/reflection-docblock": "3.3.2",
         "phpunit/php-token-stream": "1.4.2"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "maesierra\\Japo\\ComposerInstallScript::postPackageInstall"
+        ]
     }
 }

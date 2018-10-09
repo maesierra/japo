@@ -3,7 +3,7 @@ require('isomorphic-fetch');
 const _ = require('lodash');
 const querystring = require('querystring');
 
-const serverUrl = (process.env.NODE_ENV !== 'production') ? 'https://localhost:8043' : '';
+const serverUrl = ((process.env.NODE_ENV !== 'production') ? 'https://localhost:8043' : '') + process.env.PUBLIC_URL;
 const defaultRequestOptions = (process.env.NODE_ENV !== 'production') ? {mode: 'cors'} : {credentials: 'include'};
 const Japo = {
 
@@ -44,7 +44,7 @@ let createKanjiFromJson = function (kanji) {
 Japo.isAuthorized = () => {
     return new Promise((resolve, reject) => {
         makeRequest(
-            '/api/japo/',
+            '/api/',
             {},
             {cache: 'no-cache'}
         ).then((response) => {
@@ -56,17 +56,17 @@ Japo.isAuthorized = () => {
 };
 
 Japo.login = () => {
-    document.location.href = serverUrl + '/api/japo/auth/login';
+    document.location.href = serverUrl + '/api/auth/login?t' +  new Date().getTime();
 };
 
 Japo.logout = () => {
-    document.location.href = serverUrl + '/api/japo/auth/logout';
+    document.location.href = serverUrl + '/api/auth/logout?t' +  new Date().getTime();
 };
 
 Japo.kanjiCatalogs = () => {
     return new Promise((resolve, reject) => {
 
-        makeRequest('/api/japo/kanji/catalogs').then((response) => {
+        makeRequest('/api/kanji/catalogs').then((response) => {
             resolve(response.json());
         })
         .catch(reject);
@@ -81,7 +81,7 @@ Japo.kanjiQuery = (queryParams, page = null, pageSize = null) => {
         (page !== null && pageSize !== null) ? {'page': page, 'pageSize': pageSize} : {}
     );
     return new Promise((resolve, reject) => {
-        makeRequest('/api/japo/kanji/query', params).then((response) => {
+        makeRequest('/api/kanji/query', params).then((response) => {
             return response.json();
         }).then((results) => {
             resolve({
@@ -111,7 +111,7 @@ Japo.kanjiQuery = (queryParams, page = null, pageSize = null) => {
 
 Japo.jDict = (params) => {
     return new Promise((resolve, reject) => {
-        makeRequest('/api/japo/jdict/query', params).then((response) => {
+        makeRequest('/api/jdict/query', params).then((response) => {
             return response.json();
         }).then((results) => {
             resolve({
@@ -135,7 +135,7 @@ Japo.jDict = (params) => {
 
 Japo.kanji = (kanji) => {
     return new Promise((resolve, reject) => {
-        makeRequest('/api/japo/kanji/' + kanji, {}).then((response) => {
+        makeRequest('/api/kanji/' + kanji, {}).then((response) => {
             return response.json();
         }).then((json) => {
             resolve(createKanjiFromJson(json));
@@ -176,7 +176,7 @@ Japo.saveKanji = (kanji) => {
         })
     });
     return new Promise((resolve, reject) => {
-        makeRequest('/api/japo/kanji/' + kanji.kanji, {}, {
+        makeRequest('/api/kanji/' + kanji.kanji, {}, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(kanji)

@@ -75,8 +75,7 @@ a2enmod ssl
 if [  ! -f /etc/apache2/sites-enabled/002-default-ssl.conf ]; then
     echo "Setting up apache SSL config to /etc/apache2/sites-enabled/002-default-ssl.conf"
     cp /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/002-default-ssl.conf
-    sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\/react\/japo\/build\n               <Directory "\/vagrant\/react\/japo\/build">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
-    sed -i'' 's/<\/VirtualHost>/        Alias \/api\/japo \/vagrant\/api\n               <Directory "\/vagrant\/api">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\n               <Directory "\/vagrant">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
 fi
 
 if [ ! -d "/var/log/japo" ]; then
@@ -86,6 +85,13 @@ if [ ! -d "/var/log/japo" ]; then
 fi
 
 service apache2 reload
+
+#npm
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+apt-get install -y nodejs
+
+#zip for composer
+apt-get install -y zip unzip php5.6-zip
 
 cd /vagrant
 /usr/bin/php composer.phar self-update

@@ -58,24 +58,24 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testServerPath() {
-        putenv("SERVER_PATH=/api/japo");
-        $this->assertEquals('/api/japo', $this->appConfig->serverPath);
+        putenv("SERVER_PATH=/japo/api/");
+        $this->assertEquals('/japo/api', $this->appConfig->serverPath);
     }
 
     public function testServerPath_withTrailing() {
-        putenv("SERVER_PATH=/api/japo/");
-        $this->assertEquals('/api/japo', $this->appConfig->serverPath);
+        putenv("SERVER_PATH=/japo/api/");
+        $this->assertEquals('/japo/api', $this->appConfig->serverPath);
     }
 
     public function testAuth0RedirectUri() {
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('https://localhost:443/api/japo/auth/auth', $this->appConfig->auth0RedirectUri);
+        $this->assertEquals('https://localhost:443/japo/api/auth/auth', $this->appConfig->auth0RedirectUri);
     }
 
     public function testAuth0RedirectUri_noHttps() {
         $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('http://localhost:443/api/japo/auth/auth', $this->appConfig->auth0RedirectUri);
+        $this->assertEquals('http://localhost:443/japo/api/auth/auth', $this->appConfig->auth0RedirectUri);
     }
 
     public function testAuth0LogoutUri() {
@@ -92,12 +92,12 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     public function testHostUrl() {
         $_SERVER['HTTPS'] = 'on';
         $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('https://localhost:443/api/japo', $this->appConfig->hostUrl);
+        $this->assertEquals('https://localhost:443/japo/api', $this->appConfig->hostUrl);
     }
 
     public function testHostsUrl_noHttps() {
         $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('http://localhost:443/api/japo', $this->appConfig->hostUrl);
+        $this->assertEquals('http://localhost:443/japo/api', $this->appConfig->hostUrl);
     }
 
 

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import KanjiApp from './KanjiApp';
 import NotFound from './modules/NotFound/NotFound';
 import './main.css';
+import * as serviceWorker from "./registerServiceWorker"
 
 import { BrowserRouter,Switch, Route } from 'react-router-dom'
 
@@ -21,3 +22,4 @@ ReactDOM.render(
         </Switch>
     </BrowserRouter>,
 document.getElementById('root'));
+serviceWorker.unregister();
