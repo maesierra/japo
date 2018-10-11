@@ -40,7 +40,7 @@ class DBMigration {
         $configFile = "{$this->tempDir}/phinx.json";
         file_put_contents($configFile, json_encode($this->config));
         $command = ['migrate'];
-        $command += ['-e' => 'development'];
+        $command += ['-e' => 'production'];
         $command += ['-c' => $configFile];
 
         // Output will be written to a temporary stream, so that it can be

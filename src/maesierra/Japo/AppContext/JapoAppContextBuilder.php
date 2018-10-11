@@ -83,25 +83,26 @@ class JapoAppContextBuilder extends ContainerConfig {
      * @param JapoAppConfig $config
      */
     private function dbMigration(Container $di, $config) {
-        $dbConfig = [
-            'adapter' => 'mysql',
-            'host' => $config->mysqlHost,
-            'name' => $config->databaseName,
-            'user' => $config->mysqlUser,
-            'pass' => $config->mysqlPassword,
-            'port' => $config->mysqlPort,
-            'charset' => 'utf8',
-        ];
         $dbMigrationConfig = [
             'paths' => [
-                'migrations' => $config->rootPath.'/db/migrations',
+                'migrations' => [
+                    "{$config->rootPath}/db/migrations",
+                    "{$config->rootPath}/db/migrations/{$config->lang}"
+                ],
                 'seeds' => $config->rootPath.'/db/seeds'
             ],
             'environments' => [
                 'default_migration_table' => 'phinxlog',
-                'default_database' => 'development',
-                'production' => $dbConfig,
-                'development' => $dbConfig,
+                'default_database' => 'production',
+                'production' => [
+                    'adapter' => 'mysql',
+                    'host' => $config->mysqlHost,
+                    'name' => $config->databaseName,
+                    'user' => $config->mysqlUser,
+                    'pass' => $config->mysqlPassword,
+                    'port' => $config->mysqlPort,
+                    'charset' => 'utf8',
+                ]
             ],
             'version_order' => 'creation'
         ];

@@ -18,26 +18,46 @@ use maesierra\Japo\Auth\NoLoginAuthManager;
  * @package maesierra\PiControl\JapoAppContext
  *
  * @property $auth0Domain
+ *
  * @property $auth0ClientId
+ *
  * @property $serverPath
+ *
  * @property $auth0RedirectUri
+ *
  * @property $auth0LogoutUri
+ *
  * @property boolean $cliMode
+ *
  * @property string $hostUrl
+ *
  * @property string $logPath
+ *
  * @property string $logLevel
+ *
  * @property $auth0ClientSecret
+ *
  * @property string $rootPath
  *
- *
  * @property string $mysqlPort
+ *
  * @property string $mysqlHost
+ *
  * @property string $mysqlUser
+ *
  * @property string $mysqlPassword
+ *
  * @property string $databaseName
+ *
  * @property string $tempDir
+ *
  * @property string $authManager
+ *
+ * @property string $lang
+ *
  * @property string $homePath
+ *
+ *
  *
  *
  */
@@ -100,6 +120,7 @@ class JapoAppConfig {
             $params['mysqlUser'             ] = $this->getEnv('MYSQL_USER', 'japo');
             $params['mysqlPassword'         ] = $this->getEnv('MYSQL_PASSWORD');
             $params['databaseName'          ] = $this->getEnv('DATABASE_NAME', 'japo');
+            $params['lang'                  ] = $this->getEnv('LANGUAGE', 'es');
             $params['authManager'           ] = $this->getEnv('AUTH_MANAGER', NoLoginAuthManager::class);
             if (substr($params['serverPath'], -1, 1) == '/') {
                 $params['serverPath'] = substr($params['serverPath'], 0, -1);

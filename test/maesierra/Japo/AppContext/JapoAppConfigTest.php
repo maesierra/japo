@@ -50,6 +50,7 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(3306, $this->appConfig->mysqlPort);
         $this->assertEquals('japo', $this->appConfig->mysqlUser);
         $this->assertEquals('japo', $this->appConfig->databaseName);
+        $this->assertEquals('es', $this->appConfig->lang);
     }
 
 

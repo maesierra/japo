@@ -71,14 +71,12 @@ Steps 2, 3, 4 could be skipped with the ``--no-scripts`` option.
 
 #### DB Migration
 
-**TODO: separate migrations by language**
-
 On the bin folder an script is provided to run all the db migrations that will create the db
- tables and insert the current dictionary and catalogs.
+ tables and insert the current dictionary and catalogs. Only data for the configured language will be applied.
  *Note: .env or environment properties must be set up prior running the migration script*
  
    ```
-   bin/run-db-migration --lang es
+   bin/run-db-migration
    ```
 
 ###Server set up

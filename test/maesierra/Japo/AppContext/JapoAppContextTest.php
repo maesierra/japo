@@ -127,6 +127,29 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $dbMigration = $this->appContext->dbMigration;
         $this->assertInstanceOf(DBMigration::class, $dbMigration);
         $this->assertEquals($this->config->tempDir, $dbMigration->tempDir);
+        $this->assertEquals([
+            'paths' => [
+                'migrations' => [
+                    "{$this->config->rootPath}/db/migrations",
+                    "{$this->config->rootPath}/db/migrations/{$this->config->lang}"
+                 ],
+                'seeds' => $this->config->rootPath.'/db/seeds'
+            ],
+            'environments' => [
+                'default_migration_table' => 'phinxlog',
+                'default_database' => 'production',
+                'production' => [
+                    'adapter' => 'mysql',
+                    'host' => $this->config->mysqlHost,
+                    'name' => $this->config->databaseName,
+                    'user' => $this->config->mysqlUser,
+                    'pass' => $this->config->mysqlPassword,
+                    'port' => $this->config->mysqlPort,
+                    'charset' => 'utf8',
+                ]
+            ],
+            'version_order' => 'creation'
+        ], $dbMigration->config);
         $this->assertSame($dbMigration, $this->appContext->dbMigration);
     }
 
