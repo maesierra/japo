@@ -75,7 +75,8 @@ a2enmod ssl
 if [  ! -f /etc/apache2/sites-enabled/002-default-ssl.conf ]; then
     echo "Setting up apache SSL config to /etc/apache2/sites-enabled/002-default-ssl.conf"
     cp /etc/apache2/sites-available/default-ssl.conf /etc/apache2/sites-enabled/002-default-ssl.conf
-    sed -i'.bak' 's/<\/VirtualHost>/        Alias \/japo \/vagrant\n               <Directory "\/vagrant">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'.bak' 's/DocumentRoot \/var\/www\/html/DocumentRoot \/vagrant\/webroot/' /etc/apache2/sites-enabled/002-default-ssl.conf
+    sed -i'' 's/<\/VirtualHost>/        <Directory "\/">\n                  Require all granted\n                  AllowOverride All\n               <\/Directory>\n        <\/VirtualHost>/' /etc/apache2/sites-enabled/002-default-ssl.conf
 fi
 
 if [ ! -d "/var/log/japo" ]; then
