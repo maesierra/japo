@@ -5,11 +5,3 @@
 .vagrant/
 vendor/
 src/maesierra/Japo/.env
-deploy-react
-
-/asset-manifest.json
-/favicon.ico
-/index.html
-/manifest.json
-/service-worker.js
-/static/
