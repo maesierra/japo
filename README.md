@@ -1,5 +1,5 @@
-#Japo
-
+Japo
+====
 Japo (pronounced hapo) it's a project to produce Japanese Language learning tools to non English speakers.
 
 There are plenty of resources for English speakers available on the Internet but it's difficult to find anything from any other languages to Japanese, and it's quite frustrating to non native English speakers to require to a double translation or spend quite a lot of money in physical dictionaries.
@@ -27,7 +27,8 @@ Next steps will be:
 
 
   
-##Requirements
+Requirements
+============
 
 - PHP >= 5.6
 - PHP Extensions: mb_string, pdo, pdo_mysql, apcu
@@ -36,14 +37,15 @@ Next steps will be:
 - Apache 2 
 - An Auth0 account to handle users (optional)
 
-##Installation
-###Initial Config
+Installation
+============
+Initial Config
 1. Create a mysql database
 2. Create a copy of src/maesierra/Japo/.env.example as src/maesierra/Japo/.env
   and set up the configuration 
     
   Alternatively, set up those environment properties can be set up in the server's environment instead of using the .env file.
-##### Configuration
+Configuration
 * **SERVER_PATH** *URL Path for the backend*
 * **HOME_PATH**  *URL Path for the front-end*
 * **TEMP_DIR** *Temp dir. Default: system's temp dir*
@@ -55,7 +57,8 @@ Next steps will be:
 * **MYSQL_PASSWORD**  
 * **DATABASE_NAME** *default japo*
 
-###Building
+Building
+========
 To build the application:
    ```
    php composer.phar self-update
@@ -69,7 +72,8 @@ Composer install will:
 
 Steps 2, 3, 4 could be skipped with the ``--no-scripts`` option.
 
-#### DB Migration
+DB Migration
+============
 
 On the bin folder an script is provided to run all the db migrations that will create the db
  tables and insert the current dictionary and catalogs. Only data for the configured language will be applied.
@@ -95,7 +99,8 @@ static/
 webroot folder contains symlinks to those files and can be safely exposed. Server path must match 
 **SERVER_PATH** property value.
 
-###Auth0
+Auth0
+=====
 
 Auth0 can be used to provide user login and management to the application. By default the application 
 doesn't handle users. Auth0 free tier should be enough for most scenarios. 
@@ -115,7 +120,8 @@ Steps to set up auth0
 Login page options can be set under host pages section. Please follow auth0 configuration on 
 how to set it up, change the language or the look and feel.  
 
-##Vagrant
+Vagrant
+=======
 
 A Vagrant file is provided to create a local enviroment for testing. The provision script is 
 ``vagrant/bootstrap.sh`` and can also be used as a guide on how to install all the requirements.
