@@ -10,8 +10,10 @@ namespace maesierra\Japo\App\Controller;
 
 
 use maesierra\Japo\AppContext\JapoAppConfig;
+use maesierra\Japo\Auth\User;
 use Monolog\Logger;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 
 class BaseController
 {
@@ -40,5 +42,13 @@ class BaseController
      */
     protected function homeRedirect($response) {
         return $response->withHeader('Location', $this->config->homePath);
+    }
+
+    /**
+     * @param $request ServerRequestInterface
+     * @return User
+     */
+    protected function getUserFromRequest($request) {
+        return $request->getAttribute("user");
     }
 }

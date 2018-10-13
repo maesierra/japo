@@ -30,4 +30,19 @@ class User {
             }
         }
     }
+
+    /**
+     * @param $role string
+     * @return bool
+     */
+    public function hasRole($role) {
+        switch ($this->role) {
+            case self::USER_ROLE_NONE:
+                return $role == self::USER_ROLE_NONE;
+            case self::USER_ROLE_EDITOR:
+                return in_array($role, [self::USER_ROLE_NONE, self::USER_ROLE_EDITOR]);
+            case self::USER_ROLE_ADMIN:
+                return true;
+        }
+    }
 }

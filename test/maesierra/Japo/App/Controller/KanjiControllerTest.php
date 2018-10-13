@@ -9,6 +9,7 @@
 namespace maesierra\Japo\App\Controller;
 
 
+use maesierra\Japo\Auth\User;
 use maesierra\Japo\Common\Query\Sort;
 use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Kanji\Kanji;
@@ -55,6 +56,9 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
      */
     private $controller;
 
+    /** @var  User */
+    private $user;
+
     public function setUp() {
         /** @var KanjiRepository $kanjiRepository */
         $kanjiRepository = $this->createMock(KanjiRepository::class);
@@ -67,6 +71,13 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
         $this->response = $this->createMock(ResponseInterface::class);
         $this->body = $this->createMock(StreamInterface::class);
         $this->response->method('getBody')->willReturn($this->body);
+        $this->user = new User([
+            'id' => 0,
+            'nickname' => 'user',
+            'email' => 'none@user.com',
+            'role' => User::USER_ROLE_EDITOR
+        ]);
+        $this->request->method('getAttribute')->with('user')->willReturn($this->user);
     }
 
     public function testCatalogs() {
@@ -194,6 +205,23 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
         $response = $this->response;
         $this->controller->saveKanji($request, $response, []);
     }
+
+    public function testSaveKanji_403Error() {
+        $this->user->role = User::USER_ROLE_NONE;
+        $kanji = $this->kanji(7328, 'kanji', 5, 550);
+        $this->request->method('getParsedBody')->willReturn(json_decode(json_encode($kanji)));
+        $this->kanjiRepository->expects($this->never())->method('saveKanji');
+        $this->response->expects($this->never())->method('withHeader');
+        $this->response->expects($this->once())->method('withStatus')->with(403)->willReturnSelf();
+        $this->body->expects($this->once())->method('write')->with("editor role required");
+
+        /** @var ServerRequestInterface $request */
+        $request = $this->request;
+        /** @var ResponseInterface $response */
+        $response = $this->response;
+        $this->controller->saveKanji($request, $response, []);
+    }
+
 
     /**
      * @return KanjiCatalog

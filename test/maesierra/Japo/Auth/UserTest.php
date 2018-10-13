@@ -30,4 +30,21 @@ class UserTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($user->picture, "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png");
         $this->assertEquals(['id', "nickname", "email", "picture", "role"], array_keys(get_object_vars ($user)));
     }
+
+    public function testHasRole() {
+        $noRoleUser = new User(['role' => User::USER_ROLE_NONE]);
+        $editoreUser = new User(['role' => User::USER_ROLE_EDITOR]);
+        $admineUser = new User(['role' => User::USER_ROLE_ADMIN]);
+
+        $this->assertTrue($noRoleUser->hasRole(User::USER_ROLE_NONE));
+        $this->assertFalse($noRoleUser->hasRole(User::USER_ROLE_EDITOR));
+        $this->assertFalse($noRoleUser->hasRole(User::USER_ROLE_ADMIN));
+        $this->assertTrue($editoreUser->hasRole(User::USER_ROLE_EDITOR));
+        $this->assertTrue($editoreUser->hasRole(User::USER_ROLE_NONE));
+        $this->assertFalse($noRoleUser->hasRole(User::USER_ROLE_ADMIN));
+        $this->assertTrue($admineUser->hasRole(User::USER_ROLE_ADMIN));
+        $this->assertTrue($admineUser->hasRole(User::USER_ROLE_NONE));
+        $this->assertTrue($admineUser->hasRole(User::USER_ROLE_EDITOR));
+
+    }
 }

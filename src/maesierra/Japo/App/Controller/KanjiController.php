@@ -10,6 +10,7 @@ namespace maesierra\Japo\App\Controller;
 
 
 use maesierra\Japo\AppContext\JapoAppConfig;
+use maesierra\Japo\Auth\User;
 use maesierra\Japo\DB\KanjiRepository;
 use maesierra\Japo\Kanji\Kanji;
 use maesierra\Japo\Kanji\KanjiQuery;
@@ -88,6 +89,12 @@ class KanjiController extends BaseController {
      * @return ResponseInterface
      */
     public function saveKanji($request, $response, $args) {
+        $user = $this->getUserFromRequest($request);
+        if (!$user->hasRole(User::USER_ROLE_EDITOR)) {
+            $response = $response->withStatus(403);
+            $response->getBody()->write('editor role required');
+            return $response;
+        }
         $kanji = $request->getParsedBody();
         $kanji = $kanji ? new Kanji($kanji) : null;
         if (!$kanji) {
