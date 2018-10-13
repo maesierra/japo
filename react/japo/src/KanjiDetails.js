@@ -42,7 +42,8 @@ class KanjiDetails extends Component {
             words: [],
             catalogs: [],
             loading: false,
-            kanjiCatalogs: []
+            kanjiCatalogs: [],
+            allowEdit: props.allowEdit !== undefined ? props.allowEdit : false
         };
         this.editMode.bind(this);
         this.meaningChanged.bind(this);
@@ -62,7 +63,8 @@ class KanjiDetails extends Component {
     componentWillReceiveProps(nextProps) {
         let newState = {
             edit: !!nextProps.edit,
-            kanji: nextProps.kanji ? nextProps.kanji : ''
+            kanji: nextProps.kanji ? nextProps.kanji : '',
+            allowEdit: nextProps.allowEdit !== undefined ? nextProps.allowEdit : false
         };
         if (this.props.location.pathname !== nextProps.location.pathname) {
             newState.edit = nextProps.location.pathname.match(/\/edit\//);
@@ -332,7 +334,9 @@ class KanjiDetails extends Component {
 
     kanjiDetails() {
         let buttons = <div className="kanji-action-buttons">
-                        <button className="btn btn-primary" onClick={(e) => this.editMode(e, true)}><span className="fa fa-pencil-square-o fa-1"/></button>
+                        {this.state.allowEdit ?
+                            <button className="btn btn-primary" onClick={(e) => this.editMode(e, true)}><span className="fa fa-pencil-square-o fa-1"/></button> : ''
+                        },
                         {this.props.backButton ?
                             <button className="btn btn-primary" onClick={this.back.bind(this)}><span className="fa fa-reply fa-1"/></button> : ''
                         }

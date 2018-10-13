@@ -71,6 +71,7 @@ class KanjiApp extends Component {
             mode: mode,
             prevMode: mode,
             loadList: loadList,
+            user: null
 
         };
         this.changeLevels.bind(this);
@@ -85,8 +86,13 @@ class KanjiApp extends Component {
     };
 
     componentDidMount() {
-        Japo.isAuthorized().then(authorized => {
-            this.setState(Object.assign({}, this.state, {authorized:authorized, authorizing:false}));
+        Japo.isAuthorized().then(user => {
+            let authorized = user !== false;
+            this.setState(Object.assign({}, this.state, {
+                authorized:authorized,
+                authorizing:false,
+                user: user
+            }));
             return authorized;
         }).then(authorized => {
             if (authorized) {
@@ -231,7 +237,7 @@ class KanjiApp extends Component {
             return (this.state.mode === 'kanji' || this.state.mode === 'edit-kanji') ?
                 <KanjiDetails kanji={this.state.kanji} edit={this.state.mode === 'edit-kanji'}
                               backButton={this.state.prevMode !== 'kanji' && this.state.prevMode !== 'edit-kanji'}
-                              onBack={this.back.bind(this)} /> :
+                              onBack={this.back.bind(this)} allowEdit={['admin', 'editor'].indexOf(this.state.user.role) !== -1} /> :
                 <KanjiList  hasMoreItems={this.state.loadList} mode={this.state.mode}
                             catalog={this.state.catalog} levels={this.state.levels}
                             reading={this.state.reading} meaning={this.state.meaning}

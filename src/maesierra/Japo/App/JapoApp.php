@@ -10,9 +10,11 @@ namespace maesierra\Japo\App;
 
 
 use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\DefaultController;
 use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\AppContext\JapoAppContext;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\App;
 
 class JapoApp extends App {
@@ -34,7 +36,7 @@ class JapoApp extends App {
         $logInfo = "User Auth from host: {$_SERVER['REMOTE_ADDR']} user agent: {$_SERVER['HTTP_USER_AGENT']}";
         if ($appContext->authManager->isAuthenticated()) {
             $logger->info($logInfo." => Authorized");
-            return $next($request, $response);
+            return $next($request->withAttribute("user", $appContext->authManager->getUser()), $response);
         } else {
             $logger->info($logInfo." => Unauthorized");
             return $response->withStatus(401, 'Unauthorised');
@@ -51,9 +53,7 @@ class JapoApp extends App {
             $this->get('/logout',  AuthController::class.':logout');
         });
 
-        $this->get('/', function ($request, $response, $args) {
-            return $response;
-        })->add([$this, 'authMiddleware']);
+        $this->get('/', DefaultController::class.':defaultAction')->add([$this, 'authMiddleware']);
 
         $this->group('/kanji', function () {
             $this->get('/catalogs',  KanjiController::class.':catalogs');

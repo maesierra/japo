@@ -17,6 +17,7 @@ use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\DefaultController;
 use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
@@ -75,6 +76,7 @@ class JapoAppContextBuilder extends ContainerConfig {
         $this->authController($di, $config);
         $this->kanjiController($di, $config);
         $this->jdictController($di, $config);
+        $this->defaultController($di, $config);
         $this->slimCoreServices($di);
     }
 
@@ -249,6 +251,19 @@ class JapoAppContextBuilder extends ContainerConfig {
             'config' => $di->lazyGet('config')
         ]);
     }
+
+    /**
+     * @param Container $di
+     * @param $config
+     */
+    private function defaultController(Container $di, $config)
+    {
+        $this->createObject($di, DefaultController::class, DefaultController::class, [
+            'logger' => $di->lazyGet('defaultLogger'),
+            'config' => $di->lazyGet('config')
+        ]);
+    }
+
 
     /**
      * @param Container $di

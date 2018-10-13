@@ -11,6 +11,7 @@ namespace maesierra\Japo\AppContext;
 use Auth0\SDK\Auth0;
 use Doctrine\ORM\EntityManager;
 use maesierra\Japo\App\Controller\AuthController;
+use maesierra\Japo\App\Controller\DefaultController;
 use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\Auth\Auth0AuthManager;
@@ -189,6 +190,17 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertSame($this->appContext->authManager, $authController->authManager);
         $this->assertSame($authController, $this->appContext->get(AuthController::class));
     }
+
+    public function testDefaultController() {
+        $this->buildContext();
+        /** @var DefaultController $defaultController */
+        $defaultController  = $this->appContext->get(DefaultController::class);
+        $this->assertInstanceOf(DefaultController::class, $defaultController);
+        $this->assertSame($this->appContext->defaultLogger, $defaultController->logger);
+        $this->assertSame($this->config, $defaultController->config);
+        $this->assertSame($defaultController, $this->appContext->get(DefaultController::class));
+    }
+
 
     public function testKanjiController() {
         $this->buildContext();

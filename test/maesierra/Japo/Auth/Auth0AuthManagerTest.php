@@ -56,13 +56,57 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testGetUser() {
-        $user =  ["sub" => "auth0|5b879de94b3e140de3007585","nickname" => "mae","name" => "mae@maesierra.net","picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png","updated_a
-t" => "2018-09-02T21:01:02.750Z"];
+        $user =  [
+            "sub" => "auth0|5b879de94b3e140de3007585",
+            "nickname" => "mae",
+            "name" => "mae@maesierra.net",
+            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            "updated_at" => "2018-09-02T21:01:02.750Z",
+            "https://github.com/maesierra/japo/user_metadata" => [],
+            "https://github.com/maesierra/japo/app_metadata" => ["role" => "admin"]
+        ];
         $this->auth0->expects($this->once())->method('getUser')->willReturn($user);
         $this->assertEquals(new User(['id' => "auth0|5b879de94b3e140de3007585",
             "nickname" => "mae",
             "email" => "mae@maesierra.net",
-            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png"
+            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            "role" => User::USER_ROLE_ADMIN
+        ]), $this->authManager->getUser());
+    }
+
+    public function testGetUser_withNoRolesOnMetadata() {
+        $user =  [
+            "sub" => "auth0|5b879de94b3e140de3007585",
+            "nickname" => "mae",
+            "name" => "mae@maesierra.net",
+            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            "updated_at" => "2018-09-02T21:01:02.750Z",
+            "https://github.com/maesierra/japo/user_metadata" => [],
+            "https://github.com/maesierra/japo/app_metadata" => ["someproperty" => "value"]
+        ];
+        $this->auth0->expects($this->once())->method('getUser')->willReturn($user);
+        $this->assertEquals(new User(['id' => "auth0|5b879de94b3e140de3007585",
+            "nickname" => "mae",
+            "email" => "mae@maesierra.net",
+            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            "role" => User::USER_ROLE_NONE
+        ]), $this->authManager->getUser());
+    }
+
+    public function testGetUser_noAppMetadata() {
+        $user =  [
+            "sub" => "auth0|5b879de94b3e140de3007585",
+            "nickname" => "mae",
+            "name" => "mae@maesierra.net",
+            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            "updated_at" => "2018-09-02T21:01:02.750Z"
+        ];
+        $this->auth0->expects($this->once())->method('getUser')->willReturn($user);
+        $this->assertEquals(new User(['id' => "auth0|5b879de94b3e140de3007585",
+            "nickname" => "mae",
+            "email" => "mae@maesierra.net",
+            "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            "role" => User::USER_ROLE_NONE
         ]), $this->authManager->getUser());
     }
 

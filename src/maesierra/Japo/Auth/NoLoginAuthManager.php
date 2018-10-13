@@ -22,7 +22,8 @@ class NoLoginAuthManager implements AuthManager {
         return new User([
             'id' => 0,
             'nickname' => 'user',
-            'email' => 'none@user.com'
+            'email' => 'none@user.com',
+            'role' => 'admin'
          ]);
     }
 

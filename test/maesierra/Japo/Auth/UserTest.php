@@ -20,12 +20,14 @@ class UserTest extends \PHPUnit_Framework_TestCase {
             "nickname" => "mae",
             "email" => "mae@maesierra.net",
             "picture" => "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png",
+            'role' => User::USER_ROLE_NONE,
             'extra' => 'value'
         ]);
         $this->assertEquals($user->id, "auth0|5b879de94b3e140de3007585");
         $this->assertEquals($user->nickname, "mae");
         $this->assertEquals($user->email, "mae@maesierra.net");
+        $this->assertEquals($user->role, User::USER_ROLE_NONE);
         $this->assertEquals($user->picture, "https:\\/\\/s.gravatar.com\\/avatar\\/35685adfdc0e9f5b3816c58954487b39?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fma.png");
-        $this->assertEquals(['id', "nickname", "email", "picture"], array_keys(get_object_vars ($user)));
+        $this->assertEquals(['id', "nickname", "email", "picture", "role"], array_keys(get_object_vars ($user)));
     }
 }

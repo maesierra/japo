@@ -48,8 +48,11 @@ Japo.isAuthorized = () => {
             {},
             {cache: 'no-cache'}
         ).then((response) => {
-            let authorized = response.status === 200;
-            resolve(authorized);
+            if (response.status === 200) {
+                resolve(response.json())
+            } else {
+                resolve(false);
+            }
         })
         .catch((error) => resolve(false));
     });

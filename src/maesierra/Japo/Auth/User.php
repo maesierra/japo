@@ -11,10 +11,15 @@ namespace maesierra\Japo\Auth;
 
 class User {
 
+    const USER_ROLE_ADMIN = "admin";
+    const USER_ROLE_EDITOR = "editor";
+    const USER_ROLE_NONE = "none";
+
     public $id;
     public $nickname;
     public $email;
     public $picture;
+    public $role;
 
     public function __construct($obj = null) {
         if ($obj) {

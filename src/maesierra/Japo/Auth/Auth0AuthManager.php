@@ -14,6 +14,7 @@ use Monolog\Logger;
 
 class Auth0AuthManager implements AuthManager
 {
+    const APP_METADATA_KEY = 'https://github.com/maesierra/japo/app_metadata';
 
     /** @var  Auth0 */
     public $auth0;
@@ -60,11 +61,13 @@ class Auth0AuthManager implements AuthManager
      */
     public function getUser() {
         $auth0User = $this->auth0->getUser();
+        $appMetadata = isset($auth0User[self::APP_METADATA_KEY]) ? $auth0User[self::APP_METADATA_KEY] : [];
         return $auth0User ? new User([
             'id' => isset($auth0User['sub']) ? $auth0User['sub'] : null,
             'nickname' => isset($auth0User['nickname']) ? $auth0User['nickname'] : null,
             'email' => isset($auth0User['name']) ? $auth0User['name'] : null,
-            'picture' => isset($auth0User['picture']) ? $auth0User['picture'] : null
+            'picture' => isset($auth0User['picture']) ? $auth0User['picture'] : null,
+            'role' => isset($appMetadata['role']) ? $appMetadata['role'] : User::USER_ROLE_NONE
         ]) : null;
     }
 

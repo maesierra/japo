@@ -83,7 +83,8 @@ On the bin folder an script is provided to run all the db migrations that will c
    bin/run-db-migration
    ```
 
-###Server set up
+Server set up
+=============
 
 Only the following files/directories need to be exposed from the webserver:
 ```
@@ -111,7 +112,20 @@ Steps to set up auth0
 3. Add https://[yourdomain]/[server_path]/api/auth as **Allowed Callback URLs**
 4. Add https://[yourdomain] as **Allowed Web Origins**
 5. Add https://[yourdomain]/[server_path] as **Allowed Logout URLs**
-6. Set up the following properties on .env:
+6. Add the following rule under Rules (name it's not important)
+```javascript
+function (user, context, callback) {
+   var namespace = 'https://github.com/maesierra/japo/';
+   if (context.idToken && user.user_metadata) {
+     context.idToken[namespace + 'user_metadata'] = user.user_metadata;
+   }
+   if (context.idToken && user.app_metadata) {
+     context.idToken[namespace + 'app_metadata'] = user.app_metadata;
+   }
+   callback(null, user, context);
+ }
+```
+7. Set up the following properties on .env:
 * **AUTH_MANAGER** = maesierra\Japo\Auth\NoLoginAuthManager 
 * **AUTH0_DOMAIN** = mydomain.auth0.com *Copy it from application settings page*
 * **AUTH0_CLIENT_ID** = Client ID  *Copy it from application settings page*
@@ -119,6 +133,13 @@ Steps to set up auth0
 
 Login page options can be set under host pages section. Please follow auth0 configuration on 
 how to set it up, change the language or the look and feel.  
+
+To give an user admin or editor role (required to allow edit kanji) on the users's section, edit the user and add the following ``app_metadata``
+```json
+{
+  "role": "admin"
+}
+```
 
 Vagrant
 =======
