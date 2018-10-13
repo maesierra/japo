@@ -310,7 +310,6 @@ class KanjiApp extends Component {
         return this.state.authorized ? (
                 <div className="container">
                     <Header pageClass="japo" authorized={this.state.authorized}/>
-                    <PageTitle pageTitle="Kanji Application">kanji</PageTitle>
                     <SubNav selected="kanji"/>
                     <div className="row">
                         <LeftNav className="kanji-grid-left">

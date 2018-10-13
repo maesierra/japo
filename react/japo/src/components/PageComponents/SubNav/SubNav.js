@@ -14,19 +14,25 @@ const NavItem = (props) => {
 class SubNav extends React.Component {
     constructor(props) {
         super(props);
-        let items = props.empty === undefined ? {
-            dictionary: {link: "/japo/index.php", selected:false, label: "Diccionario"},
-            kanji:      {link: "/",    selected:false, label: "Kanji"},
-            tests:      {link: "/japo/test/list/",       selected:false, label: "Tests"}
-        } : {};
-        if (props.selected !== undefined) {
-            items[props.selected].selected = true;
-        }
         this.state = {
-            items: items
+            items: {},
+            defaultItems: {
+                kanji:      {link: "/",    selected:false, label: "Kanji"}
+            }
         };
         this.onClick = this.onClick.bind(this);
 
+    }
+
+    getCurrentItems(props) {
+        let items = props.empty === undefined ? this.state.defaultItems : {};
+        if (props.selected !== undefined) {
+            items[props.selected].selected = true;
+        }
+        return items;
+    }
+    componentWillReceiveProps(nextProps) {
+        this.setState(Object.assign({}, this.state, {items: this.getCurrentItems(nextProps)}));
     }
     onClick(link)  {
         this.props.history.push(link);
