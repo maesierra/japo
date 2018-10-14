@@ -66,11 +66,17 @@ To build the application:
    ```
 Composer install will:
 1. Download and install dependencies
-2. Build frontend *Note: npm must be installed* 
-3. Adjust .htaccess paths
-4. run db-migration
+2. ``build-front-end`` Build frontend *Note: npm must be installed* 
+3. ``build-webroot`` Adjust .htaccess paths and create webroot folder links
+4. ``run db-migration`` runs the db migration
 
-Steps 2, 3, 4 could be skipped with the ``--no-scripts`` option.
+``build-front-end``,  ``build-webroot`` and ``run db-migration`` can be skipped with the ``--no-scripts`` option.
+
+To run just some of those commands use the following syntax:
+  
+```
+php composer.phar run-script <command name>
+```
 
 DB Migration
 ============

@@ -37,8 +37,13 @@
         "phpunit/php-token-stream": "1.4.2"
     },
     "scripts": {
+        "build-front-end": ["maesierra\\Japo\\ComposerInstallScript::buildFrontEnd"],
+        "build-webroot": ["maesierra\\Japo\\ComposerInstallScript::buildWebroot"],
+        "run-db-migration": ["maesierra\\Japo\\ComposerInstallScript::runDBMigration"],
         "post-install-cmd": [
-            "maesierra\\Japo\\ComposerInstallScript::postPackageInstall"
+            "@build-front-end",
+            "@build-webroot",
+            "@run-db-migration"
         ]
     }
 }

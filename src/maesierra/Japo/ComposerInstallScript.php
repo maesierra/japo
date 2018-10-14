@@ -17,14 +17,17 @@ use maesierra\Japo\AppContext\JapoAppContext;
 
 class ComposerInstallScript {
 
-    public static function postPackageInstall(Event $event) {
-        $japoAppConfig = JapoAppConfig::get();
-        $homePath = $japoAppConfig->homePath;
+    public static function buildFrontEnd(Event $event) {
+        $homePath = JapoAppConfig::get()->homePath;
         if ($homePath) {
             putenv( "PUBLIC_URL=$homePath");
         }
         passthru("npm run-script build --prefix react/japo/");
         passthru("npm run-script post-build --prefix react/japo/");
+        putenv( "PUBLIC_URL");
+    }
+
+    public static function buildWebroot(Event $event) {
         if (!file_exists('webroot')) {
             mkdir('webroot');
             echo "Created webroot folder\n";
@@ -41,14 +44,17 @@ class ComposerInstallScript {
         }
         passthru("ln -s \"".realpath("api")."\" webroot/api");
         echo "Created link to ".realpath("api").".\n";
+        $japoAppConfig = JapoAppConfig::get();
         file_put_contents("webroot/api/.htaccess",
             "RewriteEngine On\n".
-                "RewriteCond %{REQUEST_FILENAME} !-f\n".
-                "RewriteCond %{REQUEST_FILENAME} !-d\n".
-                "RewriteRule ^ {$japoAppConfig->serverPath}/index.php [QSA,L]\n"
+            "RewriteCond %{REQUEST_FILENAME} !-f\n".
+            "RewriteCond %{REQUEST_FILENAME} !-d\n".
+            "RewriteRule ^ {$japoAppConfig->serverPath}/index.php [QSA,L]\n"
         );
         echo "Generated .htaccess file for webroot/api.\n";
-        putenv( "PUBLIC_URL");
+    }
+
+    public static function runDBMigration(Event $event) {
         JapoAppContext::context()->dbMigration->run();
     }
 
