@@ -147,6 +147,11 @@ To give an user admin or editor role (required to allow edit kanji) on the users
 }
 ```
 
+To make auth0 hosted login page match the application language it's required to change the language passed to ``Auth0Lock`` constructor:
+```
+language: config.extraParams.custom_lang
+```
+
 Vagrant
 =======
 

@@ -120,6 +120,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals($this->config->auth0Domain, $authManager->auth0Domain);
         $this->assertEquals($this->config->auth0ClientId, $authManager->auth0ClientId);
         $this->assertEquals($this->config->auth0LogoutUri, $authManager->auth0LogoutUri);
+        $this->assertEquals($this->config->lang, $authManager->language);
         $this->assertSame($authManager, $this->appContext->authManager);
     }
 

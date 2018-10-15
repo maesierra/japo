@@ -20,6 +20,7 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
     private $domain;
     private $clientId;
     private $logoutUrl;
+    private $language;
 
     /** @var  Auth0AuthManager */
     private $authManager;
@@ -34,17 +35,18 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
         $this->domain = "auth0.domain.com";
         $this->clientId = "8329823947";
         $this->logoutUrl = "http://japo.com/japo";
+        $this->language = 'es';
         /** @var Auth0 $auth0 */
         $auth0 = $this->createMock(Auth0::class);
         /** @var Logger $logger */
         $logger = $this->createMock(Logger::class);
-        $this->authManager = new Auth0AuthManager($auth0, $this->domain, $this->clientId, $this->logoutUrl, $logger);
+        $this->authManager = new Auth0AuthManager($auth0, $this->domain, $this->clientId, $this->logoutUrl, $this->language, $logger);
         $this->auth0 = $auth0;
         $this->logger = $logger;
     }
 
     public function testLoginRedirect_userNotLoggedIn() {
-        $this->auth0->expects($this->once())->method('login');
+        $this->auth0->expects($this->once())->method('login')->with(null, null, ['custom_lang' => $this->language]);
         $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
         $this->assertTrue($this->authManager->login());
     }

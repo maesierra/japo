@@ -36,7 +36,7 @@ class AuthController extends BaseController {
     public function login(ServerRequestInterface $request, ResponseInterface $response, array $args) {
         $remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
         $userAgent = $request->getHeader('HTTP_USER_AGENT');
-        $this->logger->info("Login request from host: $remoteAddr user agent: $userAgent.");
+        $this->logger->info("Login request from host: ".json_encode($remoteAddr)." user agent: ".json_encode($userAgent).".");
         if (!$this->authManager->login()) {
             return $this->homeRedirect($response);
         }

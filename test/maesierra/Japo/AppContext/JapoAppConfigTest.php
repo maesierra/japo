@@ -9,8 +9,6 @@
 namespace maesierra\Japo\AppContext;
 
 use Dotenv\Dotenv;
-use maesierra\Japo\Auth\Auth0AuthManager;
-use maesierra\Japo\Auth\NoLoginAuthManager;
 
 if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
 if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
