@@ -12,9 +12,10 @@ interface AuthManager
 {
     /**
      * Redirect to the login flow if the user is not already logged in
-     * @return boolean true if the redirect flow has been performed, false if the user is already logged in
+     * @param $language string user language
+     * @return bool true if the redirect flow has been performed, false if the user is already logged in
      */
-    public function login();
+    public function login($language);
 
     public function authCallback();
 

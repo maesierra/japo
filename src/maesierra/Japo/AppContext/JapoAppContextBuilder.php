@@ -179,8 +179,7 @@ class JapoAppContextBuilder extends ContainerConfig {
                     'logger' => $di->lazyGet('defaultLogger'),
                     'auth0Domain' => $config->auth0Domain,
                     'auth0ClientId' => $config->auth0ClientId,
-                    'auth0LogoutUri' => $config->auth0LogoutUri,
-                    'language' => $config->lang
+                    'auth0LogoutUri' => $config->auth0LogoutUri
                 ]);
         }
     }

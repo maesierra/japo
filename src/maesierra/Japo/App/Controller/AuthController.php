@@ -20,7 +20,8 @@ class AuthController extends BaseController {
 
     /** @var AuthManager */
     public $authManager;
-
+    /** @var  String */
+    private $language;
 
     /**
      * AuthController constructor.
@@ -31,13 +32,15 @@ class AuthController extends BaseController {
     public function __construct($authManager, $config, $logger) {
         parent::__construct($config, $logger);
         $this->authManager = $authManager;
+        $this->language = $config->lang;
     }
 
     public function login(ServerRequestInterface $request, ResponseInterface $response, array $args) {
+        $userLanguage = isset($_COOKIE['japo_app_language']) ? $_COOKIE['japo_app_language'] : $this->language;
         $remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
         $userAgent = $request->getHeader('HTTP_USER_AGENT');
         $this->logger->info("Login request from host: ".json_encode($remoteAddr)." user agent: ".json_encode($userAgent).".");
-        if (!$this->authManager->login()) {
+        if (!$this->authManager->login($userLanguage)) {
             return $this->homeRedirect($response);
         }
     }

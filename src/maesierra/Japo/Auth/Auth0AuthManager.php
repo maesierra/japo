@@ -25,7 +25,6 @@ class Auth0AuthManager implements AuthManager
     public $auth0Domain;
     public $auth0ClientId;
     public $auth0LogoutUri;
-    public $language;
 
     /**
      * @param Auth0 $auth0
@@ -34,19 +33,18 @@ class Auth0AuthManager implements AuthManager
      * @param string $auth0LogoutUri
      * @param Logger $logger
      */
-    public function __construct($auth0, $auth0Domain, $auth0ClientId, $auth0LogoutUri, $language, $logger) {
+    public function __construct($auth0, $auth0Domain, $auth0ClientId, $auth0LogoutUri, $logger) {
         $this->auth0 = $auth0;
         $this->logger = $logger;
         $this->auth0Domain = $auth0Domain;
         $this->auth0ClientId = $auth0ClientId;
         $this->auth0LogoutUri = $auth0LogoutUri;
-        $this->language = $language;
     }
 
-    public function login() {
+    public function login($language) {
         $userInfo = $this->auth0->getUser();
         if (!$userInfo) {
-            $this->auth0->login(null, null, ['custom_lang' => $this->language]);
+            $this->auth0->login(null, null, ['custom_lang' => $language]);
             return true;
         } else {
             return false;

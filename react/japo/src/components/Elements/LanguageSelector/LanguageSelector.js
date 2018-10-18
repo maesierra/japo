@@ -4,19 +4,27 @@ import {withRouter} from "react-router-dom";
 import { withNamespaces} from 'react-i18next';
 import enImage from './images/flags/en.png';
 import esImage from './images/flags/es.png';
+import Cookies from 'universal-cookie';
+
 const _ = require('lodash');
+const cookies = new Cookies();
+const cookieName = 'japo.app.language';
 
 class LanguageSelector extends React.Component {
     constructor(props) {
         super(props);
         this.onChangeLanguage = this.onChangeLanguage.bind(this);
+        let userLang = cookies.get(cookieName);
         let languages = [
             {code: 'es', image: esImage},
             {code: 'en', image: enImage}
         ];
         this.state = {
-            lang: LanguageSelector.findLanguage(languages, process.env.REACT_APP_LANGUAGE),
+            lang: LanguageSelector.findLanguage(languages, userLang !== undefined ? userLang : process.env.REACT_APP_LANGUAGE),
             languages: languages
+        };
+        if (userLang !== undefined) {
+            props.i18n.changeLanguage(userLang);
         }
 
     }
@@ -35,6 +43,7 @@ class LanguageSelector extends React.Component {
         }
         this.setState(Object.assign({}, this.state, {lang: LanguageSelector.findLanguage(this.state.languages, lang)}));
         this.props.i18n.changeLanguage(lang);
+        cookies.set(cookieName, lang, { path: '/' });
     }
 
     render() {

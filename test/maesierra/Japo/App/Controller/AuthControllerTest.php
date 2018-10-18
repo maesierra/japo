@@ -30,6 +30,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
     /** @var AuthController */
     private $controller;
 
+    private $language;
 
     protected function setUp()
     {
@@ -39,45 +40,59 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $this->authManager = $authManager;
         /** @var Logger $logger */
         $logger = $this->createMock(Logger::class);
+        $this->language = 'es';
+        /** @var JapoAppConfig $config */
         $config = (object) [
-            'homePath' => '/japo'
+            'homePath' => '/japo',
+            'lang' => $this->language
         ];
         $this->logger = $logger;
         $this->controller = new AuthController($authManager, $config, $logger);
     }
 
-    public function testLoginRedirect_userNotLoggedIn()
-    {
+    public function testLoginRedirect_userNotLoggedIn_noLanguageCookie() {
 
-        $this->authManager->expects($this->once())->method('login')->willReturn(true);
+        $this->authManager->expects($this->once())->method('login')->with($this->language)->willReturn(true);
         $request = $this->createMock(ServerRequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
         $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $this->logger->expects($this->once())->method('info')->with("Login request from host: $remoteAddr user agent: $httpUserAgent.");
+        $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->never())->method('withHeader');
         $this->controller->login($request, $response, []);
     }
 
-    public function testLoginRedirect_userAlreadyLoggedIn()
-    {
+    public function testLoginRedirect_userNotLoggedIn_withLanguageCookie() {
 
-        $this->authManager->expects($this->once())->method('login')->willReturn(false);
+        $_COOKIE['japo_app_language'] = 'en';
+        $this->authManager->expects($this->once())->method('login')->with('en')->willReturn(true);
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $remoteAddr = "12.78.39.234";
+        $httpUserAgent = 'firefox';
+        $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
+        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
+        $response->expects($this->never())->method('withHeader');
+        $this->controller->login($request, $response, []);
+    }
+
+    public function testLoginRedirect_userAlreadyLoggedIn() {
+        $this->authManager->expects($this->once())->method('login')->with($this->language)->willReturn(false);
         $request = $this->createMock(ServerRequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
         $_SERVER['REMOTE_ADDR'] = $remoteAddr;
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
-        $this->logger->expects($this->once())->method('info')->with("Login request from host: $remoteAddr user agent: $httpUserAgent.");
+        $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->once())->method('withHeader')->with('Location', '/japo');
         $this->assertNull($this->controller->login($request, $response, []));
     }
 
-    public function testAuthCallback()
-    {
+    public function testAuthCallback() {
         $request = $this->createMock(ServerRequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
         $this->authManager->expects($this->once())->method('authCallback');
