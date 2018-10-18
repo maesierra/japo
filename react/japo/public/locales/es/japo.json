@@ -1,0 +1,46 @@
+{
+  "home": {
+    "title": "Japo - Tu ayudante para aprender japonés",
+    "title-sub": "tu ayudante para aprender japonés",
+    "main": "Bienvenido a Japo"
+  },
+  "common": {
+    "login": "Acceder"
+  },
+  "leftNav": {
+    "buttons": {
+      "catalog": "Catálogo",
+      "kanji": "Kanji",
+      "reading": "Lectura",
+      "meaning": "Significados"
+    },
+    "labels": {
+      "catalog": "Catálogo",
+      "level": "Nivel",
+      "kanji": "Kanji",
+      "reading": "Lectura",
+      "meaning": "Significado"
+    }
+  },
+  "NavMenu": {
+    "labels": {
+      "start": "Inicio",
+      "logout": "Salir",
+      "login": "Acceder"
+    }
+  },
+  "SubNav": {
+    "labels": {
+      "kanji": "Kanji"
+    }
+  },
+  "KanjiDetails": {
+    "labels": {
+      "meanings": "Significados",
+      "kun": "Kun",
+      "on": "On",
+      "catalogs": "Catálogos",
+      "words": "Palabras"
+    }
+  }
+}

@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom'
 
 
-import Header from '../../components/PageComponents/Header/index'
+import {Header} from '../../components/PageComponents/Header/index'
 import PageTitle from '../../components/PageComponents/PageTitle/index'
 
 

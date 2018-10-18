@@ -18,13 +18,17 @@ use maesierra\Japo\AppContext\JapoAppContext;
 class ComposerInstallScript {
 
     public static function buildFrontEnd(Event $event) {
-        $homePath = JapoAppConfig::get()->homePath;
+        $japoAppConfig = JapoAppConfig::get();
+        $homePath = $japoAppConfig->homePath;
         if ($homePath) {
             putenv( "PUBLIC_URL=$homePath");
         }
+        $lang = $japoAppConfig->lang ?: 'en';
+        putenv( "REACT_APP_LANGUAGE=$lang");
         passthru("npm run-script build --prefix react/japo/");
         passthru("npm run-script post-build --prefix react/japo/");
         putenv( "PUBLIC_URL");
+        putenv("REACT_APP_LANGUAGE");
     }
 
     public static function buildWebroot(Event $event) {

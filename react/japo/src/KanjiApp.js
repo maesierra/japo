@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom'
 
 import LeftNav from './components/PageComponents/LeftNav'
 import MainArea from './components/PageComponents/MainArea'
-import Header from './components/PageComponents/Header'
+import {Header} from './components/PageComponents/Header'
 import PageTitle from './components/PageComponents/PageTitle'
 import SubNav from './components/PageComponents/SubNav'
 
@@ -18,6 +18,7 @@ import KanjiList from './KanjiList'
 import KanjiDetails from "./KanjiDetails";
 
 import './KanjiApp.css';
+import { withNamespaces} from 'react-i18next';
 
 const Japo = require('./lib/japo/japo');
 const _ = require('lodash');
@@ -247,21 +248,22 @@ class KanjiApp extends Component {
     }
 
     leftNav() {
+        const { t } = this.props;
         let buttons = {
             catalog: {
-                label: 'Catálogo',
+                label: t('leftNav.buttons.catalog'),
                 element: <span className="fa fa-book fa-1" />
             },
             kanji:   {
-                label: 'Kanji',
+                label: t('leftNav.buttons.kanji'),
                 element: <span>漢字</span>
             },
             reading: {
-                label: 'Lectura',
+                label: t('leftNav.buttons.reading'),
                 element: <span>あア</span>
             },
             meaning: {
-                label: 'Significados',
+                label: t('leftNav.buttons.meaning'),
                 element: <span className="fa fa-comment" />
             }
         };
@@ -271,7 +273,7 @@ class KanjiApp extends Component {
             <LeftTab name="catalog">
                 <div className="row">
                     <div className="col-sm-10">
-                        <label className="control-label">Catálogo</label>
+                        <label className="control-label">{t('leftNav.labels.catalog')}</label>
                         <select className="form-control" tabIndex="1" value={this.state.catalog} onChange={(e) => this.changeCatalog(e, e.target.value)}>
                             {[{slug:'', name:'---'}].concat(this.state.catalogs).map((catalog, i) => <option key={i} value={catalog.slug}>{catalog.name}</option>)}
                         </select>
@@ -279,7 +281,7 @@ class KanjiApp extends Component {
                 </div>
                 {this.state.catalog ? <div className="row">
                     <div className="col-sm-3">
-                        <label htmlFor="romaji" className="control-label">Nivel</label>
+                        <label htmlFor="romaji" className="control-label">{t('leftNav.labels.level')}</label>
                     </div>
                     <div className="col-sm-4">
                         <input className="form-control" name="romaji" autoComplete="off"
@@ -289,22 +291,22 @@ class KanjiApp extends Component {
                 </div> : ''}
             </LeftTab>
             <LeftTab name="kanji">
-                <label className="control-label">Kanji</label>
+                <label className="control-label">{t('leftNav.labels.kanji')}</label>
                 <JDictAutocomplete value={this.state.kanji} onChange={(e) => this.changeKanji(e)} autoComplete="off" type="text"/>
             </LeftTab>
             <LeftTab name="reading">
                 <div className="row">
                     <div className="col-sm-10">
-                        <label className="control-label">Lectura</label>
-                        <input className="form-control" value={this.state.reading} onChange={(e) => this.changeReading(e)} placeholder="Lectura"/>
+                        <label className="control-label">{t('leftNav.labels.reading')}</label>
+                        <input className="form-control" value={this.state.reading} onChange={(e) => this.changeReading(e)} placeholder={t('leftNav.labels.reading')}/>
                     </div>
                 </div>
             </LeftTab>
             <LeftTab name="meaning">
                 <div className="row">
                     <div className="col-sm-10">
-                        <label className="control-label">Significado</label>
-                        <input className="form-control" value={this.state.meaning} onChange={(e) => this.changeMeaning(e)} placeholder="Significado"/>
+                        <label className="control-label">{t('leftNav.labels.meaning')}</label>
+                        <input className="form-control" value={this.state.meaning} onChange={(e) => this.changeMeaning(e)} placeholder={t('leftNav.labels.meaning')}/>
                     </div>
                 </div>
             </LeftTab>
@@ -313,6 +315,7 @@ class KanjiApp extends Component {
 
 
     render() {
+        const { t } = this.props;
         return this.state.authorized ? (
                 <div className="container">
                     <Header pageClass="japo" authorized={this.state.authorized}/>
@@ -329,11 +332,11 @@ class KanjiApp extends Component {
         ) : (
             <div className="container">
                 <Header pageClass="japo" authorized={this.state.authorized}/>
-                <PageTitle pageTitle="Japo - Tu ayudante para aprender japonés" sub="tu ayudante para aprender japonés">Bienvenido a Japo</PageTitle>
+                <PageTitle pageTitle={t('home.title')} sub={t('home.title-sub')}>{t('home.main')}</PageTitle>
                 <SubNav empty/>
                 <div className="row">
                     <div className="col-sm-12">
-                        <button className="btn btn-primary " onClick={(e) => Japo.login()}>Acceder</button>
+                        <button className="btn btn-primary " onClick={(e) => Japo.login()}>{t('common.login')}</button>
                     </div>
                 </div>
             </div>
@@ -341,4 +344,4 @@ class KanjiApp extends Component {
     }
 }
 
-export default withRouter(KanjiApp);
+export default withRouter(withNamespaces('japo')(KanjiApp));

@@ -61,3 +61,7 @@
     font-weight: bold;
 }
 
+nav.language-selector {
+    position: absolute;
+    right: -5%;
+}

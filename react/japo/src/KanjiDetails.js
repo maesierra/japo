@@ -9,6 +9,7 @@ import KanjiDetailsRow from './components/kanji/KanjiDetailsRow'
 import Autocomplete from './components/Elements/Autocomplete'
 
 import './KanjiDetails.css';
+import { withNamespaces} from 'react-i18next';
 
 const Japo = require('./lib/japo/japo');
 const wanakana = require('wanakana');
@@ -333,6 +334,7 @@ class KanjiDetails extends Component {
     }
 
     kanjiDetails() {
+        const { t } = this.props;
         let buttons = <div className="kanji-action-buttons">
                         {this.state.allowEdit ?
                             <button className="btn btn-primary" onClick={(e) => this.editMode(e, true)}><span className="fa fa-pencil-square-o fa-1"/></button> : ''
@@ -343,29 +345,29 @@ class KanjiDetails extends Component {
                      </div>;
         return <div className="kanji-details">
                     <KanjiDetailsRow kanji={this.state.kanji} strokes={this.state.strokes} buttons={buttons} />
-                    <DetailsRow className="kanji-meanings" label="Significados">
+                    <DetailsRow className="kanji-meanings" label={t('KanjiDetails.labels.meanings')}>
                         {this.state.meanings.map((meaning, i) => {
                             return <HorizontalItem key={i} last={i === this.state.meanings.length - 1}>{meaning}</HorizontalItem>
                         })}
                     </DetailsRow>
-                    <DetailsRow className="kanji-kun" label="Kun">
+                    <DetailsRow className="kanji-kun" label={t('KanjiDetails.labels.kun')}>
                         {this.state.kun.map((reading, i) => {
                             return <HorizontalItem key={i} separator="/ " last={i === this.state.kun.length - 1}><Reading reading={reading}/></HorizontalItem>
                         })}
                     </DetailsRow>
-                    <DetailsRow className="kanji-on" label="On">
+                    <DetailsRow className="kanji-on" label={t('KanjiDetails.labels.on')}>
                         {this.state.on.map((reading, i) => {
                             return <HorizontalItem key={i} separator="/ " last={i === this.state.on.length - 1}><Reading reading={reading}/></HorizontalItem>
                         })}
                     </DetailsRow>
-                    <DetailsRow className="kanji-catalogs" label="Catálogos">
+                    <DetailsRow className="kanji-catalogs" label={t('KanjiDetails.labels.catalogs')}>
                         {this.state.catalogs.map((catalog, i) => {
                             return <HorizontalItem key={i} separator=" " last={i === this.state.catalogs.length - 1}>
                                 <span className="catalog">{catalog.name} {catalog.level}-{catalog.n}</span>
                             </HorizontalItem>
                         })}
                     </DetailsRow>
-                    <DetailsRow className="kanji-words" label="Palabras">
+                    <DetailsRow className="kanji-words" label={t('KanjiDetails.labels.words')}>
                         {this.state.words.map((word, i) => {
                             return <HorizontalItem key={i} separator=" " last={i === this.state.words.length - 1}>
                                 <a className="word" lang="ja" data-tip data-for={'word-' + word.id} >{word.kanji}({word.kana})</a>
@@ -406,4 +408,4 @@ class KanjiDetails extends Component {
     }
 }
 
-export default withRouter(KanjiDetails);
+export default withRouter(withNamespaces('japo')(KanjiDetails));

@@ -1,6 +1,7 @@
 import React from 'react';
 import './SubNav.css'
 import {withRouter} from "react-router-dom";
+import { withNamespaces} from 'react-i18next';
 const _ = require('lodash');
 
 const NavItem = (props) => {
@@ -17,7 +18,7 @@ class SubNav extends React.Component {
         this.state = {
             items: {},
             defaultItems: {
-                kanji:      {link: "/",    selected:false, label: "Kanji"}
+                kanji:      {link: "/",    selected:false, label: "SubNav.labels.kanji"}
             }
         };
         this.onClick = this.onClick.bind(this);
@@ -38,9 +39,10 @@ class SubNav extends React.Component {
         this.props.history.push(link);
     }
     render() {
+        const { t } = this.props;
         return <div className="row sub-nav">
                 <ul className="nav nav-tabs">
-                    {_.values(this.state.items).map((item, i) => <NavItem key={i} href={item.link} onClick={() => this.onClick(item.link)} label={item.label} active={item.selected}/>)}
+                    {_.values(this.state.items).map((item, i) => <NavItem key={i} href={item.link} onClick={() => this.onClick(item.link)} label={t(item.label)} active={item.selected}/>)}
                 </ul>
             </div>
 
@@ -48,4 +50,4 @@ class SubNav extends React.Component {
 }
 
 
-export default withRouter(SubNav);
+export default withRouter(withNamespaces('japo')(SubNav));

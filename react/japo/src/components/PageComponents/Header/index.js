@@ -1,3 +1,6 @@
-import Header from './Header.js'
-
-export default Header
+import Header from './Header'
+import NavMenu from './NavMenu'
+export {
+    Header,
+    NavMenu
+}

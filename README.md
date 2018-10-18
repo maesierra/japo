@@ -56,6 +56,9 @@ Configuration
 * **MYSQL_USER** *default japo*
 * **MYSQL_PASSWORD**  
 * **DATABASE_NAME** *default japo*
+* **JAPO_APP_LANGUAGE** *default es*
+
+*Note: changing the language requires a front end rebuild to be applied.*
 
 Building
 ========

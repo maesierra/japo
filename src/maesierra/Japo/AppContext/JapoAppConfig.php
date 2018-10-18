@@ -120,7 +120,7 @@ class JapoAppConfig {
             $params['mysqlUser'             ] = $this->getEnv('MYSQL_USER', 'japo');
             $params['mysqlPassword'         ] = $this->getEnv('MYSQL_PASSWORD');
             $params['databaseName'          ] = $this->getEnv('DATABASE_NAME', 'japo');
-            $params['lang'                  ] = $this->getEnv('LANGUAGE', 'es');
+            $params['lang'                  ] = $this->getEnv('JAPO_APP_LANGUAGE', 'es');
             $params['authManager'           ] = $this->getEnv('AUTH_MANAGER', NoLoginAuthManager::class);
             if (substr($params['serverPath'], -1, 1) == '/') {
                 $params['serverPath'] = substr($params['serverPath'], 0, -1);

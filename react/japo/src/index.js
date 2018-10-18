@@ -7,6 +7,7 @@ import * as serviceWorker from "./registerServiceWorker"
 
 import { BrowserRouter,Switch, Route } from 'react-router-dom'
 
+import './i18n';
 ReactDOM.render(
     <BrowserRouter basename={process.env.PUBLIC_URL}>
         <Switch>

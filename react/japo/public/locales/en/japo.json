@@ -1,0 +1,46 @@
+{
+  "home": {
+    "title": "Japo - Your Japanese learning companion",
+    "title-sub": "your Japanese learning companion",
+    "main": "Welcome to Japo"
+  },
+  "common": {
+    "login": "Sign in"
+  },
+  "leftNav": {
+    "buttons": {
+      "catalog": "Catalog",
+      "kanji": "Kanji",
+      "reading": "Reading",
+      "meaning": "Meanings"
+    },
+    "labels": {
+      "catalog": "Catalog",
+      "level": "Level",
+      "kanji": "Kanji",
+      "reading": "Reading",
+      "meaning": "Meaning"
+    }
+  },
+  "NavMenu": {
+    "labels": {
+      "start": "Home",
+      "logout": "Logout",
+      "login": "Login"
+    }
+  },
+  "SubNav": {
+    "labels": {
+      "kanji": "Kanji"
+    }
+  },
+  "KanjiDetails": {
+    "labels": {
+      "meanings": "Meanings",
+      "kun": "Kun",
+      "on": "On",
+      "catalogs": "Catalogs",
+      "words": "Words"
+    }
+  }
+}

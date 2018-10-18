@@ -1,0 +1,24 @@
+nav.language-selector {
+    background: rgba(0, 0, 0, 0.12) none;
+    border: 0 none;
+    border-radius: 5px;
+    font-size: 0.5em;
+    display: inline-block;
+    padding: 0;
+    height: 26px;
+    overflow: hidden;
+    transition: all .3s ease;
+    margin: 0 5px 5px 0;
+    vertical-align: top;
+}
+
+nav.language-selector:hover {
+    height: 78px;
+}
+
+nav.language-selector a {
+    display: block;
+    padding: 4px 4px;
+    line-height: 40px;
+    border-top: 1px solid #EEE;
+}
