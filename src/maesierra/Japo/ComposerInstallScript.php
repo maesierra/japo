@@ -25,6 +25,7 @@ class ComposerInstallScript {
         }
         $lang = $japoAppConfig->lang ?: 'en';
         putenv( "REACT_APP_LANGUAGE=$lang");
+        passthru("cd react/japo && npm install ; cd ../../");
         passthru("npm run-script build --prefix react/japo/");
         passthru("npm run-script post-build --prefix react/japo/");
         putenv( "PUBLIC_URL");
