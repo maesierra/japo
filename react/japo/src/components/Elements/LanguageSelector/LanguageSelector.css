@@ -14,6 +14,7 @@ nav.language-selector {
 
 nav.language-selector:hover {
     height: 78px;
+    z-index: 1;
 }
 
 nav.language-selector a {
