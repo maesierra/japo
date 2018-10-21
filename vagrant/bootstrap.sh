@@ -24,18 +24,17 @@ add-apt-repository -y ppa:ondrej/php &&
 apt-get update
 
 #PHP install
-apt-get install -y php5.6
+apt-get install -y php7.1
 #PHP extensions
-apt-get install -y php5.6-xml php5.6-mysql php5.6-mbstring
+apt-get install -y php7.1-xml php7.1-mysql php7.1-mbstring
 
-#Picky extensions that I have to compile
-apt-get install -y php5.6-dev pkg-config git
-mkdir php-modules -p
+#Picky extensions that need to be compiled
+apt-get install -y php7.1-dev pkg-config git
 
 if ! php -m | grep xdebug ; then
-    wget https://pecl.php.net/get/xdebug-2.5.5.tgz
-    gunzip -c xdebug-2.5.5.tgz | tar xf -
-    cd xdebug-2.5.5
+    wget https://pecl.php.net/get/xdebug-2.6.1.tgz
+    gunzip -c xdebug-2.6.1.tgz | tar xf -
+    cd xdebug-2.6.1
     phpize
     ./configure
     make
@@ -44,16 +43,16 @@ if ! php -m | grep xdebug ; then
     echo 'xdebug.remote_enable=true' >>xdebug.ini
     echo 'xdebug.remote_connect_back=true' >>xdebug.ini
     echo 'xdebug.idekey=maesierra.net_at_vagrant' >>xdebug.ini
-    mv xdebug.ini /etc/php/5.6/mods-available/xdebug.ini
-    ln -s /etc/php/5.6/mods-available/xdebug.ini /etc/php/5.6/apache2/conf.d/20-xdebug.ini
-    ln -s /etc/php/5.6/mods-available/xdebug.ini /etc/php/5.6/cli/conf.d/20-xdebug.ini
+    mv xdebug.ini /etc/php/7.1/mods-available/xdebug.ini
+    ln -s /etc/php/7.1/mods-available/xdebug.ini /etc/php/7.1/apache2/conf.d/20-xdebug.ini
+    ln -s /etc/php/7.1/mods-available/xdebug.ini /etc/php/7.1/cli/conf.d/20-xdebug.ini
     cd ..
 fi
 
 if ! php -m | grep apcu ; then
-    wget https://pecl.php.net/get/apcu-4.0.11.tgz
-    gunzip -c apcu-4.0.11.tgz | tar xf -
-    cd apcu-4.0.11/
+    wget https://pecl.php.net/get/apcu-5.1.5.tgz
+    gunzip -c apcu-5.1.5.tgz | tar xf -
+    cd apcu-5.1.5/
     phpize
     ./configure
     make
@@ -63,9 +62,9 @@ if ! php -m | grep apcu ; then
     echo 'apc.shm_size=32M' >> apcu.ini
     echo 'apc.ttl=7200' >> apcu.ini
     echo 'apc.enable_cli = 1' >> apcu.ini
-    sudo mv apcu.ini /etc/php/5.6/mods-available/apcu.ini
-    sudo ln -s /etc/php/5.6/mods-available/apcu.ini /etc/php/5.6/apache2/conf.d/20-apcu.ini
-    sudo ln -s /etc/php/5.6/mods-available/apcu.ini /etc/php/5.6/cli/conf.d/20-apcu.ini
+    sudo mv apcu.ini /etc/php/7.1/mods-available/apcu.ini
+    sudo ln -s /etc/php/7.1/mods-available/apcu.ini /etc/php/7.1/apache2/conf.d/20-apcu.ini
+    sudo ln -s /etc/php/7.1/mods-available/apcu.ini /etc/php/7.1/cli/conf.d/20-apcu.ini
     cd ..
 fi
 
@@ -92,9 +91,14 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs
 
 #zip for composer
-apt-get install -y zip unzip php5.6-zip
+apt-get install -y zip unzip php7.1-zip
 
 cd /vagrant
 /usr/bin/php composer.phar self-update
 /usr/bin/php composer.phar install
-bin/run-db-migration
+
+#Clean up because boostrap is run as sudo
+rm /tmp/phinx.json
+chown vagrant /vagrant/react/japo/ -R
+chown vagrant /vagrant/react/japo/node_modules/ -R
+chown vagrant /vagrant/react/japo/build/ -R

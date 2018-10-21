@@ -12,7 +12,7 @@ namespace maesierra\Japo\AppContext;
 use Aura\Di\Container;
 use Aura\Di\ContainerConfig;
 use Auth0\SDK\Auth0;
-use Doctrine\Common\Cache\ApcCache;
+use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
@@ -194,7 +194,7 @@ class JapoAppContextBuilder extends ContainerConfig {
             $doctrineConfig = Setup::createAnnotationMetadataConfiguration(
                 [dirname($reflector->getFileName())]
             );
-            $cache = new ApcCache();
+            $cache = new ApcuCache();
             $doctrineConfig->setAutoGenerateProxyClasses(true);
             $doctrineConfig->setQueryCacheImpl($cache);
             $doctrineConfig->setResultCacheImpl($cache);
