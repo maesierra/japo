@@ -26,11 +26,13 @@ class ComposerInstallScript {
         $lang = $japoAppConfig->lang ?: 'en';
         putenv( "REACT_APP_LANGUAGE=$lang");
         chdir("react/japo");
-        passthru("npm install");
+        passthru("npm install", $returnVar);
+        self::checkReturnVar($returnVar);
         chdir("../../");
-        passthru("pwd");
-        passthru("npm run-script build --prefix react/japo/");
-        passthru("npm run-script post-build --prefix react/japo/");
+        passthru("npm run-script build --prefix react/japo/", $returnVar);
+        self::checkReturnVar($returnVar);
+        passthru("npm run-script post-build --prefix react/japo/", $returnVar);
+        self::checkReturnVar($returnVar);
         putenv( "PUBLIC_URL");
         putenv("REACT_APP_LANGUAGE");
     }
@@ -64,6 +66,18 @@ class ComposerInstallScript {
 
     public static function runDBMigration(Event $event) {
         JapoAppContext::context()->dbMigration->run();
+    }
+
+    /**
+     * @param $returnVar
+     */
+    private static function checkReturnVar($returnVar)
+    {
+        if ($returnVar !== 0) {
+            putenv("PUBLIC_URL");
+            putenv("REACT_APP_LANGUAGE");
+            exit($returnVar);
+        }
     }
 
 }
