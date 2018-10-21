@@ -1,5 +1,5 @@
-Japo
-====
+Japo [![Build Status](https://travis-ci.com/maesierra/japo.svg?branch=master)](https://travis-ci.com/maesierra/japo)
+==========================================
 Japo (pronounced hapo) it's a project to produce Japanese Language learning tools to non English speakers.
 
 There are plenty of resources for English speakers available on the Internet but it's difficult to find anything from any other languages to Japanese, and it's quite frustrating to non native English speakers to require to a double translation or spend quite a lot of money in physical dictionaries.
