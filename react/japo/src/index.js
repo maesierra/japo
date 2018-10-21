@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import KanjiApp from './KanjiApp';
-import NotFound from './modules/NotFound/NotFound';
 import './main.css';
 import * as serviceWorker from "./registerServiceWorker"
 
