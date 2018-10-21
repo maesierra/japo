@@ -8,7 +8,6 @@ env:
 before_script:
     - pecl install -f apcu-4.0.11  <<<''   
     - nvm install $NODE_VERSION
-    - node --version
     - travis_retry composer self-update
     - travis_retry composer install --no-interaction --no-scripts
 
