@@ -30,7 +30,7 @@ Next steps will be:
 Requirements
 ============
 
-- PHP >= 5.6
+- PHP >= 7.1
 - PHP Extensions: mb_string, pdo, pdo_mysql, apcu
 - MySQL>=  5.6
 - npm (only for building)
