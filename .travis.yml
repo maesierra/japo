@@ -9,7 +9,7 @@ before_script:
     - travis_retry composer install --no-interaction --no-scripts
 
 script:
-    - vendor/bin/phpunit --coverage-clover=coverage.xml
+    - vendor/bin/phpunit test --coverage-clover=coverage.xml   
     
 notifications:
   email: false
