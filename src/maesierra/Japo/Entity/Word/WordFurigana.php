@@ -9,7 +9,7 @@
 
 namespace maesierra\Japo\Entity\Word;
 
-use maesierra\Japo\Entity\Kanji;
+use maesierra\Japo\Entity\Kanji\Kanji;
 
 
 /**
@@ -38,7 +38,7 @@ class WordFurigana
     private $word;
     /**
      * @var Kanji
-     * @Id @ManyToOne(targetEntity="maesierra\Japo\Entity\Kanji", inversedBy="WordFurigana")
+     * @Id @ManyToOne(targetEntity="maesierra\Japo\Entity\Kanji\Kanji", inversedBy="WordFurigana")
      * @JoinColumn(name="id_kanji", referencedColumnName="id")
      */
     private $kanji;

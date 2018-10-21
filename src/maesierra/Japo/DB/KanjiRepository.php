@@ -14,12 +14,12 @@ use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityManager;
 use maesierra\Japo\Common\Query\Page;
 use maesierra\Japo\Common\Query\Sort;
-use maesierra\Japo\Entity\Kanji as KanjiEntity;
-use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
-use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
-use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
-use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
-use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
+use maesierra\Japo\Entity\Kanji\Kanji as KanjiEntity;
+use maesierra\Japo\Entity\Kanji\KanjiCatalog as KanjiCatalogEntity;
+use maesierra\Japo\Entity\Kanji\KanjiCatalogEntry as KanjiCatalogEntryEntity;
+use maesierra\Japo\Entity\Kanji\KanjiMeaning as KanjiMeaningEntity;
+use maesierra\Japo\Entity\Kanji\KanjiReading as KanjiReadingEntity;
+use maesierra\Japo\Entity\Kanji\KanjiStroke as KanjiStrokeEntity;
 use maesierra\Japo\Entity\Word\Word as WordEntity;
 use maesierra\Japo\Entity\Word\Word;
 use maesierra\Japo\Entity\Word\WordMeaning as WordMeaningEntity;
@@ -221,7 +221,7 @@ class KanjiRepository {
         $join = implode(" JOIN ", array_unique($join));
         $conditions = implode(" AND ", array_map(function ($c) {return "($c)";}, array_unique($conditions)));
         $orderBy = implode(",", array_unique($sortColumns));
-        $dql = "select k from \\maesierra\\Japo\\Entity\\Kanji k"
+        $dql = "select k from ".KanjiEntity::class." k"
                                     .($join ? " JOIN $join" : '')
                                     .($conditions ? " WHERE $conditions" : '')
                                     .($orderBy ? " ORDER BY $orderBy" : '');
@@ -299,7 +299,7 @@ class KanjiRepository {
      */
     public function getCatalogLevels($idCatalog) {
         return array_map('current', $this->entityManager->createQueryBuilder()->select('c.level')
-            ->from('\maesierra\Japo\Entity\KanjiCatalogEntry', 'c')
+            ->from(KanjiCatalogEntryEntity::class, 'c')
             ->where('c.idCatalog = ?1')
             ->distinct()
             ->orderBy('c.level')

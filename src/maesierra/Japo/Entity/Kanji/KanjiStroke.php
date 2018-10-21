@@ -1,5 +1,5 @@
 <?php
-namespace maesierra\Japo\Entity;
+namespace maesierra\Japo\Entity\Kanji;
 /**
  * @Entity
  * @Table(name="kanji_strokes")

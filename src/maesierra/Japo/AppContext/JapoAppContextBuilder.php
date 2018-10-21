@@ -25,7 +25,7 @@ use maesierra\Japo\Auth\NoLoginAuthManager;
 use maesierra\Japo\DB\DBMigration;
 use maesierra\Japo\DB\JDictRepository;
 use maesierra\Japo\DB\KanjiRepository;
-use maesierra\Japo\Entity\KanjiCatalog;
+use maesierra\Japo\Entity\Kanji\KanjiCatalog;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
@@ -192,7 +192,7 @@ class JapoAppContextBuilder extends ContainerConfig {
         $di->set('entityManager', $di->lazy(function() use($config) {
             $reflector = new \ReflectionClass(KanjiCatalog::class);
             $doctrineConfig = Setup::createAnnotationMetadataConfiguration(
-                [dirname($reflector->getFileName())]
+                [dirname(dirname($reflector->getFileName()))]
             );
             $cache = new ApcuCache();
             $doctrineConfig->setAutoGenerateProxyClasses(true);

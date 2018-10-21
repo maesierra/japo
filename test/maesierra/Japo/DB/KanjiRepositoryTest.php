@@ -16,12 +16,12 @@ use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use maesierra\Japo\Common\Query\Page;
 use maesierra\Japo\Common\Query\Sort;
-use maesierra\Japo\Entity\Kanji as KanjiEntity;
-use maesierra\Japo\Entity\KanjiCatalog as KanjiCatalogEntity;
-use maesierra\Japo\Entity\KanjiCatalogEntry as KanjiCatalogEntryEntity;
-use maesierra\Japo\Entity\KanjiMeaning as KanjiMeaningEntity;
-use maesierra\Japo\Entity\KanjiReading as KanjiReadingEntity;
-use maesierra\Japo\Entity\KanjiStroke as KanjiStrokeEntity;
+use maesierra\Japo\Entity\Kanji\Kanji as KanjiEntity;
+use maesierra\Japo\Entity\Kanji\KanjiCatalog as KanjiCatalogEntity;
+use maesierra\Japo\Entity\Kanji\KanjiCatalogEntry as KanjiCatalogEntryEntity;
+use maesierra\Japo\Entity\Kanji\KanjiMeaning as KanjiMeaningEntity;
+use maesierra\Japo\Entity\Kanji\KanjiReading as KanjiReadingEntity;
+use maesierra\Japo\Entity\Kanji\KanjiStroke as KanjiStrokeEntity;
 use maesierra\Japo\Entity\Word\Word as WordEntity;
 use maesierra\Japo\Entity\Word\WordMeaning as WordMeaningEntity;
 use maesierra\Japo\Kanji\Kanji;
@@ -775,8 +775,8 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     private function verifyDDLExecuted($expectedConditions)
     {
         $this->entityManager->expects($this->exactly(2))->method('createQuery')->withConsecutive(
-            [trim("select k from \\maesierra\\Japo\\Entity\\Kanji k $expectedConditions")],
-            [trim("select count(k.id) from \\maesierra\\Japo\\Entity\\Kanji k $expectedConditions")]
+            [trim("select k from ".KanjiEntity::class." k $expectedConditions")],
+            [trim("select count(k.id) from ".KanjiEntity::class." k $expectedConditions")]
         );
     }
 
@@ -1041,7 +1041,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     {
         $qb = $this->createMock(QueryBuilder::class);
         $qb->method('select')->with('c.level')->willReturnSelf();
-        $qb->method('from')->with('\maesierra\Japo\Entity\KanjiCatalogEntry', 'c')->willReturnSelf();
+        $qb->method('from')->with(KanjiCatalogEntryEntity::class, 'c')->willReturnSelf();
         $qb->method('where')->with('c.idCatalog = ?1')->willReturnSelf();
         $qb->method('distinct')->willReturnSelf();
         $qb->method('orderBy')->with('c.level')->willReturnSelf();

@@ -7,7 +7,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-namespace maesierra\Japo\Entity;
+namespace maesierra\Japo\Entity\Kanji;
 
 use \maesierra\Japo\Entity\Word\Word;
 
