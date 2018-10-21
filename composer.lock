@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b57d1fdf6a0caf45e9e8333fdecf76b7",
+    "content-hash": "a0191c292183ef279d166f4f9f415c8e",
     "packages": [
         {
             "name": "aura/di",
@@ -60,16 +60,16 @@
         },
         {
             "name": "auth0/auth0-php",
-            "version": "5.3.0",
+            "version": "5.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auth0/auth0-PHP.git",
-                "reference": "551bb5ec385cf1df5da3be37b8473bf0f493189d"
+                "reference": "c8aa6ea5dce87d112f3ff62d2b379202dd0bd217"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/551bb5ec385cf1df5da3be37b8473bf0f493189d",
-                "reference": "551bb5ec385cf1df5da3be37b8473bf0f493189d",
+                "url": "https://api.github.com/repos/auth0/auth0-PHP/zipball/c8aa6ea5dce87d112f3ff62d2b379202dd0bd217",
+                "reference": "c8aa6ea5dce87d112f3ff62d2b379202dd0bd217",
                 "shasum": ""
             },
             "require": {
@@ -79,11 +79,8 @@
                 "php": "^5.5 || ^7.0"
             },
             "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.4.4",
                 "josegonzalez/dotenv": "^2.0",
-                "phpcompatibility/php-compatibility": "^8.1",
-                "phpunit/phpunit": "^4.8 || ^5.7",
-                "squizlabs/php_codesniffer": "^3.2"
+                "phpunit/phpunit": "^4.8 || ^5.7"
             },
             "type": "library",
             "autoload": {
@@ -103,8 +100,7 @@
                 }
             ],
             "description": "Auth0 PHP SDK.",
-            "homepage": "https://github.com/auth0/auth0-PHP",
-            "time": "2018-10-09T19:46:11+00:00"
+            "time": "2018-06-13T18:07:09+00:00"
         },
         {
             "name": "cakephp/cache",
@@ -3417,7 +3413,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0",
+        "php": ">=7.1",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-mbstring": "*",
