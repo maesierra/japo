@@ -173,7 +173,6 @@ class KanjiDetails extends Component {
 
 
     editReading(reading, pos) {
-        //transformValue={(option) => <span lang="ja">{option ? option.kanji + '(' + option.kana + ')' : ''}</span>}
         return <div className="row" key={pos}>
             <div className="col-sm-5">
                 <input type="text" value={reading.reading} className="form-control" onChange={(e) => this.readingChanged(e, reading.type, pos)} />
@@ -278,12 +277,12 @@ class KanjiDetails extends Component {
                 })}
             </DetailsRow>
             <DetailsRow className="kanji-kun" label="Kun">
-                {this.state.kun.concat([{reading:'', type:'kun'}]).map((reading, i) => {
+                {this.state.kun.concat([{reading:'', type:'K'}]).map((reading, i) => {
                     return this.editReading(reading, i);
                 })}
             </DetailsRow>
             <DetailsRow className="kanji-on" label="On">
-                {this.state.on.concat([{reading:'', type:'on'}]).map((reading, i) => {
+                {this.state.on.concat([{reading:'', type:'O'}]).map((reading, i) => {
                     return this.editReading(reading, i);
                 })}
             </DetailsRow>
