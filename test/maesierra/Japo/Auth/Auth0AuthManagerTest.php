@@ -47,15 +47,24 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
         $language = 'es';
         $this->auth0->expects($this->once())->method('login')->with(null, null, ['custom_lang' => $language]);
         $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
-        $this->assertTrue($this->authManager->login($language));
+        $this->assertTrue($this->authManager->login($language, null));
     }
 
     public function testLoginRedirect_userLoggedIn() {
         $language = 'es';
         $this->auth0->expects($this->never())->method('login');
         $this->auth0->expects($this->once())->method('getUser')->willReturn(['user' => 'user']);
-        $this->assertFalse($this->authManager->login($language));
+        $this->assertFalse($this->authManager->login($language, null));
     }
+
+    public function testLoginRedirect_userNotLoggedIn_withRedirectTo() {
+        $language = 'es';
+        $redirectTo = 'redirectPage';
+        $this->auth0->expects($this->once())->method('login')->with(null, null, ['custom_lang' => $language, 'redirect_to' => $redirectTo]);
+        $this->auth0->expects($this->once())->method('getUser')->willReturn(null);
+        $this->assertTrue($this->authManager->login($language, $redirectTo));
+    }
+
 
     public function testGetUser() {
         $user =  [
@@ -117,11 +126,19 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(null, $this->authManager->getUser());
     }
 
-    public function testAuthCallback() {
+    public function testAuthCallback_noRedirect() {
         $userInfo = ['user' => 'user'];
         $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
         $this->logger->expects($this->once())->method('info')->with("User ".json_encode($userInfo)." authenticated successfully.");
-        $this->authManager->authCallback();
+        $this->assertNull($this->authManager->authCallback());
+    }
+
+    public function testAuthCallback_redirect() {
+        $redirectTo = "kanji/details/感";
+        $userInfo = ['user' => 'user', "https://github.com/maesierra/japo/redirect_to" => $redirectTo];
+        $this->auth0->expects($this->once())->method('getUser')->willReturn($userInfo);
+        $this->logger->expects($this->once())->method('info')->with("User ".json_encode($userInfo)." authenticated successfully.");
+        $this->assertEquals($redirectTo, $this->authManager->authCallback());
     }
 
     /**

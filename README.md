@@ -131,6 +131,9 @@ function (user, context, callback) {
    if (context.idToken && user.app_metadata) {
      context.idToken[namespace + 'app_metadata'] = user.app_metadata;
    }
+   if (context.idToken && context.request.query && context.request.query.redirect_to) {
+     context.idToken[namespace + 'redirect_to'] = context.request.query.redirect_to;
+   }
    callback(null, user, context);
  }
 ```

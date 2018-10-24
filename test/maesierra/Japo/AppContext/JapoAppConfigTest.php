@@ -99,6 +99,16 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('http://localhost:443/japo/api', $this->appConfig->hostUrl);
     }
 
+    public function testHomeUrl() {
+        $_SERVER['HTTPS'] = 'on';
+        $_SERVER['HTTP_HOST']  = 'localhost:443';
+        $this->assertEquals('https://localhost:443/japo', $this->appConfig->homeUrl);
+    }
+
+    public function testHomesUrl_noHttps() {
+        $_SERVER['HTTP_HOST']  = 'localhost:443';
+        $this->assertEquals('http://localhost:443/japo', $this->appConfig->homeUrl);
+    }
 
 
     public function testCliMode() {

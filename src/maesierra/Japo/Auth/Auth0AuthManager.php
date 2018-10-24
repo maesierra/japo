@@ -41,10 +41,14 @@ class Auth0AuthManager implements AuthManager
         $this->auth0LogoutUri = $auth0LogoutUri;
     }
 
-    public function login($language) {
+    public function login($language, $redirectTo) {
         $userInfo = $this->auth0->getUser();
         if (!$userInfo) {
-            $this->auth0->login(null, null, ['custom_lang' => $language]);
+            $additionalParams = ['custom_lang' => $language];
+            if ($redirectTo) {
+                $additionalParams['redirect_to'] = $redirectTo;
+            }
+            $this->auth0->login(null, null, $additionalParams);
             return true;
         } else {
             return false;
@@ -54,6 +58,7 @@ class Auth0AuthManager implements AuthManager
     public function authCallback() {
         $userInfo = $this->auth0->getUser();
         $this->logger->info("User ".json_encode($userInfo)." authenticated successfully.");
+        return $userInfo["https://github.com/maesierra/japo/redirect_to"] ?? null;
     }
 
     /**

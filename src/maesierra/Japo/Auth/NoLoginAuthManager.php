@@ -11,7 +11,7 @@ namespace maesierra\Japo\Auth;
 
 class NoLoginAuthManager implements AuthManager {
 
-    public function login($language) {
+    public function login($language, $redirectTo) {
         return false;
     }
 

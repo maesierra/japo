@@ -21,7 +21,7 @@ class NoLoginAuthManagerTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testLogin() {
-        $this->assertFalse($this->authManager->login('en'));
+        $this->assertFalse($this->authManager->login('en', null));
     }
 
     public function testIsAuthenticated() {

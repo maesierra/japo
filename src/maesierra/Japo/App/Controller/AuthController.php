@@ -22,6 +22,8 @@ class AuthController extends BaseController {
     public $authManager;
     /** @var  String */
     private $language;
+    /** @var  String */
+    private $homeUrl;
 
     /**
      * AuthController constructor.
@@ -33,14 +35,22 @@ class AuthController extends BaseController {
         parent::__construct($config, $logger);
         $this->authManager = $authManager;
         $this->language = $config->lang;
+        $this->homeUrl = $config->homeUrl;
     }
 
     public function login(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $userLanguage = isset($_COOKIE['japo_app_language']) ? $_COOKIE['japo_app_language'] : $this->language;
-        $remoteAddr = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'unknown';
+        $userLanguage = $_COOKIE['japo_app_language'] ?? $this->language;
+        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        $referrer = $_SERVER['HTTP_REFERER'] ?? '';
+        $regExp = '/' . preg_quote($this->homeUrl, '/') . '(.+)/';
+        if (preg_match($regExp, $referrer, $matches)) {
+            $redirectTo = $matches[1];
+        } else {
+            $redirectTo = null;
+        }
         $userAgent = $request->getHeader('HTTP_USER_AGENT');
-        $this->logger->info("Login request from host: ".json_encode($remoteAddr)." user agent: ".json_encode($userAgent).".");
-        if (!$this->authManager->login($userLanguage)) {
+        $this->logger->info("Login request from host: ".json_encode($remoteAddr)." user agent: ".json_encode($userAgent).($redirectTo ? " redirect to ".$redirectTo : '').".");
+        if (!$this->authManager->login($userLanguage, $redirectTo)) {
             return $this->homeRedirect($response);
         }
     }
@@ -52,8 +62,8 @@ class AuthController extends BaseController {
      * @return ResponseInterface
      */
     public function auth($request, $response, $args) {
-        $this->authManager->authCallback();
-        return $this->homeRedirect($response);
+        $redirectTo = $this->authManager->authCallback();
+        return $redirectTo ? $response->withHeader('Location', "/$redirectTo") : $this->homeRedirect($response);
     }
 
     /**

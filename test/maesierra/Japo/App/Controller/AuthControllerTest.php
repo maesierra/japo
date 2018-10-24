@@ -44,6 +44,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         /** @var JapoAppConfig $config */
         $config = (object) [
             'homePath' => '/japo',
+            'homeUrl' => 'https://localhost:443/japo/',
             'lang' => $this->language
         ];
         $this->logger = $logger;
@@ -63,6 +64,52 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $response->expects($this->never())->method('withHeader');
         $this->controller->login($request, $response, []);
     }
+
+    public function testLoginRedirect_userNotLoggedIn_noLanguageCookie_withReferrerDirectHit() {
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $remoteAddr = "12.78.39.234";
+        $httpUserAgent = 'firefox';
+        $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
+        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $_SERVER['HTTP_REFERER'] = 'https://localhost:443/japo/';
+        $this->authManager->expects($this->once())->method('login')->with($this->language, null)->willReturn(true);
+        $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
+        $response->expects($this->never())->method('withHeader');
+        $this->controller->login($request, $response, []);
+    }
+
+    public function testLoginRedirect_userNotLoggedIn_noLanguageCookie_withExternalReferrer() {
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $remoteAddr = "12.78.39.234";
+        $httpUserAgent = 'firefox';
+        $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
+        $_SERVER['HTTP_REFERER'] = 'https://localhost:443/other/page/other?param=1';
+        $this->authManager->expects($this->once())->method('login')->with($this->language)->willReturn(true);
+        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
+        $response->expects($this->never())->method('withHeader');
+        $this->controller->login($request, $response, []);
+    }
+
+    public function testLoginRedirect_userNotLoggedIn_noLanguageCookie_withReferrerRedirect() {
+
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $remoteAddr = "12.78.39.234";
+        $httpUserAgent = 'firefox';
+        $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
+        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $_SERVER['HTTP_REFERER'] = 'https://localhost:443/japo/page/other?param=1';
+        $this->authManager->expects($this->once())->method('login')->with($this->language, 'page/other?param=1')->willReturn(true);
+        $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\" redirect to page/other?param=1.");
+        $response->expects($this->never())->method('withHeader');
+        $this->controller->login($request, $response, []);
+    }
+
 
     public function testLoginRedirect_userNotLoggedIn_withLanguageCookie() {
 
@@ -92,13 +139,23 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($this->controller->login($request, $response, []));
     }
 
-    public function testAuthCallback() {
+    public function testAuthCallback_noRedirect() {
         $request = $this->createMock(ServerRequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
         $this->authManager->expects($this->once())->method('authCallback');
         $response->expects($this->once())->method('withHeader')->with('Location', '/japo');
         $this->controller->auth($request, $response, []);
     }
+
+    public function testAuthCallback_redirect() {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $response = $this->createMock(ResponseInterface::class);
+        $redirectTo = "japo/kanji/details/傘";
+        $this->authManager->expects($this->once())->method('authCallback')->willReturn($redirectTo);
+        $response->expects($this->once())->method('withHeader')->with('Location', "/$redirectTo");
+        $this->controller->auth($request, $response, []);
+    }
+
 
     public function testLogout_userLoggedIn()
     {
