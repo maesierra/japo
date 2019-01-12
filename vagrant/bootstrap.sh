@@ -93,12 +93,7 @@ apt-get install -y nodejs
 #zip for composer
 apt-get install -y zip unzip php7.1-zip
 
+su vagrant
 cd /vagrant
 /usr/bin/php composer.phar self-update
 /usr/bin/php composer.phar install
-
-#Clean up because boostrap is run as sudo
-rm /tmp/phinx.json
-chown vagrant /vagrant/react/japo/ -R
-chown vagrant /vagrant/react/japo/node_modules/ -R
-chown vagrant /vagrant/react/japo/build/ -R
