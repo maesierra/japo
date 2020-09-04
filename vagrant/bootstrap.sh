@@ -24,12 +24,12 @@ add-apt-repository -y ppa:ondrej/php &&
 apt-get update
 
 #PHP install
-apt-get install -y php7.1
+apt-get install -y php7.3
 #PHP extensions
-apt-get install -y php7.1-xml php7.1-mysql php7.1-mbstring
+apt-get install -y php7.3-xml php7.3-mysql php7.3-mbstring
 
 #Picky extensions that need to be compiled
-apt-get install -y php7.1-dev pkg-config git
+apt-get install -y php7.3-dev pkg-config git
 
 if ! php -m | grep xdebug ; then
     wget https://pecl.php.net/get/xdebug-2.6.1.tgz
@@ -43,16 +43,16 @@ if ! php -m | grep xdebug ; then
     echo 'xdebug.remote_enable=true' >>xdebug.ini
     echo 'xdebug.remote_connect_back=true' >>xdebug.ini
     echo 'xdebug.idekey=maesierra.net_at_vagrant' >>xdebug.ini
-    mv xdebug.ini /etc/php/7.1/mods-available/xdebug.ini
-    ln -s /etc/php/7.1/mods-available/xdebug.ini /etc/php/7.1/apache2/conf.d/20-xdebug.ini
-    ln -s /etc/php/7.1/mods-available/xdebug.ini /etc/php/7.1/cli/conf.d/20-xdebug.ini
+    mv xdebug.ini /etc/php/7.3/mods-available/xdebug.ini
+    ln -s /etc/php/7.3/mods-available/xdebug.ini /etc/php/7.3/apache2/conf.d/20-xdebug.ini
+    ln -s /etc/php/7.3/mods-available/xdebug.ini /etc/php/7.3/cli/conf.d/20-xdebug.ini
     cd ..
 fi
 
 if ! php -m | grep apcu ; then
-    wget https://pecl.php.net/get/apcu-5.1.5.tgz
-    gunzip -c apcu-5.1.5.tgz | tar xf -
-    cd apcu-5.1.5/
+    wget https://pecl.php.net/get/apcu-5.1.18.tgz
+    gunzip -c apcu-5.1.18.tgz | tar xf -
+    cd apcu-5.1.18/
     phpize
     ./configure
     make
@@ -62,9 +62,9 @@ if ! php -m | grep apcu ; then
     echo 'apc.shm_size=32M' >> apcu.ini
     echo 'apc.ttl=7200' >> apcu.ini
     echo 'apc.enable_cli = 1' >> apcu.ini
-    sudo mv apcu.ini /etc/php/7.1/mods-available/apcu.ini
-    sudo ln -s /etc/php/7.1/mods-available/apcu.ini /etc/php/7.1/apache2/conf.d/20-apcu.ini
-    sudo ln -s /etc/php/7.1/mods-available/apcu.ini /etc/php/7.1/cli/conf.d/20-apcu.ini
+    sudo mv apcu.ini /etc/php/7.3/mods-available/apcu.ini
+    sudo ln -s /etc/php/7.3/mods-available/apcu.ini /etc/php/7.3/apache2/conf.d/20-apcu.ini
+    sudo ln -s /etc/php/7.3/mods-available/apcu.ini /etc/php/7.3/cli/conf.d/20-apcu.ini
     cd ..
 fi
 
@@ -91,7 +91,7 @@ curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 apt-get install -y nodejs
 
 #zip for composer
-apt-get install -y zip unzip php7.1-zip
+apt-get install -y zip unzip php7.3-zip
 
 su vagrant
 cd /vagrant
