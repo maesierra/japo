@@ -32,28 +32,24 @@ use maesierra\Japo\Kanji\KanjiQueryResult;
 use maesierra\Japo\Kanji\KanjiReading;
 use maesierra\Japo\Kanji\KanjiStroke;
 use maesierra\Japo\Kanji\KanjiWord;
-use maesierra\Japo\Test\Utils\TestQuery;
+use maesierra\Test\Utils\TestQuery;
 use Monolog\Logger;
-
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-if (!class_exists(TestQuery::class)) {
-    file_exists('../Test/Utils/TestQuery.php') ? require_once '../Test/Utils/TestQuery.php' : require_once 'test/maesierra/Japo/Test/Utils/TestQuery.php';
-}
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
 
 
-class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
+class KanjiRepositoryTest extends TestCase {
 
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $entityManager;
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $logger;
 
     /** @var  KanjiRepository */
     private $kanjiRepository;
 
-    public function setUp() {
+    public function setUp():void {
         /** @var EntityManager $entityManager */
         $entityManager = $this->createMock(EntityManager::class);
         $this->entityManager = $entityManager;
@@ -753,7 +749,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function stubKanjiQuery($results = [], $total = null)
     {
@@ -1024,7 +1020,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
 
 
     /**
-     * @param $query \PHPUnit_Framework_MockObject_MockObject
+     * @param $query MockObject
      */
     private function verifyParameters($query, ...$params)
     {
@@ -1084,7 +1080,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $catalogName
      * @param $catalogId
      * @param $slug
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function stubCatalogEntityById($catalogId, $catalogName, $slug) {
         $repository = $this->createMock(EntityRepository::class);
@@ -1098,7 +1094,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
      * @param $catalogName
      * @param $catalogId
      * @param $slug
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function stubCatalogEntityBySlug($catalogId, $catalogName, $slug) {
         $repository = $this->createMock(EntityRepository::class);
@@ -1148,7 +1144,7 @@ class KanjiRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @param $builder \PHPUnit_Framework_MockObject_MockObject
+     * @param $builder MockObject
      * @param $entity
      * @param $alias
      * @param $condition

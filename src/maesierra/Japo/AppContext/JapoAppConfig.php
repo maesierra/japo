@@ -9,8 +9,8 @@
 namespace maesierra\Japo\AppContext;
 
 use Dotenv\Dotenv;
-use maesierra\Japo\Auth\Auth0AuthManager;
 use maesierra\Japo\Auth\NoLoginAuthManager;
+use maesierra\Japo\Common\Http\HttpHelper;
 
 
 /**
@@ -66,6 +66,9 @@ class JapoAppConfig {
     /** @var  Dotenv */
     public $dotEnv;
 
+    /** @var HttpHelper */
+    public $httpHelper;
+
     private $params;
 
     /** @var  string */
@@ -75,8 +78,9 @@ class JapoAppConfig {
     private static $instance;
 
 
-    private function __construct($dotEnvPath = null) {
+    private function __construct($dotEnvPath = null, $httpHelper = null) {
         $this->dotEnvPath = $dotEnvPath ?: __DIR__.'/../';
+        $this->httpHelper = $httpHelper ?: new HttpHelper();
     }
 
     /**
@@ -124,8 +128,8 @@ class JapoAppConfig {
             if (substr($params['serverPath'], -1, 1) == '/') {
                 $params['serverPath'] = substr($params['serverPath'], 0, -1);
             }
-            $httpHost = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost' ;
-            $httpsEnabled = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on';
+            $httpHost = $this->httpHelper->getHost();
+            $httpsEnabled = $this->httpHelper->isHttps();
             $protocol = $httpsEnabled ? "https" : "http";
             $params['hostUrl'] = "$protocol://$httpHost{$params['serverPath']}";
             $params['homeUrl'] = "$protocol://$httpHost{$params['homePath']}";
@@ -156,9 +160,9 @@ class JapoAppConfig {
      * @param $dotEnvPath string path for the folder where the .env file is located
      * @return JapoAppConfig
      */
-    public static function get($dotEnvPath = null) {
+    public static function get($dotEnvPath = null, $httpHelper = null) {
         if (!self::$instance ) {
-            self::$instance = new JapoAppConfig($dotEnvPath );
+            self::$instance = new JapoAppConfig($dotEnvPath, $httpHelper);
         }
         return self::$instance;
     }

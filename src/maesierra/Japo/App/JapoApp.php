@@ -14,57 +14,49 @@ use maesierra\Japo\App\Controller\DefaultController;
 use maesierra\Japo\App\Controller\JDictController;
 use maesierra\Japo\App\Controller\KanjiController;
 use maesierra\Japo\AppContext\JapoAppContext;
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\App;
+use Slim\Factory\AppFactory;
+use Slim\Psr7\Response;
+use Slim\Routing\RouteCollectorProxy;
 
 class JapoApp extends App {
 
 
-    /**
-     *
-     * @param  \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
-     * @param  \Psr\Http\Message\ResponseInterface      $response PSR7 response
-     * @param  callable                                 $next     Next middleware
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     */
-
-    public function authMiddleware($request, $response, $next)
-    {
-        $appContext = JapoAppContext::context();
-        $logger = $appContext->defaultLogger;
-        $logInfo = "User Auth from host: {$_SERVER['REMOTE_ADDR']} user agent: {$_SERVER['HTTP_USER_AGENT']}";
-        if ($appContext->authManager->isAuthenticated()) {
-            $logger->info($logInfo." => Authorized");
-            return $next($request->withAttribute("user", $appContext->authManager->getUser()), $response);
-        } else {
-            $logger->info($logInfo." => Unauthorized");
-            return $response->withStatus(401, 'Unauthorised');
-        }
-    }
-
-    public function __construct()
-    {
-        parent::__construct(JapoAppContext::context());
-
-        $this->group('/auth', function () {
-            $this->get('/login',  AuthController::class.':login');
-            $this->get('/auth',  AuthController::class.':auth');
-            $this->get('/logout',  AuthController::class.':logout');
+    public function __construct(JapoAppContext $container) {
+        parent::__construct(AppFactory::determineResponseFactory(), $container);
+        $this->setBasePath('/api');
+        $this->group('/auth', function (RouteCollectorProxy $app) {
+            $app->get('/login',  AuthController::class.':login');
+            $app->get('/auth',  AuthController::class.':auth');
+            $app->get('/logout',  AuthController::class.':logout');
         });
 
-        $this->get('/', DefaultController::class.':defaultAction')->add([$this, 'authMiddleware']);
+        $authMiddleware = function (Request $request, RequestHandler $handler) use($container) {
+            $logger = $container->defaultLogger;
+            $logInfo = $request->getUri()." User Auth from host: {$_SERVER['REMOTE_ADDR']} user agent: {$_SERVER['HTTP_USER_AGENT']} ";
+            if ($container->authManager->isAuthenticated()) {
+                $logger->info($logInfo." => Authorized");
+                return $handler->handle($request->withAttribute("user", $container->authManager->getUser()));
+            } else {
+                $logger->info($logInfo." => Unauthorized");
+                $response = new Response();
+                return $response->withStatus(401, 'Unauthorised');
+            }
+        };
 
-        $this->group('/kanji', function () {
-            $this->get('/catalogs',  KanjiController::class.':catalogs');
-            $this->get('/query',  KanjiController::class.':query');
-            $this->get('/{kanji}',  KanjiController::class.':kanji');
-            $this->post('/{kanji}',  KanjiController::class.':saveKanji');
-        })->add([$this, 'authMiddleware']);
+        $this->get('/', DefaultController::class.':defaultAction')->add($authMiddleware);
 
-        $this->group('/jdict', function () {
-            $this->get('/query',  JDictController::class.':query');
-        })->add([$this, 'authMiddleware']);
+        $this->group('/kanji', function (RouteCollectorProxy $app) {
+            $app->get('/catalogs',  KanjiController::class.':catalogs');
+            $app->get('/query',  KanjiController::class.':query');
+            $app->get('/{kanji}',  KanjiController::class.':kanji');
+            $app->post('/{kanji}',  KanjiController::class.':saveKanji');
+        })->add($authMiddleware);
 
+        $this->group('/jdict', function (RouteCollectorProxy $app) {
+            $app->get('/query',  JDictController::class.':query');
+        })->add($authMiddleware);
     }
 }

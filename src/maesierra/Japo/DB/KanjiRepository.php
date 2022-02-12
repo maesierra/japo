@@ -251,7 +251,7 @@ class KanjiRepository {
             $result = new KanjiQueryResult();
             $result->id = $kanji->getId();
             $result->kanji = $kanji->getKanji();
-            $result->catalogs = array_reduce($kanji->getCatalogs()->toArray(), function(&$result, $catalogEntry) use($results, $kanjiQuery, $filterByCatalog) {
+            $result->catalogs = array_reduce($kanji->getCatalogs()->toArray(), function($result, $catalogEntry) use($results, $kanjiQuery, $filterByCatalog) {
 
                 $entry = $this->mapKanjiCatalogEntry($catalogEntry);
                 if ($kanjiQuery->catalog && $entry->catalogSlug === $kanjiQuery->catalog) {
@@ -322,7 +322,7 @@ class KanjiRepository {
         $result->id = $kanjiEntity->getId();
         $result->kanji = $kanjiEntity->getKanji();
 
-        $result->catalogs = array_reduce($kanjiEntity->getCatalogs()->toArray(), function(&$result, $catalogEntry)  {
+        $result->catalogs = array_reduce($kanjiEntity->getCatalogs()->toArray(), function($result, $catalogEntry)  {
             $entry = $this->mapKanjiCatalogEntry($catalogEntry);
             $result[$entry->catalogId] = $entry;
             return $result;

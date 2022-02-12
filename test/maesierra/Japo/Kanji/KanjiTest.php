@@ -8,11 +8,10 @@
 
 namespace maesierra\Japo\Kanji;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
 
+use PHPUnit\Framework\TestCase;
 
-class KanjiTest extends \PHPUnit_Framework_TestCase {
+class KanjiTest extends TestCase {
 
     public function testJsonDeserialize() {
         $json = '{"kanji":"届","kun":[{"reading":"とどーく","type":"K","helpWord":{"id":3108}},{"reading":"とどーける","type":"K","helpWord":{"id":4813}}],"on":[{"reading":"カイ","type":"O","helpWord":null}],"meanings":["Enviar","Notificar"],"catalogs":{"1":{"catalogId":"1","level":353,"n":792},"2":{"catalogId":"2","level":606,"n":876}}}';

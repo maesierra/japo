@@ -9,19 +9,21 @@
 namespace maesierra\Japo\AppContext;
 
 use Dotenv\Dotenv;
+use maesierra\Japo\Common\Http\HttpHelper;
+use PHPUnit\Framework\TestCase;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-
-class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
+class JapoAppConfigTest extends TestCase {
 
     /** @var  JapoAppConfig */
     private $appConfig;
 
+    /** @var HttpHelper */
+    private $httpHelper;
 
-    protected function setUp() {
+    protected function setUp():void {
         parent::setUp();
         $this->appConfig = JapoAppConfig::get(__DIR__);
+        $this->httpHelper = $this->appConfig->httpHelper;
     }
 
     public function testDotEnvParam() {
@@ -57,7 +59,7 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testServerPath() {
-        putenv("SERVER_PATH=/japo/api/");
+        putenv("SERVER_PATH=/japo/api");
         $this->assertEquals('/japo/api', $this->appConfig->serverPath);
     }
 
@@ -67,46 +69,46 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testAuth0RedirectUri() {
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('https://localhost:443/japo/api/auth/auth', $this->appConfig->auth0RedirectUri);
+        $this->httpHelper->serverVars['HTTPS'] = 'on';
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
+        $this->assertEquals('https://localhost:443/auth/auth', $this->appConfig->auth0RedirectUri);
     }
 
     public function testAuth0RedirectUri_noHttps() {
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('http://localhost:443/japo/api/auth/auth', $this->appConfig->auth0RedirectUri);
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
+        $this->assertEquals('http://localhost:443/auth/auth', $this->appConfig->auth0RedirectUri);
     }
 
     public function testAuth0LogoutUri() {
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
+        $this->httpHelper->serverVars['HTTPS'] = 'on';
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
         $this->assertEquals('https://localhost:443/japo', $this->appConfig->auth0LogoutUri);
     }
 
     public function testAuth0LogoutUri_noHttps() {
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
         $this->assertEquals('http://localhost:443/japo', $this->appConfig->auth0LogoutUri);
     }
 
     public function testHostUrl() {
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('https://localhost:443/japo/api', $this->appConfig->hostUrl);
+        $this->httpHelper->serverVars['HTTPS'] = 'on';
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
+        $this->assertEquals('https://localhost:443', $this->appConfig->hostUrl);
     }
 
     public function testHostsUrl_noHttps() {
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
-        $this->assertEquals('http://localhost:443/japo/api', $this->appConfig->hostUrl);
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
+        $this->assertEquals('http://localhost:443', $this->appConfig->hostUrl);
     }
 
     public function testHomeUrl() {
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
+        $this->httpHelper->serverVars['HTTPS'] = 'on';
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
         $this->assertEquals('https://localhost:443/japo', $this->appConfig->homeUrl);
     }
 
     public function testHomesUrl_noHttps() {
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
+        $this->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
         $this->assertEquals('http://localhost:443/japo', $this->appConfig->homeUrl);
     }
 
@@ -127,7 +129,7 @@ class JapoAppConfigTest extends \PHPUnit_Framework_TestCase {
     }
 
 
-    protected function tearDown() {
+    protected function tearDown():void {
         JapoAppConfig::clearInstance();
         putenv("SERVER_PATH");
     }

@@ -9,6 +9,7 @@
 namespace maesierra\Japo\AppContext;
 
 use Auth0\SDK\Auth0;
+use Auth0\SDK\Store\EmptyStore;
 use Doctrine\ORM\EntityManager;
 use maesierra\Japo\App\Controller\AuthController;
 use maesierra\Japo\App\Controller\DefaultController;
@@ -21,32 +22,27 @@ use maesierra\Japo\DB\JDictRepository;
 use maesierra\Japo\DB\KanjiRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
+use PHPUnit\Framework\TestCase;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-
-class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
+class JapoAppContextTest extends TestCase {
 
     /** @var  JapoAppContext */
     private $appContext;
     /** @var  JapoAppConfig */
     private $config;
 
-    protected function setUp() {
+    protected function setUp():void {
         parent::setUp();
-        $_SERVER['HTTPS'] = 'on';
-        $_SERVER['HTTP_HOST']  = 'localhost:443';
         $this->config = JapoAppConfig::get(__DIR__);
-
-
+        $this->config->httpHelper->serverVars['HTTPS'] = 'on';
+        $this->config->httpHelper->serverVars['HTTP_HOST']  = 'localhost:443';
     }
 
     public function testAuth0Config_nonCli() {
         $this->buildContext();
         $this->config->setParam('cliMode', false);
         $auth0Config = $this->appContext->auth0Config;
-        $this->assertTrue(is_array($auth0Config));
-        $this->assertEquals($auth0Config, [
+        $this->assertEquals((array)$auth0Config, [
             'domain' => $this->config->auth0Domain,
             'client_id' => $this->config->auth0ClientId,
             'client_secret' => $this->config->auth0ClientSecret,
@@ -64,8 +60,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
     public function testAuth0Config_cliMode() {
         $this->buildContext();
         $auth0Config = $this->appContext->auth0Config;
-        $this->assertTrue(is_array($auth0Config));
-        $this->assertEquals($auth0Config, [
+        $this->assertEquals((array)$auth0Config, [
             'domain' => $this->config->auth0Domain,
             'client_id' => $this->config->auth0ClientId,
             'client_secret' => $this->config->auth0ClientSecret,
@@ -75,7 +70,7 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
             'persist_id_token' => true,
             'persist_access_token' => true,
             'persist_refresh_token' => true,
-            'store' => false,
+            'store' => new EmptyStore(),
             'state_handler' => false
         ]);
         $this->assertSame($auth0Config, $this->appContext->auth0Config);
@@ -94,7 +89,8 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertInstanceOf(Logger::class, $defaultLogger);
         /** @var StreamHandler $handler */
         $handler = $defaultLogger->getHandlers()[0];
-        $this->assertEquals("logs/japo.log", $handler->getUrl());
+        $url = $handler->getUrl();
+        $this->assertStringEndsWith("logs/japo.log", $url);
         $this->assertEquals(Logger::DEBUG, $handler->getLevel());
         $this->assertSame($defaultLogger, $this->appContext->defaultLogger);
 
@@ -230,13 +226,12 @@ class JapoAppContextTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals('auth0Domain',$this->appContext->config->auth0Domain);
     }
 
-    protected function tearDown() {
+    protected function tearDown():void {
         JapoAppConfig::clearInstance();
         JapoAppContext::clearInstance();
     }
 
-    protected function buildContext()
-    {
+    protected function buildContext() {
         $this->appContext = JapoAppContext::context();
     }
 

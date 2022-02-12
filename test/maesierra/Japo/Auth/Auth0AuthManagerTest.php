@@ -10,13 +10,12 @@ namespace maesierra\Japo\Auth;
 
 
 use Auth0\SDK\Auth0;
-use maesierra\Japo\Router\Router;
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
 
-class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
+class Auth0AuthManagerTest extends TestCase {
     private $domain;
     private $clientId;
     private $logoutUrl;
@@ -24,13 +23,13 @@ class Auth0AuthManagerTest extends \PHPUnit_Framework_TestCase {
     /** @var  Auth0AuthManager */
     private $authManager;
 
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $auth0;
 
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $logger;
 
-    public function setUp() {
+    public function setUp():void {
         $this->domain = "auth0.domain.com";
         $this->clientId = "8329823947";
         $this->logoutUrl = "http://japo.com/japo";

@@ -8,15 +8,14 @@
 
 namespace maesierra\Japo\Auth;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+use PHPUnit\Framework\TestCase;
 
-class NoLoginAuthManagerTest extends \PHPUnit_Framework_TestCase {
+class NoLoginAuthManagerTest extends TestCase {
 
     /** @var  NoLoginAuthManager */
     private $authManager;
 
-    public function setUp() {
+    public function setUp():void {
         $this->authManager = new NoLoginAuthManager();
     }
 

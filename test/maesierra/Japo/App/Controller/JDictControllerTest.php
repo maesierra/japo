@@ -15,33 +15,32 @@ use maesierra\Japo\JDict\JDictEntryKanji;
 use maesierra\Japo\JDict\JDictQuery;
 use maesierra\Japo\JDict\JDictQueryResults;
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 
-if (file_exists('../../../../../vendor/autoload.php')) include '../../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+class JDictControllerTest extends TestCase {
 
-class JDictControllerTest extends \PHPUnit_Framework_TestCase {
-
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $request;
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $response;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $jdictRepository;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $logger;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $body;
 
@@ -50,7 +49,7 @@ class JDictControllerTest extends \PHPUnit_Framework_TestCase {
      */
     private $controller;
 
-    public function setUp() {
+    public function setUp():void {
         /** @var JDictRepository $jdictRepository */
         $jdictRepository = $this->createMock(JDictRepository::class);
         $this->jdictRepository = $jdictRepository;

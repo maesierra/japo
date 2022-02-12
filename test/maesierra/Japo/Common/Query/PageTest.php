@@ -9,11 +9,9 @@
 namespace maesierra\Japo\Common\Query;
 
 
-if (file_exists('../../../../../vendor/autoload.php')) include '../../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+use PHPUnit\Framework\TestCase;
 
-
-class PageTest extends \PHPUnit_Framework_TestCase
+class PageTest extends TestCase
 {
 
     public function testGetNPages() {
@@ -50,8 +48,8 @@ class PageTest extends \PHPUnit_Framework_TestCase
         $this->assertJsonStringEqualsJsonString(
             json_encode($page),
             json_encode([
-                "page" => "0",
-                "pageSize" => "24",
+                "page" => 0,
+                "pageSize" => 24,
                 "nPages" => 21,
                 "hasMore" => true
             ])

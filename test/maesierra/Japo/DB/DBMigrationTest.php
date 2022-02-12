@@ -9,13 +9,10 @@
 namespace maesierra\Japo\DB;
 
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Filesystem\Filesystem;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-
-
-class DBMigrationTest extends \PHPUnit_Framework_TestCase {
+class DBMigrationTest extends TestCase {
 
     private $dumpFile;
 
@@ -24,7 +21,7 @@ class DBMigrationTest extends \PHPUnit_Framework_TestCase {
     /** @var  DBMigration */
     private $dbMigration;
 
-    public function setUp() {
+    public function setUp():void {
         $this->dbMigration = new DBMigration([], sys_get_temp_dir());
     }
 
@@ -77,7 +74,7 @@ class DBMigrationTest extends \PHPUnit_Framework_TestCase {
         $this->assertEquals(3, $nMigrationFiles);
     }
 
-    public function tearDown() {
+    public function tearDown():void {
         $filesystem = new Filesystem();
         if (file_exists($this->dumpFile)) {
             try {

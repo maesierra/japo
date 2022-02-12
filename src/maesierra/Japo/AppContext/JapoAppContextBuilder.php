@@ -11,7 +11,10 @@ namespace maesierra\Japo\AppContext;
 
 use Aura\Di\Container;
 use Aura\Di\ContainerConfig;
+use Aura\Di\Exception\ContainerLocked;
+use Aura\Di\Exception\ServiceNotObject;
 use Auth0\SDK\Auth0;
+use Auth0\SDK\Store\EmptyStore;
 use Doctrine\Common\Cache\ApcuCache;
 use Doctrine\DBAL\Logging\DebugStack;
 use Doctrine\ORM\EntityManager;
@@ -61,12 +64,12 @@ class JapoAppContextBuilder extends ContainerConfig {
     }
 
 
-    public function define(Container $di) {
+    public function define(Container $di):void {
         $config = JapoAppConfig::get();
         $di->set('params', $config);
         $di->set('config', $config);
         $this->auth0Config($di, $config);
-        $this->auth0($di, $config);
+        $this->auth0($di);
         $this->defaultLogger($di, $config);
         $this->authManager($di, $config);
         $this->dbMigration($di, $config);
@@ -133,19 +136,20 @@ class JapoAppContextBuilder extends ContainerConfig {
         ];
         $di->set('auth0Config', $di->lazy(function () use ($auth0Config, $config) {
             if ($config->cliMode) {
-                $auth0Config['store'] = false;
+                $auth0Config['store'] = new EmptyStore();
                 $auth0Config['state_handler'] = false;
             }
-            return $auth0Config;
+            return (object)$auth0Config;
         }));
     }
 
     /**
      * @param Container $di
      */
-    private function auth0(Container $di, $config)
-    {
-        $this->createObject($di, 'auth0', Auth0::class, ['config' => $di->lazyGet('auth0Config')]);
+    private function auth0(Container $di) {
+        $di->set("auth0", $di->lazy(function () use($di) {
+            return new Auth0((array)$di->get("auth0Config"));
+        }));
     }
 
     /**
@@ -293,18 +297,11 @@ class JapoAppContextBuilder extends ContainerConfig {
 
     /**
      * @param Container $di
-     * @throws \Aura\Di\Exception\ContainerLocked
-     * @throws \Aura\Di\Exception\ServiceNotObject
+     * @throws ContainerLocked
+     * @throws ServiceNotObject
      */
     private function slimCoreServices(Container $di)
     {
-        $slimContainer = new \Slim\Container();
-        $slimCoreServices = ['settings', 'environment', 'request', 'response', 'router', 'foundHandler', 'phpErrorHandler', 'errorHandler', 'notFoundHandler', 'notAllowedHandler'];
-        foreach ($slimCoreServices as $service) {
-            $di->set($service, $di->lazy(function () use ($slimContainer, $service) {
-                return $slimContainer->get($service);
-            }));
-        }
         $di->set('callableResolver', $di->lazy(function () use ($di) {
             return new CallableResolver($di);
         }));

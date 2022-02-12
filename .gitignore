@@ -5,3 +5,4 @@
 .vagrant/
 vendor/
 src/maesierra/Japo/.env
+webroot/*

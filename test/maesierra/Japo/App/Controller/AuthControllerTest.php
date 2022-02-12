@@ -12,19 +12,18 @@ namespace maesierra\Japo\App\Controller;
 use maesierra\Japo\AppContext\JapoAppConfig;
 use maesierra\Japo\Auth\AuthManager;
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-if (file_exists('../../../../../vendor/autoload.php')) include '../../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-
-class AuthControllerTest extends \PHPUnit_Framework_TestCase
+class AuthControllerTest extends TestCase
 {
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var MockObject */
     private $authManager;
 
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $logger;
 
     /** @var AuthController */
@@ -32,7 +31,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
 
     private $language;
 
-    protected function setUp()
+    protected function setUp():void
     {
         parent::setUp();
         /** @var AuthManager $authManager */
@@ -59,7 +58,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => $remoteAddr]);
         $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->never())->method('withHeader');
         $this->controller->login($request, $response, []);
@@ -72,8 +71,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_REFERER'] = 'https://localhost:443/japo/';
+        $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => $remoteAddr, 'HTTP_REFERER' => 'https://localhost:443/japo/']);
         $this->authManager->expects($this->once())->method('login')->with($this->language, null)->willReturn(true);
         $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->never())->method('withHeader');
@@ -87,9 +85,8 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
-        $_SERVER['HTTP_REFERER'] = 'https://localhost:443/other/page/other?param=1';
+        $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => $remoteAddr, 'HTTP_REFERER' => 'https://localhost:443/other/page/other?param=1']);
         $this->authManager->expects($this->once())->method('login')->with($this->language)->willReturn(true);
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
         $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->never())->method('withHeader');
         $this->controller->login($request, $response, []);
@@ -102,8 +99,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
-        $_SERVER['HTTP_REFERER'] = 'https://localhost:443/japo/page/other?param=1';
+        $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => $remoteAddr, 'HTTP_REFERER' => 'https://localhost:443/japo/page/other?param=1']);
         $this->authManager->expects($this->once())->method('login')->with($this->language, 'page/other?param=1')->willReturn(true);
         $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\" redirect to page/other?param=1.");
         $response->expects($this->never())->method('withHeader');
@@ -112,15 +108,14 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
 
 
     public function testLoginRedirect_userNotLoggedIn_withLanguageCookie() {
-
-        $_COOKIE['japo_app_language'] = 'en';
         $this->authManager->expects($this->once())->method('login')->with('en')->willReturn(true);
         $request = $this->createMock(ServerRequestInterface::class);
         $response = $this->createMock(ResponseInterface::class);
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
+        $request->method('getCookieParams')->willReturn(['japo_app_language' => 'en']);
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => $remoteAddr]);
         $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->never())->method('withHeader');
         $this->controller->login($request, $response, []);
@@ -132,7 +127,7 @@ class AuthControllerTest extends \PHPUnit_Framework_TestCase
         $response = $this->createMock(ResponseInterface::class);
         $remoteAddr = "12.78.39.234";
         $httpUserAgent = 'firefox';
-        $_SERVER['REMOTE_ADDR'] = $remoteAddr;
+        $request->method('getServerParams')->willReturn(['REMOTE_ADDR' => $remoteAddr]);
         $request->method('getHeader')->with('HTTP_USER_AGENT')->willReturn($httpUserAgent);
         $this->logger->expects($this->once())->method('info')->with("Login request from host: \"$remoteAddr\" user agent: \"$httpUserAgent\".");
         $response->expects($this->once())->method('withHeader')->with('Location', '/japo');

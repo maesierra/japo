@@ -21,33 +21,32 @@ use maesierra\Japo\Kanji\KanjiQueryResults;
 use maesierra\Japo\Kanji\KanjiReading;
 use maesierra\Japo\Kanji\KanjiWord;
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 
 
-if (file_exists('../../../../../vendor/autoload.php')) include '../../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+class KanjiControllerTest extends TestCase {
 
-class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
-
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $request;
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $response;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $kanjiRepository;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $logger;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var MockObject
      */
     private $body;
 
@@ -59,7 +58,7 @@ class KanjiControllerTest extends \PHPUnit_Framework_TestCase {
     /** @var  User */
     private $user;
 
-    public function setUp() {
+    public function setUp():void {
         /** @var KanjiRepository $kanjiRepository */
         $kanjiRepository = $this->createMock(KanjiRepository::class);
         $this->kanjiRepository = $kanjiRepository;

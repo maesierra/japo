@@ -2,7 +2,10 @@ Japo [![Build Status](https://travis-ci.com/maesierra/japo.svg?branch=master)](h
 ==========================================
 Japo (pronounced hapo) it's a project to produce Japanese Language learning tools to non English speakers.
 
-There are plenty of resources for English speakers available on the Internet but it's difficult to find anything from any other languages to Japanese, and it's quite frustrating to non native English speakers to require to a double translation or spend quite a lot of money in physical dictionaries.
+There are plenty of resources for English speakers available on the Internet, 
+but it's difficult to find anything from any other languages to Japanese, 
+and it's quite frustrating to non-native English speakers to require 
+a double translation or spend quite a lot of money in physical dictionaries.
  
 Japo allows to compile a dictionary, glossary and kanji catalog and make it available to other students. 
 
@@ -16,7 +19,7 @@ The main features are:
 
 Japo is based on the tools developed by [maesierra](https://github.com/maesierra) while she was learning Japanese.
 
-The current beta contains only the Kanji Catalog plus an Spanish Database.
+The current beta contains only the Kanji Catalog plus a Spanish Database.
 Next steps will be:
 
 - Dictionary.
@@ -30,7 +33,7 @@ Next steps will be:
 Requirements
 ============
 
-- PHP >= 7.1
+- PHP >= 8.0
 - PHP Extensions: mb_string, pdo, pdo_mysql, apcu
 - MySQL>=  5.6
 - npm (only for building)

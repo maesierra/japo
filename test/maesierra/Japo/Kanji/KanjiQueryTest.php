@@ -10,8 +10,9 @@ namespace maesierra\Japo\Kanji;
 
 
 use maesierra\Japo\Common\Query\Sort;
+use PHPUnit\Framework\TestCase;
 
-class KanjiQueryTest extends \PHPUnit_Framework_TestCase {
+class KanjiQueryTest extends TestCase {
 
 
     public function testDefaultValues() {

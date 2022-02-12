@@ -79,7 +79,7 @@ class JapoAppContext implements ContainerInterface {
         self::$instance = null;
     }
 
-    public function has($id) {
+    public function has(string $id): bool {
         return $this->di->has($id);
     }
 

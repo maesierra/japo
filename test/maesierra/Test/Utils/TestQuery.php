@@ -6,7 +6,7 @@
  * Time: 9:50
  */
 
-namespace maesierra\Japo\Test\Utils;
+namespace maesierra\Test\Utils;
 
 use Doctrine\ORM\AbstractQuery;
 

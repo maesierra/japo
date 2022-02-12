@@ -8,12 +8,10 @@
 
 namespace maesierra\Japo\UTF8;
 
-use maesierra\Japo\UTF8\UTF8Utils;
+use PHPUnit\Framework\TestCase;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
 
-class UTF8UtilsTest extends \PHPUnit_Framework_TestCase {
+class UTF8UtilsTest extends TestCase {
 
 
     public function testOrd() {

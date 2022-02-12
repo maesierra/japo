@@ -22,26 +22,22 @@ use maesierra\Japo\JDict\JDictEntryKanji;
 use maesierra\Japo\JDict\JDictQuery;
 use maesierra\Japo\Kanji\KanjiCatalogEntry;
 use maesierra\Japo\Kanji\KanjiReading;
-use maesierra\Japo\Test\Utils\TestQuery;
+use maesierra\Test\Utils\TestQuery;
 use Monolog\Logger;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
-if (!class_exists(TestQuery::class)) {
-    file_exists('../Test/Utils/TestQuery.php') ? require_once '../Test/Utils/TestQuery.php' : require_once 'test/maesierra/Japo/Test/Utils/TestQuery.php';
-}
+class JDictRepositoryTest extends TestCase {
 
-class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
-
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $entityManager;
-    /** @var  \PHPUnit_Framework_MockObject_MockObject */
+    /** @var  MockObject */
     private $logger;
 
     /** @var  JDictRepository */
     private $jdictRepository;
 
-    public function setUp() {
+    public function setUp():void {
         /** @var EntityManager $entityManager */
         $entityManager = $this->createMock(EntityManager::class);
         $this->entityManager = $entityManager;
@@ -225,7 +221,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
 
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function stubQuery($results = [], $total = null)
     {
@@ -255,7 +251,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
     /**
      * @param $id
      * @param array ...$kanjiStr
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function stubJDictEntry($id, ...$kanjiStr)
     {
@@ -303,7 +299,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @param $gloss
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function glossEntity($gloss)
     {
@@ -314,7 +310,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @param $r
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function readingEntity($r)
     {
@@ -325,7 +321,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
 
     /**
      * @param $m
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function metaEntity($m)
     {
@@ -338,7 +334,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
     /**
      * @param $kanji
      * @param $common
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     private function kanjiEntity($kanji, $common)
     {
@@ -378,7 +374,7 @@ class JDictRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @param $query \PHPUnit_Framework_MockObject_MockObject
+     * @param $query MockObject
      */
     private function verifyParameters($query, ...$params)
     {

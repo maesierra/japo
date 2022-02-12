@@ -9,10 +9,9 @@
 namespace maesierra\Japo\Lang;
 
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+use PHPUnit\Framework\TestCase;
 
-class JapaneseLanguageHelperTest extends \PHPUnit_Framework_TestCase {
+class JapaneseLanguageHelperTest extends TestCase {
 
 
 

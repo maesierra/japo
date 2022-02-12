@@ -39,9 +39,10 @@ class AuthController extends BaseController {
     }
 
     public function login(ServerRequestInterface $request, ResponseInterface $response, array $args) {
-        $userLanguage = $_COOKIE['japo_app_language'] ?? $this->language;
-        $remoteAddr = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-        $referrer = $_SERVER['HTTP_REFERER'] ?? '';
+        $userLanguage = $request->getCookieParams()['japo_app_language'] ?? $this->language;
+        $serverParams = $request->getServerParams();
+        $remoteAddr = $serverParams['REMOTE_ADDR'] ?? 'unknown';
+        $referrer = $serverParams['HTTP_REFERER'] ?? '';
         $regExp = '/' . preg_quote($this->homeUrl, '/') . '(.+)/';
         if (preg_match($regExp, $referrer, $matches)) {
             $redirectTo = $matches[1];

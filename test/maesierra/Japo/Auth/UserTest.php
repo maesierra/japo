@@ -9,10 +9,9 @@
 namespace maesierra\Japo\Auth;
 
 
-if (file_exists('../../../../vendor/autoload.php')) include '../../../../vendor/autoload.php';
-if (file_exists('vendor/autoload.php')) include ('vendor/autoload.php');
+use PHPUnit\Framework\TestCase;
 
-class UserTest extends \PHPUnit_Framework_TestCase {
+class UserTest extends TestCase {
 
     public function testConstructor() {
         $user = new User([

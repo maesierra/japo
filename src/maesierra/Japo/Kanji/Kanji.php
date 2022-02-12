@@ -44,7 +44,7 @@ class Kanji {
                     }, $value);
                     break;
                 case 'catalogs':
-                    $this->catalogs = array_reduce((array)$value, function(&$result, $e)  {
+                    $this->catalogs = array_reduce((array)$value, function($result, $e)  {
                         $entry = new KanjiCatalogEntry($e);
                         $result[$entry->catalogId] = $entry;
                         return $result;
