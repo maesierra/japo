@@ -29,7 +29,7 @@ class DBMigration {
     public function run() {
         $configFile = "{$this->tempDir}/phinx.json";
         file_put_contents($configFile, json_encode($this->config));
-        $command = __DIR__."/../../../../vendor/bin/phinx migrate -e production -c '$configFile'";
+        $command = "php-8.2 ".__DIR__."/../../../../vendor/bin/phinx migrate -e production -c '$configFile'";
         passthru($command);
     }
 

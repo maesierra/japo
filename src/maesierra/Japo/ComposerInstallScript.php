@@ -26,7 +26,7 @@ class ComposerInstallScript {
         $lang = $japoAppConfig->lang ?: 'en';
         putenv( "REACT_APP_LANGUAGE=$lang");
         chdir("react/japo");
-        passthru("npm install", $returnVar);
+        passthru("npm install --force", $returnVar);
         self::checkReturnVar($returnVar);
         chdir("../../");
         passthru("npm run-script build --prefix react/japo/", $returnVar);
